@@ -1,3 +1,3 @@
 # TripTailor
 
-Github Repository for TripTailor application.
+Github Repository for TripTailor application : )
