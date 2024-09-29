@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: go-container
+    ports:
+      - "8080:8080"  
+    environment:
+      - DATABASE_URL=postgres://postgres:password@db_service:5432/database
+    depends_on:
+      - db
+
+  db:
+    image: postgres:17.0
+    container_name: postgres
+    ports:
+      - "5432:5432"  
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: database
+    volumes:
+      - ./backend/db/db_data:/var/lib/postgresql/data  
+
+volumes:
+  db_data:
+
