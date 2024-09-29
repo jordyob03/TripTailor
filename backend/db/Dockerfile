@@ -1,0 +1,4 @@
+FROM postgres:17.0
+ENV POSTGRES_PASSWORD docker
+
+EXPOSE 5432
