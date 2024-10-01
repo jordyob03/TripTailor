@@ -1,5 +1,5 @@
 import './styles/App.css';
-import HelloWorld from './components/HelloWorld';
+
 import UserAuthentication from './pages/UserAuthetication';
 
 function App() {
@@ -11,5 +11,4 @@ function App() {
     </div>
   );
 }
-
 export default App;
