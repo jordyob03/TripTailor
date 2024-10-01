@@ -17,13 +17,15 @@ function UserAuthentication() {
 
  // Inline styles
  const styles = {
-   container: {
-     display: 'flex',
-     justifyContent: 'center',
-     alignItems: 'center',
-     height: '100vh',
-     backgroundColor: '#f7f9fc',
-   },
+  container: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    width: '100vw', // Ensures the container spans the full width
+    backgroundColor: 'white', // White background to cover the full page
+  }
+  ,
    box: {
      backgroundColor: 'white',
      padding: '40px',

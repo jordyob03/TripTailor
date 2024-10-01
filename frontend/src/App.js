@@ -6,8 +6,6 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>HHHHHHHHHH</h1>
-        <HelloWorld />
         <UserAuthentication/>
       </header>
     </div>
