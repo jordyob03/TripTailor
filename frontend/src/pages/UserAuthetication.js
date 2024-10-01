@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import logo from '../assets/logo-long-transparent.png';
 function UserAuthentication() {
   // State for form fields
   const [username, setUsername] = useState('');
@@ -81,7 +81,7 @@ function UserAuthentication() {
     <>
       {/* Navbar */}
       <nav style={styles.navbar}>
-        <img src="trip-tailor-logo.png" alt="Trip Tailor Logo" style={styles.logo} />
+      <img src={logo} alt="Trip Tailor Logo" style={styles.logo} />
       </nav>
 
       {/* Main Container */}
