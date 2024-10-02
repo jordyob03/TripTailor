@@ -3,17 +3,16 @@ import logo1 from '../assets/logo-long-transparent.png';
 import logo2 from '../assets/logo-circle-white.png';
 
 
-function UserAuthentication() {
+function UserLogin() {
   // State for form fields
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isHovered, setIsHovered] = useState(false);
 
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({ username, email, password });
+    console.log({ username, password });
     // Add any form validation or API call here
   };
 
@@ -136,24 +135,17 @@ function UserAuthentication() {
           <img src={logo2} alt="Trip Tailor Logo" style={styles.logo2} />
           <h5 style={styles.heading}>Welcome to Trip Tailor</h5>
           <hr style={styles.separator} />
-          <h6 style={styles.subheading}>Log in or sign up</h6>
+          <h6 style={styles.subheading}>Log in </h6>
           <form onSubmit={handleSubmit} style={styles.form}>
             <input
               type="text"
-              placeholder="Username"
+              placeholder="Username or Email"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
               style={styles.input}
             />
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              style={styles.input}
-            />
+            
             <input
               type="password"
               placeholder="Password"
@@ -177,4 +169,4 @@ function UserAuthentication() {
   );
 }
 
-export default UserAuthentication;
+export default UserLogin;
