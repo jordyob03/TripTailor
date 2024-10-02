@@ -2,7 +2,6 @@ package DBTests
 
 import (
 	"fmt"
-	"strconv"
 	"time"
 
 	db "backend/db/models"
@@ -41,14 +40,14 @@ func test() {
 		fmt.Println("Expected error for duplicate email:", err)
 	}
 
-	user, err := db.GetUser(strconv.Itoa(user1Id))
+	user, err := db.GetUser("johndoe")
 	if err != nil {
 		fmt.Println("Error retrieving user 1:", err)
 	} else {
 		fmt.Printf("User 1 retrieved successfully: %+v\n", user)
 	}
 
-	user, err = db.GetUser("9999") // Assuming this user ID doesn't exist.
+	user, err = db.GetUser("nonexistentuser")
 	if err != nil {
 		fmt.Println("Expected error for non-existent user:", err)
 	} else {
@@ -67,32 +66,31 @@ func test() {
 		"password":    "newpassword123",
 		"dateOfBirth": time.Date(1991, time.June, 10, 0, 0, 0, 0, time.UTC),
 	}
-	err = db.UpdateUser(strconv.Itoa(user1Id), updateData)
+	err = db.UpdateUser("johndoe", updateData)
 	if err != nil {
 		fmt.Println("Error updating user 1:", err)
 	} else {
 		fmt.Println("User 1 updated successfully.")
 	}
 
-	updatedUser, err := db.GetUser(strconv.Itoa(user1Id))
+	updatedUser, err := db.GetUser("johnupdated")
 	if err != nil {
 		fmt.Println("Error retrieving updated user 1:", err)
 	} else {
 		fmt.Printf("Updated User 1: %+v\n", updatedUser)
 	}
 
-	err = db.DeleteUser(strconv.Itoa(user2Id))
+	err = db.DeleteUser("janedoe")
 	if err != nil {
 		fmt.Println("Error deleting user 2:", err)
 	} else {
 		fmt.Println("User 2 deleted successfully.")
 	}
 
-	_, err = db.GetUser(strconv.Itoa(user2Id))
+	_, err = db.GetUser("janedoe")
 	if err != nil {
 		fmt.Println("Expected error for deleted user:", err)
 	} else {
 		fmt.Println("Unexpectedly retrieved deleted user 2.")
 	}
-
 }
