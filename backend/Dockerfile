@@ -5,12 +5,22 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 
-COPY /main-service/cmd/*.go ./
+COPY ./db/models/ ./db/models/
+COPY ./db/migrations/ ./db/migrations/
+COPY ./db/seed/ ./db/seed/
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o /go-container
+COPY ./main-service/api/ ./api/
+COPY ./main-service/cmd/ ./cmd/
+COPY ./main-service/internal/ ./internal/
+
+COPY ./event-service/api/ ./api/
+COPY ./event-service/cmd/ ./cmd/
+COPY ./event-service/internal/ ./internal/
+
+COPY ./pkg/ ./pkg/
+
+RUN CGO_ENABLED=0 GOOS=linux go build -o /backend-container ./cmd/main.go
 
 EXPOSE 8080
 
-CMD ["/go-container"]
-
-
+CMD ["/backend-container", "sh"]

@@ -1,17 +1,16 @@
-version: '3.8'
-
 services:
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: go-container
+    container_name: backend-container
     ports:
-      - "8080:8080"  
+      - "8080:8080"
     environment:
-      - DATABASE_URL=postgres://postgres:password@db_service:5432/database
+      - DATABASE_URL=postgres://postgres:password@db:5432/database
     depends_on:
       - db
+    command: sh -c "sleep 3; go run ./cmd/main.go"
 
   db:
     image: postgres:17.0
