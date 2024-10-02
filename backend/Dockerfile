@@ -9,17 +9,17 @@ COPY ./db/models/ ./db/models/
 COPY ./db/migrations/ ./db/migrations/
 COPY ./db/seed/ ./db/seed/
 
-COPY ./main-service/api/ ./api/
-COPY ./main-service/cmd/ ./cmd/
-COPY ./main-service/internal/ ./internal/
+COPY ./main-service/api/ ./main-service/api/
+COPY ./main-service/cmd/ ./main-service/cmd/
+COPY ./main-service/internal/ ./main-service/internal/
 
-COPY ./event-service/api/ ./api/
-COPY ./event-service/cmd/ ./cmd/
-COPY ./event-service/internal/ ./internal/
+COPY ./event-service/api/ ./event-service/api/
+COPY ./event-service/cmd/ ./event-service/cmd/
+COPY ./event-service/internal/ ./event-service/internal/
 
 COPY ./pkg/ ./pkg/
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o /backend-container ./cmd/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o /backend-container ./main-service/cmd/main.go
 
 EXPOSE 8080
 

@@ -10,7 +10,6 @@ services:
       - DATABASE_URL=postgres://postgres:password@db:5432/database
     depends_on:
       - db
-    command: sh -c "sleep 3; go run ./cmd/main.go"
 
   db:
     image: postgres:17.0
