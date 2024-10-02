@@ -1,103 +1,98 @@
-package DBtests
+package DBTests
 
 import (
-	db "backend/db/models"
-	"bufio"
 	"fmt"
-	"os"
+	"strconv"
+	"time"
+
+	db "backend/db/models"
 )
 
-func DBtest() {
-	scanner := bufio.NewScanner(os.Stdin)
+func test() {
 
-	for {
-		fmt.Println("Choose an option:")
-		fmt.Println("1: Add User")
-		fmt.Println("2: Get User by Email")
-		fmt.Println("3: Get All Users")
-		fmt.Println("4: Update User")
-		fmt.Println("5: Delete User")
-		fmt.Println("6: Exit")
-
-		if !scanner.Scan() {
-			break
-		}
-		choice := scanner.Text()
-
-		switch choice {
-		case "1":
-			fmt.Print("Enter email: ")
-			scanner.Scan()
-			email := scanner.Text()
-			fmt.Print("Enter password: ")
-			scanner.Scan()
-			password := scanner.Text()
-			err := db.AddUser(email, password)
-			if err != nil {
-				fmt.Println("Error adding user:", err)
-			} else {
-				fmt.Println("User added successfully!")
-			}
-
-		case "2":
-			fmt.Print("Enter user email: ")
-			scanner.Scan()
-			email := scanner.Text()
-			user, err := db.GetUser(email) // Update to use GetUserByEmail
-			if err != nil {
-				fmt.Println("Error retrieving user:", err)
-			} else {
-				fmt.Printf("User: %+v\n", user)
-			}
-
-		case "3":
-			users, err := db.GetAllUsers()
-			if err != nil {
-				fmt.Println("Error retrieving users:", err)
-			} else {
-				fmt.Println("All Users:")
-				for _, user := range users {
-					fmt.Printf("Email: %s\n", user.Email) // Updated to display email
-				}
-			}
-
-		case "4":
-			fmt.Print("Enter user email to update: ")
-			scanner.Scan()
-			email := scanner.Text()
-			fmt.Print("Enter new email: ")
-			scanner.Scan()
-			newEmail := scanner.Text()
-			fmt.Print("Enter new password: ")
-			scanner.Scan()
-			password := scanner.Text()
-			err := db.UpdateUser(email, map[string]interface{}{
-				"email":    newEmail,
-				"password": password,
-			}) // Update function to use email
-			if err != nil {
-				fmt.Println("Error updating user:", err)
-			} else {
-				fmt.Println("User updated successfully!")
-			}
-
-		case "5":
-			fmt.Print("Enter user email to delete: ")
-			scanner.Scan()
-			email := scanner.Text()
-			err := db.DeleteUser(email) // Update to use email
-			if err != nil {
-				fmt.Println("Error deleting user:", err)
-			} else {
-				fmt.Println("User deleted successfully!")
-			}
-
-		case "6":
-			fmt.Println("Exiting...")
-			return
-
-		default:
-			fmt.Println("Invalid option. Please try again.")
-		}
+	err := db.CreateUserTable()
+	if err != nil {
+		fmt.Println("Error creating users table:", err)
+	} else {
+		fmt.Println("Users table created successfully.")
 	}
+
+	user1Id, err := db.AddUser("johndoe", "johndoe@example.com", "password123", time.Date(1990, time.March, 15, 0, 0, 0, 0, time.UTC))
+	if err != nil {
+		fmt.Println("Error adding user 1:", err)
+	} else {
+		fmt.Printf("User 1 added successfully with ID: %d\n", user1Id)
+	}
+
+	user2Id, err := db.AddUser("janedoe", "janedoe@example.com", "securepass456", time.Date(1985, time.December, 20, 0, 0, 0, 0, time.UTC))
+	if err != nil {
+		fmt.Println("Error adding user 2:", err)
+	} else {
+		fmt.Printf("User 2 added successfully with ID: %d\n", user2Id)
+	}
+
+	_, err = db.AddUser("johndoe", "john.different@example.com", "differentpass789", time.Date(1992, time.January, 1, 0, 0, 0, 0, time.UTC))
+	if err != nil {
+		fmt.Println("Expected error for duplicate username:", err)
+	}
+
+	_, err = db.AddUser("johnnew", "johndoe@example.com", "differentpass789", time.Date(1992, time.January, 1, 0, 0, 0, 0, time.UTC))
+	if err != nil {
+		fmt.Println("Expected error for duplicate email:", err)
+	}
+
+	user, err := db.GetUser(strconv.Itoa(user1Id))
+	if err != nil {
+		fmt.Println("Error retrieving user 1:", err)
+	} else {
+		fmt.Printf("User 1 retrieved successfully: %+v\n", user)
+	}
+
+	user, err = db.GetUser("9999") // Assuming this user ID doesn't exist.
+	if err != nil {
+		fmt.Println("Expected error for non-existent user:", err)
+	} else {
+		fmt.Printf("Unexpectedly retrieved user: %+v\n", user)
+	}
+
+	users, err := db.GetAllUsers()
+	if err != nil {
+		fmt.Println("Error retrieving users:", err)
+	} else {
+		fmt.Printf("Users retrieved successfully: %+v\n", users)
+	}
+
+	updateData := map[string]interface{}{
+		"username":    "johnupdated",
+		"password":    "newpassword123",
+		"dateOfBirth": time.Date(1991, time.June, 10, 0, 0, 0, 0, time.UTC),
+	}
+	err = db.UpdateUser(strconv.Itoa(user1Id), updateData)
+	if err != nil {
+		fmt.Println("Error updating user 1:", err)
+	} else {
+		fmt.Println("User 1 updated successfully.")
+	}
+
+	updatedUser, err := db.GetUser(strconv.Itoa(user1Id))
+	if err != nil {
+		fmt.Println("Error retrieving updated user 1:", err)
+	} else {
+		fmt.Printf("Updated User 1: %+v\n", updatedUser)
+	}
+
+	err = db.DeleteUser(strconv.Itoa(user2Id))
+	if err != nil {
+		fmt.Println("Error deleting user 2:", err)
+	} else {
+		fmt.Println("User 2 deleted successfully.")
+	}
+
+	_, err = db.GetUser(strconv.Itoa(user2Id))
+	if err != nil {
+		fmt.Println("Expected error for deleted user:", err)
+	} else {
+		fmt.Println("Unexpectedly retrieved deleted user 2.")
+	}
+
 }
