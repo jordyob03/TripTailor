@@ -2,17 +2,22 @@ import React, { useState } from 'react';
 import logo1 from '../assets/logo-long-transparent.png';
 
 function InitialUserProfile() {
+  // Tags
   const [selectedTags, setSelectedTags] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
+  const [country, setCountry] = useState('');
+  const [language, setLanguage] = useState('');
+  const tags = ['Beach', 'Indoors', 'Outdoors', 'City', 'Nightlife', 'Hiking', 'Boating', 'Relaxing', 'Wildlife', 'Shopping', 'Road Trip', 'Sports', 'Arts & Architexture', 'Festivals & Events', 'Backpacking', 'Museums', 'National Park', 'Landmarks & Historical Sites', 'Food', 'Theme Park'];
 
-  // Tags
-  const tags = ['Beach', 'Indoors', 'Outdoors', 'City', 'Nightlife', 'Hiking'];
+  // Options for dropdowns
+  const countries = ['USA', 'Canada', 'UK', 'Australia', 'Other'];
+  const languages = ['English', 'Spanish', 'French', 'German', 'Chinese'];
 
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     if (selectedTags.length === 3) {
-      console.log({ selectedTags });
+      console.log({ selectedTags, country, language });
       setErrorMessage(''); // Clear error message if valid
     } else {
       setErrorMessage('Please select exactly 3 tags.');
@@ -75,7 +80,7 @@ function InitialUserProfile() {
       borderRadius: '20px',
       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
       textAlign: 'center',
-      width: '1000px',
+      width: '650px',
       zIndex: 1,
       marginTop: '80px', 
       marginBottom: '40px', 
@@ -86,9 +91,10 @@ function InitialUserProfile() {
       marginBottom: '10px', 
       fontFamily: "'Red Hat Display', sans-serif",
     },
-    subheading: {
+
+    subheading1: {
       color: '#002f6c', 
-      marginTop: '0px', 
+      marginTop: '40px', 
       marginBottom: '20px', 
       fontFamily: "'Red Hat Display', sans-serif",
       fontSize: '20px',
@@ -109,12 +115,15 @@ function InitialUserProfile() {
     },
     tag: (isSelected) => ({
       padding: '8px 16px',
-      borderRadius: '20px',
+      borderRadius: '50px',
       border: isSelected ? '2px solid #00509e' : '1px solid #ccc',
-      backgroundColor: isSelected ? '#e0f0ff' : '#f0f0f0',
+      backgroundColor: isSelected ? '#002f6c' : '#C6DFF0',
       cursor: 'pointer',
       transition: 'all 0.3s ease',
-      boxShadow: isSelected ? '0 2px 4px rgba(0, 80, 158, 0.3)' : 'none',
+      boxShadow: isSelected ? '0 2px 4px rgba(0, 80, 158, 0.3)' : '0 2px 4px rgba(255, 255, 255, 0.3)',
+      fontSize: '19px',
+      fontWeight: '700',
+      color: isSelected ? 'white' : '#002f6c'
     }),
     button: {
       padding: '12px',
@@ -131,6 +140,15 @@ function InitialUserProfile() {
       color: 'red',
       fontSize: '14px',
       marginTop: '-10px',
+    },
+    dropdown: {
+      width: '100%',
+      padding: '10px',
+      borderRadius: '5px',
+      border: '1px solid #ccc',
+      marginBottom: '20px',
+      fontFamily: "'Red Hat Display', sans-serif",
+      fontSize: '16px',
     },
   };
 
@@ -151,7 +169,7 @@ function InitialUserProfile() {
       <div style={styles.container}>
         <div style={styles.box}>
           <h5 style={styles.heading}>Tell us more about you</h5>
-          <h6 style={styles.subheading}>What tags are important to you on your travels?</h6>
+          <h6 style={styles.subheading1}>What tags are important to you on your travels?</h6>
           
           {/* Tag selection */}
           <div style={styles.tags}>
@@ -165,6 +183,34 @@ function InitialUserProfile() {
               </div>
             ))}
           </div>
+          <h6 style={styles.subheading1}>Where do you live?</h6>
+      <select
+        value={country}
+        onChange={(e) => setCountry(e.target.value)}
+        style={styles.dropdown}
+      >
+        <option value="">Select a country</option>
+        {countries.map((country) => (
+          <option key={country} value={country}>
+            {country}
+          </option>
+        ))}
+      </select>
+
+      <h6 style={styles.subheading1}>What is your preferred language?</h6>
+      <select
+        value={language}
+        onChange={(e) => setLanguage(e.target.value)}
+        style={styles.dropdown}
+      >
+        <option value="">Select a language</option>
+        {languages.map((language) => (
+          <option key={language} value={language}>
+            {language}
+          </option>
+        ))}
+      </select>
+
 
           {/* Error message */}
           {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>}
