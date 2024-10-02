@@ -1,34 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import logo1 from '../assets/logo-long-transparent.png';
+import Tags from '../config/tags.json';
 
 function InitialUserProfile() {
-  // Tags
+  // Flatten all categories into a single array
+  const allTags = Object.values(Tags.categories).flat();
+
   const [selectedTags, setSelectedTags] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [country, setCountry] = useState('');
   const [language, setLanguage] = useState('');
-  const tags = ['Beach', 'Indoors', 'Outdoors', 'City', 'Nightlife', 'Hiking', 'Boating', 'Relaxing', 'Wildlife', 'Shopping', 'Road Trip', 'Sports', 'Arts & Architexture', 'Festivals & Events', 'Backpacking', 'Museums', 'National Park', 'Landmarks & Historical Sites', 'Food', 'Theme Park'];
+  const [shuffledTags, setShuffledTags] = useState([]);
 
   // Options for dropdowns
   const countries = ['USA', 'Canada', 'UK', 'Australia', 'Other'];
   const languages = ['English', 'Spanish', 'French', 'German', 'Chinese'];
 
+  // Function to shuffle the tags array
+  const shuffleArray = (array) => {
+    return [...array].sort(() => Math.random() - 0.5); // Copy the array before shuffling to avoid modifying the original
+  };
+
+  useEffect(() => {
+    // Shuffle tags only once when the component mounts
+    const shuffled = shuffleArray(allTags);
+    setShuffledTags(shuffled);
+  }, []); // Empty dependency array ensures this runs only once
+
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (selectedTags.length === 3) {
+    if (selectedTags.length >= 3) {
       console.log({ selectedTags, country, language });
       setErrorMessage(''); // Clear error message if valid
     } else {
-      setErrorMessage('Please select exactly 3 tags.');
+      setErrorMessage('Please select at least 3 tags.');
     }
   };
 
-  // Handle tag selection (max of 3 tags)
+  // Handle tag selection (min of 3 tags)
   const handleTagSelection = (tag) => {
     if (selectedTags.includes(tag)) {
       setSelectedTags(selectedTags.filter((t) => t !== tag));
-    } else if (selectedTags.length < 3) {
+    } else {
       setSelectedTags([...selectedTags, tag]);
     }
   };
@@ -37,15 +51,15 @@ function InitialUserProfile() {
   const styles = {
     navbar: {
       display: 'flex',
-      justifyContent: 'space-between', 
+      justifyContent: 'space-between',
       alignItems: 'center',
       padding: '10px 20px',
       height: '60px',
-      width: '100vw', 
+      width: '100vw',
       backgroundColor: 'white',
-      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', 
-      position: 'fixed', 
-      top: 0, 
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+      position: 'fixed',
+      top: 0,
       left: 0,
       zIndex: 2,
     },
@@ -55,12 +69,12 @@ function InitialUserProfile() {
       marginTop: '5px',
     },
     profileButton: {
-      display: 'flex',        
-      alignItems: 'center',   
-      justifyContent: 'space-between', 
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
       padding: '10px 20px',
       backgroundColor: 'white',
-      border: '1px solid #dfdfdf', 
+      border: '1px solid #dfdfdf',
       borderRadius: '30px',
       cursor: 'pointer',
       marginRight: '160px',
@@ -70,9 +84,9 @@ function InitialUserProfile() {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      minHeight: 'calc(100vh - 60px)', 
+      minHeight: 'calc(100vh - 60px)',
       width: '100vw',
-      backgroundColor: 'white', 
+      backgroundColor: 'white',
     },
     box: {
       backgroundColor: 'white',
@@ -82,29 +96,22 @@ function InitialUserProfile() {
       textAlign: 'center',
       width: '650px',
       zIndex: 1,
-      marginTop: '80px', 
-      marginBottom: '40px', 
+      marginTop: '80px',
+      marginBottom: '40px',
     },
     heading: {
-      color: '#002f6c', 
-      marginTop: '5px', 
-      marginBottom: '10px', 
+      color: '#002f6c',
+      marginTop: '5px',
+      marginBottom: '10px',
       fontFamily: "'Red Hat Display', sans-serif",
     },
-
     subheading1: {
-      color: '#002f6c', 
-      marginTop: '40px', 
-      marginBottom: '20px', 
+      color: '#002f6c',
+      marginTop: '40px',
+      marginBottom: '20px',
       fontFamily: "'Red Hat Display', sans-serif",
       fontSize: '20px',
-      fontWeight: '400'
-    },
-    separator: {
-      width: '100%',      
-      border: 'none',   
-      borderTop: '2px solid #d4d4d4', 
-      margin: '15px auto',  
+      fontWeight: '400',
     },
     tags: {
       display: 'flex',
@@ -123,7 +130,7 @@ function InitialUserProfile() {
       boxShadow: isSelected ? '0 2px 4px rgba(0, 80, 158, 0.3)' : '0 2px 4px rgba(255, 255, 255, 0.3)',
       fontSize: '19px',
       fontWeight: '700',
-      color: isSelected ? 'white' : '#002f6c'
+      color: isSelected ? 'white' : '#002f6c',
     }),
     button: {
       padding: '12px',
@@ -139,7 +146,8 @@ function InitialUserProfile() {
     errorMessage: {
       color: 'red',
       fontSize: '14px',
-      marginTop: '-10px',
+      marginTop: '10px',
+      marginBottom: '10px',
     },
     dropdown: {
       width: '100%',
@@ -160,7 +168,7 @@ function InitialUserProfile() {
 
         {/* Profile Button */}
         <button style={styles.profileButton}>
-          <i className="fas fa-bars" style={{ fontSize: '16px', color: '#00509e', marginRight: '15px' }}></i> 
+          <i className="fas fa-bars" style={{ fontSize: '16px', color: '#00509e', marginRight: '15px' }}></i>
           <i className="fa-regular fa-user" style={{ fontSize: '24px', color: '#00509e' }}></i>
         </button>
       </nav>
@@ -170,10 +178,10 @@ function InitialUserProfile() {
         <div style={styles.box}>
           <h5 style={styles.heading}>Tell us more about you</h5>
           <h6 style={styles.subheading1}>What tags are important to you on your travels?</h6>
-          
+
           {/* Tag selection */}
           <div style={styles.tags}>
-            {tags.map((tag) => (
+            {shuffledTags.map((tag) => (
               <div
                 key={tag}
                 style={styles.tag(selectedTags.includes(tag))}
@@ -183,43 +191,39 @@ function InitialUserProfile() {
               </div>
             ))}
           </div>
-          <h6 style={styles.subheading1}>Where do you live?</h6>
-      <select
-        value={country}
-        onChange={(e) => setCountry(e.target.value)}
-        style={styles.dropdown}
-      >
-        <option value="">Select a country</option>
-        {countries.map((country) => (
-          <option key={country} value={country}>
-            {country}
-          </option>
-        ))}
-      </select>
 
-      <h6 style={styles.subheading1}>What is your preferred language?</h6>
-      <select
-        value={language}
-        onChange={(e) => setLanguage(e.target.value)}
-        style={styles.dropdown}
-      >
-        <option value="">Select a language</option>
-        {languages.map((language) => (
-          <option key={language} value={language}>
-            {language}
-          </option>
-        ))}
-      </select>
-
-
-          {/* Error message */}
+          {/* Error message below tags */}
           {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>}
 
-          <button
-            type="submit"
-            style={styles.button}
-            onClick={handleSubmit}
+          <h6 style={styles.subheading1}>Where do you live?</h6>
+          <select
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+            style={styles.dropdown}
           >
+            <option value="">Select a country</option>
+            {countries.map((country) => (
+              <option key={country} value={country}>
+                {country}
+              </option>
+            ))}
+          </select>
+
+          <h6 style={styles.subheading1}>What is your preferred language?</h6>
+          <select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            style={styles.dropdown}
+          >
+            <option value="">Select a language</option>
+            {languages.map((language) => (
+              <option key={language} value={language}>
+                {language}
+              </option>
+            ))}
+          </select>
+
+          <button type="submit" style={styles.button} onClick={handleSubmit}>
             Continue
           </button>
         </div>
