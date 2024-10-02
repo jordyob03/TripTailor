@@ -1,19 +1,31 @@
 import React, { useState } from 'react';
 import logo1 from '../assets/logo-long-transparent.png';
 
+function InitialUserProfile() {
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
 
-function UserProfile() {
-  // State for form fields
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isHovered, setIsHovered] = useState(false);
+  // Tags
+  const tags = ['Beach', 'Indoors', 'Outdoors', 'City', 'Nightlife', 'Hiking'];
 
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({ username, email, password });
-    // Add any form validation or API call here
+    if (selectedTags.length === 3) {
+      console.log({ selectedTags });
+      setErrorMessage(''); // Clear error message if valid
+    } else {
+      setErrorMessage('Please select exactly 3 tags.');
+    }
+  };
+
+  // Handle tag selection (max of 3 tags)
+  const handleTagSelection = (tag) => {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter((t) => t !== tag));
+    } else if (selectedTags.length < 3) {
+      setSelectedTags([...selectedTags, tag]);
+    }
   };
 
   // Inline styles
@@ -48,10 +60,6 @@ function UserProfile() {
       cursor: 'pointer',
       marginRight: '160px',
       boxShadow: '0 2px 2px rgba(0, 0, 0, 0.1)',
-    },
-    logo2: {
-      width: '120px',
-      marginBottom: '0px',
     },
     container: {
       display: 'flex',
@@ -91,29 +99,38 @@ function UserProfile() {
       border: 'none',   
       borderTop: '2px solid #d4d4d4', 
       margin: '15px auto',  
-    },    
-    form: {
+    },
+    tags: {
       display: 'flex',
-      flexDirection: 'column',
-      gap: '15px',
+      flexWrap: 'wrap',
+      gap: '10px',
+      justifyContent: 'center',
+      marginBottom: '20px',
     },
-    input: {
-      padding: '12px',
-      borderRadius: '4px',
-      border: '1px solid #ccc',
-      fontSize: '16px',
-      fontFamily: "'Red Hat Display', sans-serif", 
-    },
+    tag: (isSelected) => ({
+      padding: '8px 16px',
+      borderRadius: '20px',
+      border: isSelected ? '2px solid #00509e' : '1px solid #ccc',
+      backgroundColor: isSelected ? '#e0f0ff' : '#f0f0f0',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      boxShadow: isSelected ? '0 2px 4px rgba(0, 80, 158, 0.3)' : 'none',
+    }),
     button: {
       padding: '12px',
-      backgroundColor: isHovered ? '#00509e' : '#002f6c',
+      backgroundColor: '#002f6c',
       color: 'white',
       border: 'none',
       borderRadius: '4px',
       fontSize: '16px',
       cursor: 'pointer',
       transition: 'background-color 0.3s ease',
-      fontFamily: "'Red Hat Display', sans-serif", 
+      fontFamily: "'Red Hat Display', sans-serif",
+    },
+    errorMessage: {
+      color: 'red',
+      fontSize: '14px',
+      marginTop: '-10px',
     },
   };
 
@@ -135,44 +152,34 @@ function UserProfile() {
         <div style={styles.box}>
           <h5 style={styles.heading}>Tell us more about you</h5>
           <h6 style={styles.subheading}>What tags are important to you on your travels?</h6>
-          <form onSubmit={handleSubmit} style={styles.form}>
-            <input
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              style={styles.input}
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              style={styles.input}
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              style={styles.input}
-            />
-            <button
-              type="submit"
-              style={styles.button}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-            >
-              Continue
-            </button>
-          </form>
+          
+          {/* Tag selection */}
+          <div style={styles.tags}>
+            {tags.map((tag) => (
+              <div
+                key={tag}
+                style={styles.tag(selectedTags.includes(tag))}
+                onClick={() => handleTagSelection(tag)}
+              >
+                {tag}
+              </div>
+            ))}
+          </div>
+
+          {/* Error message */}
+          {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>}
+
+          <button
+            type="submit"
+            style={styles.button}
+            onClick={handleSubmit}
+          >
+            Continue
+          </button>
         </div>
       </div>
     </>
   );
 }
 
-export default UserProfile;
+export default InitialUserProfile;
