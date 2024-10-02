@@ -70,7 +70,7 @@ function UserAuthentication() {
       textAlign: 'center',
       width: '350px',
       zIndex: 1,
-      marginTop: '100px', 
+      marginTop: '80px', 
       marginBottom: '40px', 
     },
     heading: {
@@ -84,6 +84,7 @@ function UserAuthentication() {
       marginTop: '0px', 
       marginBottom: '20px', 
       fontFamily: "'Red Hat Display', sans-serif",
+      fontSize: '20px'
     },
     separator: {
       width: '100%',      
@@ -133,7 +134,7 @@ function UserAuthentication() {
       <div style={styles.container}>
         <div style={styles.box}>
           <img src={logo2} alt="Trip Tailor Logo" style={styles.logo2} />
-          <h3 style={styles.heading}>Welcome to Trip Tailor</h3>
+          <h5 style={styles.heading}>Welcome to Trip Tailor</h5>
           <hr style={styles.separator} />
           <h6 style={styles.subheading}>Log in or sign up</h6>
           <form onSubmit={handleSubmit} style={styles.form}>
