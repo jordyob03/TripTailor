@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 	"time"
 )
 
@@ -44,14 +43,14 @@ func AddUser(username, email, password string, dateOfBirth time.Time) (int, erro
 	return userId, nil
 }
 
-func GetUser(userID string) (User, error) {
-	query := `SELECT userId, username, email, password, dateOfBirth FROM users WHERE userId = $1`
-	row := DB.QueryRow(query, userID)
+func GetUser(username string) (User, error) {
+	query := `SELECT userId, username, email, password, dateOfBirth FROM users WHERE username = $1`
+	row := DB.QueryRow(query, username)
 
 	var user User
 	err := row.Scan(&user.UserID, &user.Username, &user.Email, &user.Password, &user.DateOfBirth)
 	if err != nil {
-		return User{}, fmt.Errorf("no user found with userId: %s", userID)
+		return User{}, fmt.Errorf("no user found with username: %s", username)
 	}
 
 	return user, nil
@@ -78,37 +77,31 @@ func GetAllUsers() ([]User, error) {
 	return users, nil
 }
 
-func UpdateUser(userID string, data map[string]interface{}) error {
+func UpdateUser(username string, data map[string]interface{}) error {
 	if len(data) == 0 {
-		return fmt.Errorf("no fields to update for user with userId: %s", userID)
+		return fmt.Errorf("no fields to update for user with username: %s", username)
 	}
 
 	table := "users"
-	condition := "userId = $1"
+	condition := "username = $1"
 
-	return UpdateRow(table, data, condition, userID)
+	return UpdateRow(table, data, condition, username)
 }
 
-func DeleteUser(userID string) error {
+func DeleteUser(username string) error {
 	table := "users"
-	condition := "userId = $1"
+	condition := "username = $1"
 
-	return DeleteRow(table, condition, userID)
+	return DeleteRow(table, condition, username)
 }
 
 func UserHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
-		userID := r.URL.Query().Get("userId")
+		username := r.URL.Query().Get("username")
 
-		if userID != "" {
-			id, err := strconv.Atoi(userID)
-			if err != nil {
-				http.Error(w, "Invalid userId", http.StatusBadRequest)
-				fmt.Println(err)
-				return
-			}
-			user, err := GetUser(strconv.Itoa(id))
+		if username != "" {
+			user, err := GetUser(username)
 			if err != nil {
 				http.Error(w, "User not found", http.StatusNotFound)
 				fmt.Println(err)
@@ -145,15 +138,9 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(map[string]int{"userId": userId})
 
 	case "PUT":
-		userID := r.URL.Query().Get("userId")
-		if userID == "" {
-			http.Error(w, "userId is required", http.StatusBadRequest)
-			return
-		}
-		id, err := strconv.Atoi(userID)
-		if err != nil {
-			http.Error(w, "Invalid userId", http.StatusBadRequest)
-			fmt.Println(err)
+		username := r.URL.Query().Get("username")
+		if username == "" {
+			http.Error(w, "username is required", http.StatusBadRequest)
 			return
 		}
 
@@ -175,7 +162,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 			data["dateOfBirth"] = user.DateOfBirth
 		}
 
-		if err := UpdateUser(strconv.Itoa(id), data); err != nil {
+		if err := UpdateUser(username, data); err != nil {
 			http.Error(w, "Error updating user", http.StatusInternalServerError)
 			fmt.Println(err)
 			return
@@ -183,19 +170,13 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 
 	case "DELETE":
-		userID := r.URL.Query().Get("userId")
-		if userID == "" {
-			http.Error(w, "userId is required", http.StatusBadRequest)
-			return
-		}
-		id, err := strconv.Atoi(userID)
-		if err != nil {
-			http.Error(w, "Invalid userId", http.StatusBadRequest)
-			fmt.Println(err)
+		username := r.URL.Query().Get("username")
+		if username == "" {
+			http.Error(w, "username is required", http.StatusBadRequest)
 			return
 		}
 
-		if err := DeleteUser(strconv.Itoa(id)); err != nil {
+		if err := DeleteUser(username); err != nil {
 			http.Error(w, "Error deleting user", http.StatusInternalServerError)
 			fmt.Println(err)
 			return
