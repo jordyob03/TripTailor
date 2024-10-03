@@ -9,29 +9,25 @@ function InitialUserProfile() {
   const [selectedTags, setSelectedTags] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [country, setCountry] = useState('');
-  const [language, setLanguage] = useState('');
+  const [languages, setLanguages] = useState([]); // Update to array for multiple selections
   const [shuffledTags, setShuffledTags] = useState([]);
 
-  // Options for dropdowns
   const countries = ['USA', 'Canada', 'UK', 'Australia', 'Other'];
-  const languages = ['English', 'Spanish', 'French', 'German', 'Chinese'];
+  const languageOptions = ['English', 'Spanish', 'French', 'German', 'Chinese'];
 
-  // Function to shuffle the tags array
   const shuffleArray = (array) => {
-    return [...array].sort(() => Math.random() - 0.5); // Copy the array before shuffling to avoid modifying the original
+    return [...array].sort(() => Math.random() - 0.5);
   };
 
   useEffect(() => {
-    // Shuffle tags only once when the component mounts
     const shuffled = shuffleArray(allTags);
     setShuffledTags(shuffled);
-  }, []); // Empty dependency array ensures this runs only once
+  }, []);
 
-  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     if (selectedTags.length >= 3) {
-      console.log({ selectedTags, country, language });
+      console.log({ selectedTags, country, languages });
       setErrorMessage(''); // Clear error message if valid
     } else {
       setErrorMessage('Please select at least 3 tags.');
@@ -47,19 +43,24 @@ function InitialUserProfile() {
     }
   };
 
-  // Inline styles
+  // Handle multiple language selection
+  const handleLanguageSelection = (e) => {
+    const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+    setLanguages(selectedOptions); 
+  };
+
   const styles = {
     navbar: {
       display: 'flex',
-      justifyContent: 'space-between',
+      justifyContent: 'space-between', 
       alignItems: 'center',
-      padding: '10px 20px',
-      height: '60px',
-      width: '100vw',
+      padding: '1vw 1vw',
+      height: '50px',
+      width: '100vw', 
       backgroundColor: 'white',
-      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-      position: 'fixed',
-      top: 0,
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', 
+      position: 'fixed', 
+      top: 0, 
       left: 0,
       zIndex: 2,
     },
@@ -96,7 +97,7 @@ function InitialUserProfile() {
       textAlign: 'center',
       width: '650px',
       zIndex: 1,
-      marginTop: '80px',
+      marginTop: '15vh',
       marginBottom: '40px',
     },
     heading: {
@@ -104,13 +105,22 @@ function InitialUserProfile() {
       marginTop: '5px',
       marginBottom: '10px',
       fontFamily: "'Red Hat Display', sans-serif",
+      fontSize: '24px',
     },
     subheading1: {
       color: '#002f6c',
       marginTop: '40px',
       marginBottom: '20px',
       fontFamily: "'Red Hat Display', sans-serif",
-      fontSize: '20px',
+      fontSize: '16px',
+      fontWeight: '400',
+    },
+    subheading2: {
+      color: '#002f6c',
+      marginTop: '20px',
+      marginBottom: '20px',
+      fontFamily: "'Red Hat Display', sans-serif",
+      fontSize: '16px',
       fontWeight: '400',
     },
     tags: {
@@ -128,7 +138,7 @@ function InitialUserProfile() {
       cursor: 'pointer',
       transition: 'all 0.3s ease',
       boxShadow: isSelected ? '0 2px 4px rgba(0, 80, 158, 0.3)' : '0 2px 4px rgba(255, 255, 255, 0.3)',
-      fontSize: '19px',
+      fontSize: '16px',
       fontWeight: '700',
       color: isSelected ? 'white' : '#002f6c',
     }),
@@ -209,14 +219,14 @@ function InitialUserProfile() {
             ))}
           </select>
 
-          <h6 style={styles.subheading1}>What is your preferred language?</h6>
+          <h6 style={styles.subheading2}>What languages do you speak?</h6>
           <select
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
+            multiple
+            value={languages}
+            onChange={handleLanguageSelection}
             style={styles.dropdown}
           >
-            <option value="">Select a language</option>
-            {languages.map((language) => (
+            {languageOptions.map((language) => (
               <option key={language} value={language}>
                 {language}
               </option>

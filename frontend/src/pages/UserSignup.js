@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import logo1 from '../assets/logo-long-transparent.png';
 import logo2 from '../assets/logo-circle-white.png';
 
 
-function UserAuthentication() {
+function UserSignup() {
   // State for form fields
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isHovered, setIsHovered] = useState(false);
 
+  const navigate = useNavigate();
+
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({ username, email, password });
-    // Add any form validation or API call here
+    navigate('/profile-creation');
   };
 
   // Inline styles
@@ -23,8 +25,8 @@ function UserAuthentication() {
       display: 'flex',
       justifyContent: 'space-between', 
       alignItems: 'center',
-      padding: '10px 20px',
-      height: '60px',
+      padding: '1vw 1vw',
+      height: '50px',
       width: '100vw', 
       backgroundColor: 'white',
       boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', 
@@ -78,13 +80,14 @@ function UserAuthentication() {
       marginTop: '5px', 
       marginBottom: '10px', 
       fontFamily: "'Red Hat Display', sans-serif",
+      fontSize: '24px'
     },
     subheading: {
       color: '#002f6c', 
       marginTop: '0px', 
       marginBottom: '20px', 
       fontFamily: "'Red Hat Display', sans-serif",
-      fontSize: '20px'
+      fontSize: '16px'
     },
     separator: {
       width: '100%',      
@@ -177,4 +180,4 @@ function UserAuthentication() {
   );
 }
 
-export default UserAuthentication;
+export default UserSignup;

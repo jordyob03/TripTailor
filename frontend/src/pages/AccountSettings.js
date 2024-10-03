@@ -1,8 +1,8 @@
 import React from 'react';
-import logo1 from '../assets/logo-long-transparent.png'; // Same logo
+import logo1 from '../assets/logo-long-transparent.png'; 
 
 
-function Account() {
+function AccountSettings() {
  const styles = {
    navbar: {
      display: 'flex',
@@ -39,17 +39,17 @@ function Account() {
      justifyContent: 'center',
      alignItems: 'center',
      flexDirection: 'column',
-     minHeight: 'calc(100vh - 60px)', // Adjust for full screen
+     minHeight: 'calc(100vh - 60px)', 
      width: '100vw',
      backgroundColor: 'white',
-     paddingTop: '80px', // Add 80px padding at the top to make room for the navbar
+     paddingTop: '80px', 
    },
    gridWrapper: {
      display: 'flex',
      justifyContent: 'center',
      alignItems: 'center',
      width: '100%',
-     maxWidth: '900px', // Fixed width to fit the boxes within a set size
+     maxWidth: '900px', 
      padding: '40px',
      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
      backgroundColor: 'white',
@@ -62,20 +62,24 @@ function Account() {
      width: '100%',
    },
    card: {
-     backgroundColor: 'white',
-     padding: '20px',
-     borderRadius: '12px',
-     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-     display: 'flex',
-     alignItems: 'center',
-     cursor: 'pointer',
-     transition: 'box-shadow 0.3s ease',
-     justifyContent: 'space-between',
-   },
-   cardContent: {
-     display: 'flex',
-     flexDirection: 'column',
-   },
+    backgroundColor: 'white',
+    padding: '20px',
+    borderRadius: '12px',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',  
+    cursor: 'pointer',
+    transition: 'box-shadow 0.3s ease',
+  },
+  cardContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',  
+    flexGrow: 1,  
+    marginRight: 'auto',  
+    paddingRight: '20px', 
+  },
    cardTitle: {
      fontSize: '18px',
      color: '#002f6c',
@@ -93,8 +97,6 @@ function Account() {
    },
  };
 
-
- // List of sections (you can add actual links later)
  const sections = [
    { title: 'Personal Info', description: 'Provide personal details and how we can reach you', icon: 'fa-user' },
    { title: 'Login & Security', description: 'Update your password and secure your account', icon: 'fa-lock' },
@@ -140,6 +142,6 @@ function Account() {
 }
 
 
-export default Account;
+export default AccountSettings;
 
 

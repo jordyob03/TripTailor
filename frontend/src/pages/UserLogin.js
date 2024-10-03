@@ -1,29 +1,35 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import logo1 from '../assets/logo-long-transparent.png';
 import logo2 from '../assets/logo-circle-white.png';
 
-
 function UserLogin() {
-  // State for form fields
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [isHovered, setIsHovered] = useState(false);
+  const [continueIsHovered, setContinueIsHovered] = useState(false);
+  const [signUpIsHovered, setSignUpIsHovered] = useState(false);
+
+
+  const navigate = useNavigate();
 
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({ username, password });
-    // Add any form validation or API call here
+    navigate('/profile-creation');
   };
 
-  // Inline styles
+  // Navigate to sign-up page
+  const handleSignUpClick = () => {
+    navigate('/sign-up'); // Navigate to the sign-up page
+  };
+
   const styles = {
     navbar: {
       display: 'flex',
       justifyContent: 'space-between', 
       alignItems: 'center',
-      padding: '10px 20px',
-      height: '60px',
+      padding: '1vw 1vw',
+      height: '50px',
       width: '100vw', 
       backgroundColor: 'white',
       boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', 
@@ -77,13 +83,14 @@ function UserLogin() {
       marginTop: '5px', 
       marginBottom: '10px', 
       fontFamily: "'Red Hat Display', sans-serif",
+      fontSize: '24px'
     },
     subheading: {
       color: '#002f6c', 
       marginTop: '0px', 
       marginBottom: '20px', 
       fontFamily: "'Red Hat Display', sans-serif",
-      fontSize: '20px'
+      fontSize: '16px'
     },
     separator: {
       width: '100%',      
@@ -103,9 +110,9 @@ function UserLogin() {
       fontSize: '16px',
       fontFamily: "'Red Hat Display', sans-serif", 
     },
-    button: {
+    continueButton: {
       padding: '12px',
-      backgroundColor: isHovered ? '#00509e' : '#002f6c',
+      backgroundColor: continueIsHovered ? '#00509e' : '#002f6c',
       color: 'white',
       border: 'none',
       borderRadius: '4px',
@@ -114,17 +121,29 @@ function UserLogin() {
       transition: 'background-color 0.3s ease',
       fontFamily: "'Red Hat Display', sans-serif", 
     },
+    signUpButton: {
+      padding: '1px',
+      backgroundColor: '#ffffff',
+      color: '#002f6c',
+      border: 'none',
+      borderRadius: '4px',
+      fontSize: '12px',
+      fontWeight: signUpIsHovered ? '700' : '500',
+      cursor: 'pointer',
+      transition: 'background-color 0.3s ease',
+      marginTop: '15px',
+      fontFamily: "'Red Hat Display', sans-serif", 
+    },
   };
+
 
   return (
     <>
       {/* Navbar */}
       <nav style={styles.navbar}>
         <img src={logo1} alt="Trip Tailor Logo" style={styles.logo1} />
-
-        {/* Profile Button */}
         <button style={styles.profileButton}>
-          <i className="fas fa-bars" style={{ fontSize: '16px', color: '#00509e', marginRight: '15px' }}></i> 
+          <i className="fas fa-bars" style={{ fontSize: '16px', color: '#00509e', marginRight: '15px' }}></i>
           <i className="fa-regular fa-user" style={{ fontSize: '24px', color: '#00509e' }}></i>
         </button>
       </nav>
@@ -135,7 +154,7 @@ function UserLogin() {
           <img src={logo2} alt="Trip Tailor Logo" style={styles.logo2} />
           <h5 style={styles.heading}>Welcome to Trip Tailor</h5>
           <hr style={styles.separator} />
-          <h6 style={styles.subheading}>Log in </h6>
+          <h6 style={styles.subheading}>Log in</h6>
           <form onSubmit={handleSubmit} style={styles.form}>
             <input
               type="text"
@@ -145,7 +164,6 @@ function UserLogin() {
               required
               style={styles.input}
             />
-            
             <input
               type="password"
               placeholder="Password"
@@ -156,13 +174,23 @@ function UserLogin() {
             />
             <button
               type="submit"
-              style={styles.button}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
+              style={styles.continueButton}
+              onMouseEnter={() => setContinueIsHovered(true)}
+              onMouseLeave={() => setContinueIsHovered(false)}
             >
               Continue
             </button>
           </form>
+          {/* Sign Up Button */}
+          <button
+            type="button" 
+            style={styles.signUpButton}
+            onClick={handleSignUpClick} 
+            onMouseEnter={() => setSignUpIsHovered(true)}
+            onMouseLeave={() => setSignUpIsHovered(false)}
+          >
+            Don't have an account? Sign up
+          </button>
         </div>
       </div>
     </>
