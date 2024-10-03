@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import logo1 from '../assets/logo-long-transparent.png';
+import navBarLogo from '../assets/logo-long-transparent.png';
 import Tags from '../config/tags.json';
+import '../styles/styles.css';  // Import your external CSS
 
 function InitialUserProfile() {
-  // Flatten all categories into a single array
   const allTags = Object.values(Tags.categories).flat();
 
   const [selectedTags, setSelectedTags] = useState([]);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [tagErrorMessage, setTagErrorMessage] = useState('');
+  const [countryErrorMessage, setCountryErrorMessage] = useState('');
+  const [langErrorMessage, setLangErrorMessage] = useState('');
   const [country, setCountry] = useState('');
-  const [languages, setLanguages] = useState([]); // Update to array for multiple selections
+  const [languages, setLanguages] = useState([]);
   const [shuffledTags, setShuffledTags] = useState([]);
 
   const countries = ['USA', 'Canada', 'UK', 'Australia', 'Other'];
@@ -28,13 +30,24 @@ function InitialUserProfile() {
     e.preventDefault();
     if (selectedTags.length >= 3) {
       console.log({ selectedTags, country, languages });
-      setErrorMessage(''); // Clear error message if valid
+      setTagErrorMessage(''); // Clear error message if valid
     } else {
-      setErrorMessage('Please select at least 3 tags.');
+      setTagErrorMessage('Please select at least 3 tags.');
+    }
+    if (country.length >= 1) {
+      console.log({ selectedTags, country, languages });
+      setTagErrorMessage(''); // Clear error message if valid
+    } else {
+      setCountryErrorMessage('Please select a country.');
+    }
+    if (languages.length >= 1) {
+      console.log({ selectedTags, country, languages });
+      setTagErrorMessage(''); // Clear error message if valid
+    } else {
+      setLangErrorMessage('Please select at least 1 language.');
     }
   };
 
-  // Handle tag selection (min of 3 tags)
   const handleTagSelection = (tag) => {
     if (selectedTags.includes(tag)) {
       setSelectedTags(selectedTags.filter((t) => t !== tag));
@@ -43,158 +56,40 @@ function InitialUserProfile() {
     }
   };
 
-  // Handle multiple language selection
   const handleLanguageSelection = (e) => {
     const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
     setLanguages(selectedOptions); 
   };
 
-  const styles = {
-    navbar: {
-      display: 'flex',
-      justifyContent: 'space-between', 
-      alignItems: 'center',
-      padding: '1vw 1vw',
-      height: '50px',
-      width: '100vw', 
-      backgroundColor: 'white',
-      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', 
-      position: 'fixed', 
-      top: 0, 
-      left: 0,
-      zIndex: 2,
-    },
-    logo1: {
-      width: '150px',
-      marginLeft: '80px',
-      marginTop: '5px',
-    },
-    profileButton: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: '10px 20px',
-      backgroundColor: 'white',
-      border: '1px solid #dfdfdf',
-      borderRadius: '30px',
-      cursor: 'pointer',
-      marginRight: '160px',
-      boxShadow: '0 2px 2px rgba(0, 0, 0, 0.1)',
-    },
-    container: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      minHeight: 'calc(100vh - 60px)',
-      width: '100vw',
-      backgroundColor: 'white',
-    },
-    box: {
-      backgroundColor: 'white',
-      padding: '40px',
-      borderRadius: '20px',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-      textAlign: 'center',
-      width: '650px',
-      zIndex: 1,
-      marginTop: '15vh',
-      marginBottom: '40px',
-    },
-    heading: {
-      color: '#002f6c',
-      marginTop: '5px',
-      marginBottom: '10px',
-      fontFamily: "'Red Hat Display', sans-serif",
-      fontSize: '24px',
-    },
-    subheading1: {
-      color: '#002f6c',
-      marginTop: '40px',
-      marginBottom: '20px',
-      fontFamily: "'Red Hat Display', sans-serif",
-      fontSize: '16px',
-      fontWeight: '400',
-    },
-    subheading2: {
-      color: '#002f6c',
-      marginTop: '20px',
-      marginBottom: '20px',
-      fontFamily: "'Red Hat Display', sans-serif",
-      fontSize: '16px',
-      fontWeight: '400',
-    },
-    tags: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      gap: '10px',
-      justifyContent: 'center',
-      marginBottom: '20px',
-    },
-    tag: (isSelected) => ({
-      padding: '8px 16px',
-      borderRadius: '50px',
-      border: isSelected ? '2px solid #00509e' : '1px solid #ccc',
-      backgroundColor: isSelected ? '#002f6c' : '#C6DFF0',
-      cursor: 'pointer',
-      transition: 'all 0.3s ease',
-      boxShadow: isSelected ? '0 2px 4px rgba(0, 80, 158, 0.3)' : '0 2px 4px rgba(255, 255, 255, 0.3)',
-      fontSize: '16px',
-      fontWeight: '700',
-      color: isSelected ? 'white' : '#002f6c',
-    }),
-    button: {
-      padding: '12px',
-      backgroundColor: '#002f6c',
-      color: 'white',
-      border: 'none',
-      borderRadius: '4px',
-      fontSize: '16px',
-      cursor: 'pointer',
-      transition: 'background-color 0.3s ease',
-      fontFamily: "'Red Hat Display', sans-serif",
-    },
-    errorMessage: {
-      color: 'red',
-      fontSize: '14px',
-      marginTop: '10px',
-      marginBottom: '10px',
-    },
-    dropdown: {
-      width: '100%',
-      padding: '10px',
-      borderRadius: '5px',
-      border: '1px solid #ccc',
-      marginBottom: '20px',
-      fontFamily: "'Red Hat Display', sans-serif",
-      fontSize: '16px',
-    },
-  };
-
   return (
     <>
-      {/* Navbar */}
-      <nav style={styles.navbar}>
-        <img src={logo1} alt="Trip Tailor Logo" style={styles.logo1} />
+      {/* navBar */}
+      <nav className="navBar">
+        <img src={navBarLogo} alt="Trip Tailor Logo" className="navBarLogo" />
 
         {/* Profile Button */}
-        <button style={styles.profileButton}>
+        <button className="profileButton">
           <i className="fas fa-bars" style={{ fontSize: '16px', color: '#00509e', marginRight: '15px' }}></i>
           <i className="fa-regular fa-user" style={{ fontSize: '24px', color: '#00509e' }}></i>
         </button>
       </nav>
 
       {/* Main Container */}
-      <div style={styles.container}>
-        <div style={styles.box}>
-          <h5 style={styles.heading}>Tell us more about you</h5>
-          <h6 style={styles.subheading1}>What tags are important to you on your travels?</h6>
+      <div className="centeredContainer">
+        <div className="centeredBox">
+          <h5 className="heading">Tell us more about you</h5>
+          <h6 className="subheadingIUP">What tags are important to you on your travels?</h6>
+
+
+          {/* Error message above tags */}
+          {tagErrorMessage && <div className="errorMessage">{tagErrorMessage}</div>}
 
           {/* Tag selection */}
-          <div style={styles.tags}>
+          <div className="tags">
             {shuffledTags.map((tag) => (
               <div
                 key={tag}
-                style={styles.tag(selectedTags.includes(tag))}
+                className={`tag ${selectedTags.includes(tag) ? 'selected' : ''}`}
                 onClick={() => handleTagSelection(tag)}
               >
                 {tag}
@@ -202,14 +97,15 @@ function InitialUserProfile() {
             ))}
           </div>
 
-          {/* Error message below tags */}
-          {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>}
+          <h6 className="subheadingIUP">Where do you live?</h6>
+                    
+          {/* Error message above tags */}
+          {countryErrorMessage && <div className="errorMessage">{countryErrorMessage}</div>}
 
-          <h6 style={styles.subheading1}>Where do you live?</h6>
           <select
             value={country}
             onChange={(e) => setCountry(e.target.value)}
-            style={styles.dropdown}
+            className="dropdown"
           >
             <option value="">Select a country</option>
             {countries.map((country) => (
@@ -219,12 +115,16 @@ function InitialUserProfile() {
             ))}
           </select>
 
-          <h6 style={styles.subheading2}>What languages do you speak?</h6>
+          <h6 className="subheadingIUP">What languages do you speak?</h6>
+
+          {/* Error message above tags */}
+          {langErrorMessage && <div className="errorMessage">{langErrorMessage}</div>}
+          
           <select
             multiple
             value={languages}
             onChange={handleLanguageSelection}
-            style={styles.dropdown}
+            className="dropdown"
           >
             {languageOptions.map((language) => (
               <option key={language} value={language}>
@@ -233,7 +133,7 @@ function InitialUserProfile() {
             ))}
           </select>
 
-          <button type="submit" style={styles.button} onClick={handleSubmit}>
+          <button type="submit" className="continueButtonIUP" onClick={handleSubmit}>
             Continue
           </button>
         </div>

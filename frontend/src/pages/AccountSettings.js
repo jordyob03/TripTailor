@@ -1,147 +1,50 @@
 import React from 'react';
-import logo1 from '../assets/logo-long-transparent.png'; 
-
+import navBarLogo from '../assets/logo-long-transparent.png'; 
+import '../styles/styles.css'; 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser, faLock, faBell, faShieldAlt, faGlobe, faBars } from '@fortawesome/free-solid-svg-icons'; // Import all needed icons
 
 function AccountSettings() {
- const styles = {
-   navbar: {
-     display: 'flex',
-     justifyContent: 'space-between',
-     alignItems: 'center',
-     padding: '10px 20px',
-     height: '60px',
-     width: '100vw',
-     backgroundColor: 'white',
-     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-     position: 'fixed',
-     top: 0,
-     left: 0,
-     zIndex: 2,
-   },
-   logo1: {
-     width: '150px',
-     marginLeft: '80px',
-     marginTop: '5px',
-   },
-   profileButton: {
-     display: 'flex',
-     alignItems: 'center',
-     padding: '10px 20px',
-     backgroundColor: 'white',
-     border: '1px solid #dfdfdf',
-     borderRadius: '30px',
-     cursor: 'pointer',
-     marginRight: '160px',
-     boxShadow: '0 2px 2px rgba(0, 0, 0, 0.1)',
-   },
-   container: {
-     display: 'flex',
-     justifyContent: 'center',
-     alignItems: 'center',
-     flexDirection: 'column',
-     minHeight: 'calc(100vh - 60px)', 
-     width: '100vw',
-     backgroundColor: 'white',
-     paddingTop: '80px', 
-   },
-   gridWrapper: {
-     display: 'flex',
-     justifyContent: 'center',
-     alignItems: 'center',
-     width: '100%',
-     maxWidth: '900px', 
-     padding: '40px',
-     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-     backgroundColor: 'white',
-     borderRadius: '20px',
-   },
-   grid: {
-     display: 'grid',
-     gridTemplateColumns: '1fr 1fr', // Two columns of boxes
-     gap: '20px',
-     width: '100%',
-   },
-   card: {
-    backgroundColor: 'white',
-    padding: '20px',
-    borderRadius: '12px',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',  
-    cursor: 'pointer',
-    transition: 'box-shadow 0.3s ease',
-  },
-  cardContent: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',  
-    flexGrow: 1,  
-    marginRight: 'auto',  
-    paddingRight: '20px', 
-  },
-   cardTitle: {
-     fontSize: '18px',
-     color: '#002f6c',
-     fontFamily: "'Red Hat Display', sans-serif",
-     marginBottom: '5px',
-   },
-   cardDescription: {
-     fontSize: '14px',
-     color: '#555',
-   },
-   icon: {
-     fontSize: '24px',
-     color: '#00509e',
-     marginRight: '15px',
-   },
- };
 
- const sections = [
-   { title: 'Personal Info', description: 'Provide personal details and how we can reach you', icon: 'fa-user' },
-   { title: 'Login & Security', description: 'Update your password and secure your account', icon: 'fa-lock' },
-   { title: 'Notifications', description: 'Choose notification preferences', icon: 'fa-bell' },
-   { title: 'Privacy & Sharing', description: 'Manage your personal data and sharing settings', icon: 'fa-shield-alt' },
-   { title: 'Global Preferences', description: 'Default language, currency, and time zone', icon: 'fa-globe' },
- ];
+  const sections = [
+    { title: 'Personal Info', description: 'Provide personal details and how we can reach you', icon: faUser },
+    { title: 'Login & Security', description: 'Update your password and secure your account', icon: faLock },
+    { title: 'Notifications', description: 'Choose notification preferences', icon: faBell },
+    { title: 'Privacy & Sharing', description: 'Manage your personal data and sharing settings', icon: faShieldAlt },
+    { title: 'Global Preferences', description: 'Default language, currency, and time zone', icon: faGlobe },
+  ];
 
+  return (
+    <>
+      {/* navBar */}
+      <nav className="navBar">
+        <img src={navBarLogo} alt="Trip Tailor Logo" className="navBarLogo" />
 
- return (
-   <>
-     {/* Navbar */}
-     <nav style={styles.navbar}>
-       <img src={logo1} alt="Trip Tailor Logo" style={styles.logo1} />
+        {/* Profile Button */}
+        <button className="profileButton">
+          <FontAwesomeIcon icon={faBars} style={{ fontSize: '16px', color: '#00509e', marginRight: '15px' }} />
+          <FontAwesomeIcon icon={faUser} style={{ fontSize: '24px', color: '#00509e' }} />
+        </button>
+      </nav>
 
-
-       {/* Profile Button */}
-       <button style={styles.profileButton}>
-         <i className="fas fa-bars" style={{ fontSize: '16px', color: '#00509e', marginRight: '15px' }}></i>
-         <i className="fa-regular fa-user" style={{ fontSize: '24px', color: '#00509e' }}></i>
-       </button>
-     </nav>
-
-
-     {/* Main Container */}
-     <div style={styles.container}>
-       <div style={styles.gridWrapper}>
-         <div style={styles.grid}>
-           {sections.map((section) => (
-             <div key={section.title} style={styles.card}>
-               <div style={styles.cardContent}>
-                 <h3 style={styles.cardTitle}>{section.title}</h3>
-                 <p style={styles.cardDescription}>{section.description}</p>
-               </div>
-               <i className={`fas ${section.icon}`} style={styles.icon}></i>
-             </div>
-           ))}
-         </div>
-       </div>
-     </div>
-   </>
- );
+      {/* Main Container */}
+      <div className="centeredContainer">
+        <div className="gridWrapper">
+          <div className="grid">
+            {sections.map((section) => (
+              <div key={section.title} className="card">
+                <div className="cardContent">
+                  <h3 className="cardTitle">{section.title}</h3>
+                  <p className="cardDescription">{section.description}</p>
+                </div>
+                <FontAwesomeIcon icon={section.icon} className="icon" /> 
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
 
-
 export default AccountSettings;
-
-
