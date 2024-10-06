@@ -1,0 +1,46 @@
+{
+    "categories": {
+      "travellers": [
+        "Solo",
+        "Family Friendly",
+        "Couples",
+        "Seniors",
+        "Young Kids",
+        "Teenagers",
+        "Young Adults"
+      ],
+      "destination_type": [
+        "Beach",
+        "Mountains",
+        "City",
+        "Countryside",
+        "Desert",
+        "Island"
+      ],
+      "activity_level": [
+        "Long Walks",
+        "Wheelchair Accessible",
+        "Short Walks",
+        "Difficult Hikes"
+      ],
+      "activities": [
+        "Hiking",
+        "Skiing",
+        "Scuba Diving",
+        "Swimming",
+        "Museum Visits",
+        "Wildlife Watching",
+        "Shopping",
+        "Nightlife"
+      ],
+      "food": [
+        "Healthy",
+        "Vegetarian",
+        "Vegan",
+        "Gluten Free",
+        "Local Cuisine",
+        "Kids Options"
+      ]
+    }
+  }
+  
