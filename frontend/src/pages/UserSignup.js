@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import navBarLogo from '../assets/logo-long-transparent.png';
 import authLogo from '../assets/logo-circle-white.png';
-import '../styles/styles.css'; // Import external CSS file
+import '../styles/styles.css'; 
+import authAPI from '../api/authAPI.js';
 
 function UserSignup() {
   const [username, setUsername] = useState('');
@@ -14,11 +15,34 @@ function UserSignup() {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (password === confirmPassword) {
       setErrorMessage('');
-      navigate('/profile-creation');
+
+      const userData = {
+        username: username, 
+        email: email,
+        password: password,
+        dateOfBirth: '1990-01-01'
+      }
+
+      try {
+        const response = await authAPI.post('/signup', userData);
+        const { token } = response.data;  
+        localStorage.setItem('token', token);  
+        console.log('User signed up successfully:', response.data);
+
+        navigate('/profile-creation');
+      } catch (error) {
+        if (error.response && error.response.data) {
+          setErrorMessage(error.response.data.error); 
+        } else {
+          setErrorMessage('Signup failed. Please try again.');
+        }
+      }
+
+
     } else {
       setErrorMessage('Passwords do not match. Please try again.');
     }

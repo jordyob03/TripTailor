@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import navBarLogo from '../assets/logo-long-transparent.png';
 import Tags from '../config/tags.json';
 import '../styles/styles.css';  // Import your external CSS
+import { useNavigate } from 'react-router';
 
 function InitialUserProfile() {
   const allTags = Object.values(Tags.categories).flat();
@@ -20,6 +21,8 @@ function InitialUserProfile() {
   const shuffleArray = (array) => {
     return [...array].sort(() => Math.random() - 0.5);
   };
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     const shuffled = shuffleArray(allTags);
@@ -61,17 +64,29 @@ function InitialUserProfile() {
     setLanguages(selectedOptions); 
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token'); 
+    navigate('/'); 
+  };
+
   return (
     <>
       {/* navBar */}
       <nav className="navBar">
         <img src={navBarLogo} alt="Trip Tailor Logo" className="navBarLogo" />
 
+        {/* Logout Button */}
+        <button className="logoutButton" onClick={handleLogout}>
+          Logout
+        </button>
+
         {/* Profile Button */}
         <button className="profileButton">
           <i className="fas fa-bars" style={{ fontSize: '16px', color: '#00509e', marginRight: '15px' }}></i>
           <i className="fa-regular fa-user" style={{ fontSize: '24px', color: '#00509e' }}></i>
         </button>
+
+        
       </nav>
 
       {/* Main Container */}
