@@ -1,13 +1,12 @@
 package models
 
-// Event struct definition
 type Event struct {
-	EventId          int
-	EventName        string
-	EventDate        string
-	EventTime        string
-	EventLocation    string
-	EventPrice       float64
-	EventDescription string
-	EventPhotos      []string
+	Id          int
+	Name        string
+	Date        string
+	Time        string
+	Location    string
+	Price       float64
+	Description string
+	Photos      []string
 }
