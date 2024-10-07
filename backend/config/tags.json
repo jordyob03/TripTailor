@@ -1,58 +1,64 @@
 {
-    "categories": {
-      "travellers": [
-        "Solo",
-        "Family Friendly",
-        "Couples",
-        "Seniors",
-        "Young Kids",
-        "Teenagers",
-        "Young Adults",
-        "Pet Owners",
-        "Backpacker",
-        "Cultural Explorers"
-      ],
-      "destination_type": [
-        "Beach",
-        "Mountains",
-        "City",
-        "Countryside",
-        "Desert",
-        "Island",
-        "Theme Park",
-        "Historical Sites"
-      ],
-      "activity_level": [
-        "Long Walks",
-        "Short Walks",
-        "Wheelchair Accessible",
-        "Difficult Hikes",
-        "Easy Hikes",
-        "Leisure Activities"
-      ],
-      "activities": [
-        "Hiking",
-        "Skiing",
-        "Scuba Diving",
-        "Swimming",
-        "Museum Visits",
-        "Wildlife Watching",
-        "Shopping",
-        "Nightlife",
-        "Food Tours",
-        "Camping",
-        "Wine Tasting"
-      ],
-      "food": [
-        "Healthy",
-        "Vegetarian",
-        "Vegan",
-        "Gluten Free",
-        "Local Cuisine",
-        "Gourmet Dining",
-        "Kids Options",
-        "Street Food"
-      ]
-    }
+  "categories": {
+    "travellers": [
+      "Solo",
+      "Family Friendly",
+      "Couples",
+      "Seniors",
+      "Young Kids",
+      "Teenagers",
+      "Young Adults",
+      "Pet Owners",
+      "Backpacker",
+      "Cultural Explorers"
+    ],
+    "destination_type": [
+      "Beach",
+      "Mountains",
+      "City",
+      "Countryside",
+      "Desert",
+      "Island",
+      "Theme Park",
+      "Historical Sites",
+      "Warmer Climate",
+      "Colder Climate",
+      "Hot Springs",
+      "Costal Village"
+    ],
+    "activity_level": [
+      "Long Walks",
+      "Short Walks",
+      "Wheelchair Accessible",
+      "Difficult Hikes",
+      "Easy Hikes",
+      "Leisure Activities"
+    ],
+    "activities": [
+      "Hiking",
+      "Skiing",
+      "Scuba Diving",
+      "Swimming",
+      "Museum Visits",
+      "Wildlife Watching",
+      "Shopping",
+      "Nightlife",
+      "Food Tours",
+      "Camping",
+      "Wine Tasting",
+      "Photography Tours"
+    ],
+    "food": [
+      "Healthy",
+      "Vegetarian",
+      "Vegan",
+      "Gluten Free",
+      "Local Cuisine",
+      "Gourmet Dining",
+      "Kids Options",
+      "Street Food",
+      "Local Breweries",
+      "Allergy Friendly"
+    ]
   }
-  
+}
