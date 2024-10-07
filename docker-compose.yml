@@ -1,3 +1,4 @@
+version: '3'
 services:
   backend:
     build:
@@ -22,8 +23,18 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: database
     volumes:
-      - ./backend/db/db_data:/var/lib/postgresql/data  
+      - ./pgdata:/var/lib/postgresql/data  
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com  
+      PGADMIN_DEFAULT_PASSWORD: admin      
+    ports:
+      - "8082:80" 
+    depends_on:
+      - db
 
 volumes:
   db_data:
-

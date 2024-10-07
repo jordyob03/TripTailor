@@ -2,19 +2,41 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import navBarLogo from '../assets/logo-long-transparent.png';
 import authLogo from '../assets/logo-circle-white.png';
-import '../styles/styles.css';  // Import external CSS file
+import '../styles/styles.css';  
+import  authAPI from '../api/authAPI.js';
 
 function UserLogin() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');  
   const [continueIsHovered, setContinueIsHovered] = useState(false);
   const [signUpIsHovered, setSignUpIsHovered] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate('/profile-creation');
+
+    const loginData = {
+      username: username,
+      password: password,
+    }
+
+    try {
+      const response = await authAPI.post('/signin', loginData);
+      const { token } = response.data;  
+      localStorage.setItem('token', token);  
+      console.log('User signed in successfully:', response.data);
+
+      navigate('/profile-creation');
+    } catch (error) {
+      if (error.response && error.response.data) {
+        setErrorMessage(error.response.data.error);  
+      } else {
+        setErrorMessage('Login failed. Please try again.');
+      }
+    }
+
   };
 
   const handleSignUpClick = () => {
