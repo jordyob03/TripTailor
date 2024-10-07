@@ -1,4 +1,3 @@
-// backend/main-service/cmd/main.go
 package main
 
 import (
@@ -20,6 +19,10 @@ func main() {
 		log.Fatal("Error connecting to the database:", err)
 	}
 	defer db.CloseDB()
+
+	if err := db.DeleteTable("users"); err != nil {
+		log.Fatal("Error deleting user table:", err)
+	}
 
 	if err := db.CreateUserTable(); err != nil {
 		log.Fatal("Error creating user table:", err)
