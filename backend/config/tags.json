@@ -7,7 +7,10 @@
         "Seniors",
         "Young Kids",
         "Teenagers",
-        "Young Adults"
+        "Young Adults",
+        "Pet Owners",
+        "Backpacker",
+        "Cultural Explorers"
       ],
       "destination_type": [
         "Beach",
@@ -15,13 +18,17 @@
         "City",
         "Countryside",
         "Desert",
-        "Island"
+        "Island",
+        "Theme Park",
+        "Historical Sites"
       ],
       "activity_level": [
         "Long Walks",
-        "Wheelchair Accessible",
         "Short Walks",
-        "Difficult Hikes"
+        "Wheelchair Accessible",
+        "Difficult Hikes",
+        "Easy Hikes",
+        "Leisure Activities"
       ],
       "activities": [
         "Hiking",
@@ -31,7 +38,10 @@
         "Museum Visits",
         "Wildlife Watching",
         "Shopping",
-        "Nightlife"
+        "Nightlife",
+        "Food Tours",
+        "Camping",
+        "Wine Tasting"
       ],
       "food": [
         "Healthy",
@@ -39,7 +49,9 @@
         "Vegan",
         "Gluten Free",
         "Local Cuisine",
-        "Kids Options"
+        "Gourmet Dining",
+        "Kids Options",
+        "Street Food"
       ]
     }
   }
