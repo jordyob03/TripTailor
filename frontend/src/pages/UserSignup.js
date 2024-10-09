@@ -2,50 +2,78 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import navBarLogo from '../assets/logo-long-transparent.png';
 import authLogo from '../assets/logo-circle-white.png';
-import '../styles/styles.css'; 
-import authAPI from '../api/authAPI.js';
+import '../styles/styles.css'; // Import external CSS file
 
 function UserSignup() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [dob, setDob] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [continueIsHovered, setContinueIsHovered] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (password === confirmPassword) {
-      setErrorMessage('');
+  const validateUsername = (username) => {
+    const noWhitespace = !/\s/.test(username); 
+    const validChars = /^[A-Za-z0-9_]+$/.test(username); 
+    const lengthValid = username.length > 0 && username.length <= 24; 
 
-      const userData = {
-        username: username, 
-        email: email,
-        password: password,
-        dateOfBirth: '1990-01-01'
-      }
-
-      try {
-        const response = await authAPI.post('/signup', userData);
-        const { token } = response.data;  
-        localStorage.setItem('token', token);  
-        console.log('User signed up successfully:', response.data);
-
-        navigate('/profile-creation');
-      } catch (error) {
-        if (error.response && error.response.data) {
-          setErrorMessage(error.response.data.error); 
-        } else {
-          setErrorMessage('Signup failed. Please try again.');
-        }
-      }
-
-
-    } else {
-      setErrorMessage('Passwords do not match. Please try again.');
+    if (!noWhitespace) {
+      return 'Username must not contain spaces.';
     }
+    if (!validChars) {
+      return 'Username can only contain letters, numbers, and underscores.';
+    }
+    if (!lengthValid) {
+      return 'Username must be less than 24 characters.';
+    }
+    return ''; 
+  };
+
+  const validatePassword = (password) => {
+    const containsNumber = /\d/.test(password); 
+    const noSpaces = !/\s/.test(password); 
+    const lengthValid = password.length >= 8 && password.length <= 24;
+
+    if (!containsNumber) {
+      return 'Password must contain at least one number.';
+    }
+    if (!noSpaces) {
+      return 'Password must not contain spaces.';
+    }
+    if (!lengthValid) {
+      return 'Password must be between 8 and 24 characters.';
+    }
+    return ''; 
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Validate the username
+    const usernameError = validateUsername(username);
+    if (usernameError) {
+      setErrorMessage(usernameError);
+      return;
+    }
+
+    // Validate the password
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      setErrorMessage(passwordError);
+      return;
+    }
+
+    // Confirm passwords match
+    if (password !== confirmPassword) {
+      setErrorMessage('Passwords do not match. Please try again.');
+      return;
+    }
+
+    setErrorMessage('');
+    navigate('/profile-creation');
   };
 
   return (
@@ -97,13 +125,26 @@ function UserSignup() {
               type="password"
               placeholder="Confirm Password"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)} 
+              onChange={(e) => setConfirmPassword(e.target.value)}
               required
               className="input"
             />
 
-            {/* Display error message if passwords don't match */}
+            {/* Display error message */}
             {errorMessage && <div className="errorMessage">{errorMessage}</div>}
+
+            <hr className="separatorLine" />
+
+            <h6 className="subheading1">Date of Birth</h6>
+
+            {/* Date of Birth Input */}
+            <input
+              type="date"
+              value={dob}
+              onChange={(e) => setDob(e.target.value)}
+              required
+              className="input"
+            />
 
             <button
               type="submit"
