@@ -53,16 +53,26 @@ func AddBoard(board Board) error {
 	return nil
 }
 
-func RemoveBoard(board Board) error {
+func RemoveBoard(boardId int) error {
+	getUsernameSQL := `SELECT username, boards FROM posts WHERE postId = $1;`
+
+	var username string
+
+	err := DB.QueryRow(getUsernameSQL, boardId).Scan(&username)
+	if err != nil {
+		log.Printf("Error retrieving username for board ID %d: %v\n", boardId, err)
+		return err
+	}
+
 	deleteBoardSQL := `DELETE FROM boards WHERE boardId = $1;`
 
-	_, err := DB.Exec(deleteBoardSQL, board.BoardId)
+	_, err = DB.Exec(deleteBoardSQL, boardId)
 	if err != nil {
 		log.Printf("Error removing board: %v\n", err)
 		return err
 	}
 
-	RemoveUserBoard(board.Username, board.BoardId)
+	RemoveUserBoard(username, boardId)
 
 	log.Println("Board removed successfully.")
 	return nil

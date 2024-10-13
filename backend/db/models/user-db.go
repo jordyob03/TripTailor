@@ -63,6 +63,62 @@ func AddUser(user User) (int, error) {
 	return userId, nil
 }
 
+func RemoveUser(username string) error {
+
+	getPostsAndBoardsSQL := `
+	SELECT title, boards 
+	FROM posts 
+	WHERE username = (SELECT email FROM users WHERE username = $1);
+	`
+
+	var Stringposts []string
+	var Stringboards []string
+
+	err := DB.QueryRow(getPostsAndBoardsSQL, username).Scan(pq.Array(&Stringposts), pq.Array(&Stringboards))
+	if err != nil {
+		log.Printf("Error retrieving posts and boards for user ID %d: %v\n", username, err)
+		return err
+	}
+
+	posts, err := StringsToInts(Stringposts)
+	if err != nil {
+		log.Printf("Error converting post IDs to integers: %v\n", err)
+		return err
+	}
+
+	boards, err := StringsToInts(Stringboards)
+	if err != nil {
+		log.Printf("Error converting board IDs to integers: %v\n", err)
+		return err
+	}
+
+	for _, post := range posts {
+		err := RemovePost(post)
+		if err != nil {
+			log.Printf("Error removing post %s: %v\n", post, err)
+			return err
+		}
+	}
+
+	for _, board := range boards {
+		err := RemoveBoard(board)
+		if err != nil {
+			log.Printf("Error removing board %s: %v\n", board, err)
+			return err
+		}
+	}
+
+	deleteUserSQL := `DELETE FROM users WHERE username = $1;`
+
+	_, err = DB.Exec(deleteUserSQL, username)
+	if err != nil {
+		log.Printf("Error removing user: %v\n", err)
+		return err
+	}
+
+	return nil
+}
+
 func GetUser(username string) (User, error) {
 	query := `
     SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts
@@ -174,13 +230,6 @@ func UpdateUserDateOfBirth(username string, dateOfBirth time.Time) error {
 
 func UpdateUserCountry(username, country string) error {
 	return UpdateAttribute("users", "username", username, "country", country)
-}
-
-func DeleteUser(username string) error {
-	table := "users"
-	condition := "username = $1"
-
-	return DeleteRow(table, condition, username)
 }
 
 func AddUserLanguage(username string, languages []string) error {
@@ -346,7 +395,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if err := DeleteUser(username); err != nil {
+		if err := RemoveUser(username); err != nil {
 			http.Error(w, "Error deleting user", http.StatusInternalServerError)
 			log.Printf("Error deleting user: %v\n", err)
 			return

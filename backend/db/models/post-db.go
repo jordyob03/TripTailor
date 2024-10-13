@@ -1,6 +1,7 @@
 package DBmodels
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"time"
@@ -17,6 +18,7 @@ type Post struct {
 	CreationDate time.Time `json:"dateOfCreation"`
 	Username     string    `json:"username"`
 	Tags         []string  `json:"tags"`
+	Boards       []string  `json:"boards"`
 }
 
 func CreatePostTable() error {
@@ -29,7 +31,8 @@ func CreatePostTable() error {
 		description TEXT,
 		creationDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 		username VARCHAR(255) REFERENCES users(username),
-		tags TEXT[]
+		tags TEXT[],
+		boards TEXT[]
 	);`
 
 	return CreateTable(createTableSQL)
@@ -37,8 +40,8 @@ func CreatePostTable() error {
 
 func AddPost(post Post) (int, error) {
 	insertSQL := `
-	INSERT INTO posts (itineraryId, title, imageLink, description, creationDate, username, tags)
-	VALUES ($1, $2, $3, $4, $5, $6, $7)
+	INSERT INTO posts (itineraryId, title, imageLink, description, creationDate, username, tags, boards)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, '$8')
 	RETURNING postId;
 	`
 
@@ -52,6 +55,7 @@ func AddPost(post Post) (int, error) {
 		post.CreationDate,
 		post.Username,
 		pq.Array(post.Tags),
+		pq.Array(post.Boards),
 	).Scan(&postId)
 
 	if err != nil {
@@ -64,6 +68,33 @@ func AddPost(post Post) (int, error) {
 }
 
 func RemovePost(postId int) error {
+	getBoardsSQL := `
+	SELECT username, boards
+	FROM posts
+	WHERE postId = $1;
+	`
+
+	var username string
+	var boards []string
+	err := DB.QueryRow(getBoardsSQL, postId).Scan(&username, pq.Array(&boards))
+	if err == sql.ErrNoRows {
+		log.Printf("No boards found with postID %d.\n", postId)
+		return nil
+	} else if err != nil {
+		log.Printf("Error retrieving boards for post ID %d: %v\n", postId, err)
+		return err
+	}
+
+	for _, board := range boards {
+		err = RemoveBoardPost(board, postId)
+		if err != nil {
+			log.Printf("Error removing post %d from board %s: %v\n", postId, board, err)
+			return err
+		}
+	}
+
+	RemoveUserPost(username, postId)
+
 	deleteSQL := `
 	DELETE FROM posts
 	WHERE postId = $1;
@@ -72,13 +103,13 @@ func RemovePost(postId int) error {
 	result, err := DB.Exec(deleteSQL, postId)
 	if err != nil {
 		log.Printf("Error removing post with ID %d: %v\n", postId, err)
-		return fmt.Errorf("failed to remove post: %w", err)
+		return err
 	}
 
 	rowsAffected, _ := result.RowsAffected()
 	if rowsAffected == 0 {
 		log.Printf("No post found with ID %d.\n", postId)
-		return fmt.Errorf("post with ID %d not found", postId)
+		return err
 	}
 
 	log.Printf("Post with ID %d successfully removed.\n", postId)
@@ -89,7 +120,7 @@ func GetPost(postId int) (Post, error) {
 	var post Post
 
 	query := `
-	SELECT postId, itineraryId, title, imageLink, description, creationDate, username, tags
+	SELECT postId, itineraryId, title, imageLink, description, creationDate, username, tags, boards
 	FROM posts
 	WHERE postId = $1;
 	`
@@ -103,6 +134,7 @@ func GetPost(postId int) (Post, error) {
 		&post.CreationDate,
 		&post.Username,
 		pq.Array(&post.Tags),
+		pq.Array(&post.Boards),
 	)
 
 	if err != nil {
@@ -136,7 +168,29 @@ func RemovePostTag(postId int, tag string) error {
 	return nil
 }
 
-func AddPostImageLink(postId int, imageLink string) error {
+func AddPostBoard(postId int, board int) error {
+	err := AddArrayAttribute("posts", "postId", postId, "boards", IntsToStrings([]int{board}))
+	if err != nil {
+		log.Printf("Error adding board to post %d: %v\n", postId, err)
+		return fmt.Errorf("failed to add board to post: %w", err)
+	}
+
+	log.Printf("Board added to post %d successfully.\n", postId)
+	return nil
+}
+
+func RemovePostBoard(postId int, board int) error {
+	err := RemoveArrayAttribute("posts", "postId", postId, "boards", IntsToStrings([]int{board}))
+	if err != nil {
+		log.Printf("Error removing board from post %d: %v\n", postId, err)
+		return fmt.Errorf("failed to remove board from post: %w", err)
+	}
+
+	log.Printf("Board removed from post %d successfully.\n", postId)
+	return nil
+}
+
+func UpdatePostImageLink(postId int, imageLink string) error {
 	err := UpdateAttribute("posts", "postId", postId, "imageLink", imageLink)
 	if err != nil {
 		log.Printf("Error adding image link to post %d: %v\n", postId, err)
