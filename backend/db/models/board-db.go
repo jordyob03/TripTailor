@@ -1,7 +1,6 @@
 package DBmodels
 
 import (
-	"database/sql"
 	"log"
 	"time"
 
@@ -18,7 +17,7 @@ type Board struct {
 	Tags         []string  `json:"tags"`
 }
 
-func CreateBoardTable(db *sql.DB) error {
+func CreateBoardTable() error {
 	createTableSQL := `
     CREATE TABLE IF NOT EXISTS boards (
         board_id SERIAL PRIMARY KEY,
@@ -30,7 +29,7 @@ func CreateBoardTable(db *sql.DB) error {
         tags TEXT[]
     );`
 
-	_, err := db.Exec(createTableSQL)
+	_, err := DB.Exec(createTableSQL)
 	if err != nil {
 		log.Printf("Error creating boards table: %v\n", err)
 		return err
@@ -40,13 +39,16 @@ func CreateBoardTable(db *sql.DB) error {
 	return nil
 }
 
-func AddBoard(db *sql.DB, board Board) error {
+func AddBoard(board Board) error {
 	insertBoardSQL := `
     INSERT INTO boards (name, description, username, posts, tags) 
     VALUES ($1, $2, $3, $4, $5) RETURNING board_id;`
 
 	var boardID int
-	err := db.QueryRow(insertBoardSQL, board.Name, board.Description, board.Username, pq.Array(board.Posts), pq.Array(board.Tags)).Scan(&boardID)
+	err := DB.QueryRow(
+		insertBoardSQL, board.Name, board.Description,
+		board.Username, pq.Array(board.Posts),
+		pq.Array(board.Tags)).Scan(&boardID)
 	if err != nil {
 		log.Printf("Error adding board: %v\n", err)
 		return err
@@ -58,10 +60,10 @@ func AddBoard(db *sql.DB, board Board) error {
 	return nil
 }
 
-func RemoveBoard(db *sql.DB, board Board) error {
+func RemoveBoard(board Board) error {
 	deleteBoardSQL := `DELETE FROM boards WHERE board_id = $1;`
 
-	_, err := db.Exec(deleteBoardSQL, board.BoardId)
+	_, err := DB.Exec(deleteBoardSQL, board.BoardId)
 	if err != nil {
 		log.Printf("Error removing board: %v\n", err)
 		return err
@@ -70,5 +72,45 @@ func RemoveBoard(db *sql.DB, board Board) error {
 	RemoveUserBoard(board.Username, board.BoardId)
 
 	log.Println("Board removed successfully.")
+	return nil
+}
+
+func AddBoardPost(boardId string, postId int) error {
+	err := AddArrayAttribute("boards", "boardId", boardId, "posts", []int{postId})
+	if err != nil {
+		log.Printf("Error adding post for board %s: %v\n", boardId, err)
+		return err
+	}
+
+	return nil
+}
+
+func RemoveBoardPost(boardId string, postId int) error {
+	err := RemoveArrayAttribute("boards", "boardId", boardId, "posts", []int{postId})
+	if err != nil {
+		log.Printf("Error removing post for board %s: %v\n", boardId, err)
+		return err
+	}
+
+	return nil
+}
+
+func AddBoardTag(boardId string, tag string) error {
+	err := AddArrayAttribute("boards", "boardId", boardId, "tags", []string{tag})
+	if err != nil {
+		log.Printf("Error adding tag for board %s: %v\n", boardId, err)
+		return err
+	}
+
+	return nil
+}
+
+func RemoveBoardTag(boardId string, tag string) error {
+	err := RemoveArrayAttribute("boards", "boardId", boardId, "tags", []string{tag})
+	if err != nil {
+		log.Printf("Error removing tag for board %s: %v\n", boardId, err)
+		return err
+	}
+
 	return nil
 }
