@@ -75,6 +75,33 @@ func RemoveBoard(board Board) error {
 	return nil
 }
 
+func GetBoard(boardId int) (Board, error) {
+	var board Board
+
+	query := `
+	SELECT board_id, name, creation_date, description, username, posts, tags 
+	FROM boards 
+	WHERE board_id = $1;
+	`
+
+	err := DB.QueryRow(query, boardId).Scan(
+		&board.BoardId,
+		&board.Name,
+		&board.CreationDate,
+		&board.Description,
+		&board.Username,
+		pq.Array(&board.Posts),
+		pq.Array(&board.Tags),
+	)
+	if err != nil {
+		log.Printf("Error fetching board with ID %d: %v\n", boardId, err)
+		return Board{}, err
+	}
+
+	log.Printf("Board with ID %d retrieved successfully.\n", boardId)
+	return board, nil
+}
+
 func AddBoardPost(boardId string, postId int) error {
 	err := AddArrayAttribute("boards", "boardId", boardId, "posts", []int{postId})
 	if err != nil {
