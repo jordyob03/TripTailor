@@ -223,6 +223,46 @@ func RemoveUserTag(username string, tags []string) error {
 	return nil
 }
 
+func AddUserBoard(username, boardId string) error {
+	err := AddArrayAttribute("users", "username", username, "boards", []string{boardId})
+	if err != nil {
+		log.Printf("Error adding board for user %s: %v\n", username, err)
+		return err
+	}
+
+	return nil
+}
+
+func RemoveUserBoard(username, boardId string) error {
+	err := RemoveArrayAttribute("users", "username", username, "boards", []string{boardId})
+	if err != nil {
+		log.Printf("Error removing board for user %s: %v\n", username, err)
+		return err
+	}
+
+	return nil
+}
+
+func AddUserPost(username, postId string) error {
+	err := AddArrayAttribute("users", "username", username, "posts", []string{postId})
+	if err != nil {
+		log.Printf("Error adding post for user %s: %v\n", username, err)
+		return err
+	}
+
+	return nil
+}
+
+func RemoveUserPost(username, postId string) error {
+	err := RemoveArrayAttribute("users", "username", username, "boards", []string{postId})
+	if err != nil {
+		log.Printf("Error removing post for user %s: %v\n", username, err)
+		return err
+	}
+
+	return nil
+}
+
 func UserHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
