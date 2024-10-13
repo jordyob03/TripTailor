@@ -13,7 +13,7 @@ type Board struct {
 	CreationDate time.Time `json:"dateOfCreation"`
 	Description  string    `json:"description"`
 	Username     string    `json:"username"`
-	Posts        []int     `json:"posts"`
+	Posts        []string  `json:"posts"`
 	Tags         []string  `json:"tags"`
 }
 
@@ -129,7 +129,7 @@ func UpdateBoardCreationDate(boardId int, creationDate time.Time) error {
 }
 
 func AddBoardPost(boardId string, postId int) error {
-	err := AddArrayAttribute("boards", "boardId", boardId, "posts", []int{postId})
+	err := AddArrayAttribute("boards", "boardId", boardId, "posts", IntsToStrings([]int{postId}))
 	if err != nil {
 		log.Printf("Error adding post for board %s: %v\n", boardId, err)
 		return err
@@ -139,7 +139,7 @@ func AddBoardPost(boardId string, postId int) error {
 }
 
 func RemoveBoardPost(boardId string, postId int) error {
-	err := RemoveArrayAttribute("boards", "boardId", boardId, "posts", []int{postId})
+	err := RemoveArrayAttribute("boards", "boardId", boardId, "posts", IntsToStrings([]int{postId}))
 	if err != nil {
 		log.Printf("Error removing post for board %s: %v\n", boardId, err)
 		return err

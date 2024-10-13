@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
 
 	"github.com/lib/pq"
@@ -34,19 +35,25 @@ func CreateAllTables() error {
 	if err := CreatePostTable(); err != nil {
 		return err
 	}
+	if err := CreateItineraryTable(); err != nil {
+		return err
+	}
+	if err := CreateEventTable(); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func DeleteAllTables() error {
-	if err := DeleteTable("users"); err != nil {
-		return err
+	dropTablesSQL := `
+	DROP TABLE IF EXISTS users, boards, posts, itineraries, events CASCADE;`
+
+	_, err := DB.Exec(dropTablesSQL)
+	if err != nil {
+		return fmt.Errorf("failed to drop tables: %w", err)
 	}
-	if err := DeleteTable("boards"); err != nil {
-		return err
-	}
-	if err := DeleteTable("posts"); err != nil {
-		return err
-	}
+
 	return nil
 }
 
@@ -148,6 +155,26 @@ func GetRows(table string, condition string, args ...interface{}) ([]map[string]
 	}
 
 	return results, nil
+}
+
+func IntsToStrings(ints []int) []string {
+	strings := make([]string, len(ints))
+	for i, v := range ints {
+		strings[i] = fmt.Sprintf("%d", v)
+	}
+	return strings
+}
+
+func StringsToInts(strings []string) ([]int, error) {
+	ints := make([]int, len(strings))
+	for i, v := range strings {
+		var err error
+		ints[i], err = strconv.Atoi(v)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return ints, nil
 }
 
 func UpdateAttribute(table string, identifierCol string, identifier interface{}, column string, value interface{}) error {

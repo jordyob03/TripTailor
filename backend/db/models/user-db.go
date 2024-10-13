@@ -37,8 +37,8 @@ func CreateUserTable() error {
 		country TEXT,
 		languages TEXT[],
 		tags TEXT[],
-		boards TEXT[],
-		posts TEXT[]
+		boards INTEGER[],
+		posts INTEGER[]
 	);`
 	return CreateTable(createTableSQL)
 }
@@ -224,7 +224,7 @@ func RemoveUserTag(username string, tags []string) error {
 }
 
 func AddUserBoard(username string, boardId int) error {
-	err := AddArrayAttribute("users", "username", username, "boards", []int{boardId})
+	err := AddArrayAttribute("users", "username", username, "boards", IntsToStrings([]int{boardId}))
 	if err != nil {
 		log.Printf("Error adding board for user %s: %v\n", username, err)
 		return err
@@ -234,7 +234,7 @@ func AddUserBoard(username string, boardId int) error {
 }
 
 func RemoveUserBoard(username string, boardId int) error {
-	err := RemoveArrayAttribute("users", "username", username, "boards", []int{boardId})
+	err := RemoveArrayAttribute("users", "username", username, "boards", IntsToStrings([]int{boardId}))
 	if err != nil {
 		log.Printf("Error removing board for user %s: %v\n", username, err)
 		return err
@@ -244,7 +244,7 @@ func RemoveUserBoard(username string, boardId int) error {
 }
 
 func AddUserPost(username string, postId int) error {
-	err := AddArrayAttribute("users", "username", username, "posts", []int{postId})
+	err := AddArrayAttribute("users", "username", username, "posts", IntsToStrings([]int{postId}))
 	if err != nil {
 		log.Printf("Error adding post for user %s: %v\n", username, err)
 		return err
@@ -254,7 +254,7 @@ func AddUserPost(username string, postId int) error {
 }
 
 func RemoveUserPost(username string, postId int) error {
-	err := RemoveArrayAttribute("users", "username", username, "posts", []int{postId})
+	err := RemoveArrayAttribute("users", "username", username, "posts", IntsToStrings([]int{postId}))
 	if err != nil {
 		log.Printf("Error removing post for user %s: %v\n", username, err)
 		return err

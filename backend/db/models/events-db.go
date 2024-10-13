@@ -16,7 +16,7 @@ type Event struct {
 	Description  string    `json:"description"`
 	StartDate    time.Time `json:"startDate"`
 	EndDate      time.Time `json:"endDate"`
-	ItineraryIds []int     `json:"itineraryIds"`
+	ItineraryIds []string  `json:"itineraryIds"`
 	PhotoLinks   []string  `json:"photoLinks"`
 }
 
@@ -30,7 +30,7 @@ func CreateEventTable() error {
 		description TEXT,
 		startDate TIMESTAMPTZ NOT NULL,
 		endDate TIMESTAMPTZ NOT NULL,
-		itineraryIds INT[],
+		itineraryIds INTEGER[],
 		photoLinks TEXT[]
 	);`
 
@@ -47,7 +47,7 @@ func AddEvent(event Event) (int, error) {
 		insertEventSQL, event.Name, event.Price,
 		event.Location, event.Description,
 		event.StartDate, event.EndDate,
-		event.ItineraryIds, event.PhotoLinks).Scan(&eventID)
+		pq.Array(event.ItineraryIds), pq.Array(event.PhotoLinks)).Scan(&eventID)
 	if err != nil {
 		log.Printf("Error adding event: %v\n", err)
 		return 0, fmt.Errorf("failed to add event: %w", err)
@@ -196,7 +196,7 @@ func RemoveEventPhotoLink(eventID int, photoLink string) error {
 }
 
 func AddEventItinerary(eventID int, itineraryID int) error {
-	err := AddArrayAttribute("events", "eventId", eventID, "itineraryIds", []int{itineraryID})
+	err := AddArrayAttribute("events", "eventId", eventID, "itineraryIds", IntsToStrings([]int{itineraryID}))
 	if err != nil {
 		log.Printf("Error adding itinerary to event: %v\n", err)
 		return fmt.Errorf("failed to add itinerary to event: %w", err)
@@ -207,7 +207,7 @@ func AddEventItinerary(eventID int, itineraryID int) error {
 }
 
 func RemoveEventItinerary(eventID int, itineraryID int) error {
-	err := RemoveArrayAttribute("events", "eventId", eventID, "itineraryIds", []int{itineraryID})
+	err := RemoveArrayAttribute("events", "eventId", eventID, "itineraryIds", IntsToStrings([]int{itineraryID}))
 	if err != nil {
 		log.Printf("Error removing itinerary from event: %v\n", err)
 		return fmt.Errorf("failed to remove itinerary from event: %w", err)

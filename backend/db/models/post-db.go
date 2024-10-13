@@ -23,12 +23,12 @@ func CreatePostTable() error {
 	createTableSQL := `
 	CREATE TABLE IF NOT EXISTS posts (
 		postId SERIAL PRIMARY KEY,
-		itineraryId INT REFERENCES itineraries(itineraryId),
+		itineraryId INT,
 		title TEXT NOT NULL,
 		imageLink TEXT,
 		description TEXT,
 		creationDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-		username VARCHAR(255) REFERENCES users(username),,
+		username VARCHAR(255) REFERENCES users(username),
 		tags TEXT[]
 	);`
 

@@ -1,6 +1,7 @@
 package DBmodels
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"time"
@@ -14,7 +15,7 @@ type Itinerary struct {
 	Country      string    `json:"country"`
 	Languages    []string  `json:"languages"`
 	Tags         []string  `json:"tags"`
-	Events       []int     `json:"events"`
+	Events       []string  `json:"events"`
 	PostId       int       `json:"postId"`
 	Username     string    `json:"username"`
 	CreationDate time.Time `json:"creationDate"`
@@ -29,8 +30,8 @@ func CreateItineraryTable() error {
 		country TEXT NOT NULL,
 		languages TEXT[],
 		tags TEXT[],
-		events INT[],
-		postId INT REFERENCES posts(postId),
+		events TEXT[],
+		postId INT NOT NULL,
 		username VARCHAR(255) REFERENCES users(username),
 		creationDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 		lastUpdate TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -41,15 +42,15 @@ func CreateItineraryTable() error {
 
 func AddItinerary(itinerary Itinerary) (int, error) {
 	insertItinerarySQL := `
-	INSERT INTO itineraries (name, country, languages, tags, events, postId, username)
-	VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING itineraryId;`
+	INSERT INTO itineraries (name, country, languages, tags, events, postId, username, creationDate, lastUpdate)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING itineraryId;`
 
 	var itineraryID int
 	err := DB.QueryRow(
 		insertItinerarySQL, itinerary.Name, itinerary.Country,
-		itinerary.Languages, itinerary.Tags,
-		itinerary.Events, itinerary.PostId,
-		itinerary.Username).Scan(&itineraryID)
+		pq.Array(itinerary.Languages), pq.Array(itinerary.Tags),
+		pq.Array(itinerary.Events), itinerary.PostId,
+		itinerary.Username, itinerary.CreationDate, itinerary.LastUpdate).Scan(&itineraryID)
 	if err != nil {
 		log.Printf("Error adding itinerary: %v\n", err)
 		return 0, fmt.Errorf("failed to add itinerary: %w", err)
@@ -61,17 +62,21 @@ func AddItinerary(itinerary Itinerary) (int, error) {
 
 func RemoveItinerary(itineraryID int) error {
 	var postID int
-	var eventIDs []int
+	var StringEventIDs []string
 
-	// Retrieve the PostId and EventIds associated with the itinerary
-	query := `SELECT postId, eventIds FROM itineraries WHERE itineraryId = $1;`
-	err := DB.QueryRow(query, itineraryID).Scan(&postID, pq.Array(&eventIDs))
+	query := `SELECT postId, events FROM itineraries WHERE itineraryId = $1;`
+	err := DB.QueryRow(query, itineraryID).Scan(&postID, pq.Array(&StringEventIDs))
 	if err != nil {
-		log.Printf("Error retrieving PostId and EventIds for itinerary ID %d: %v\n", itineraryID, err)
+		log.Printf("Error retrieving PostId and EventId for itinerary ID %d: %v\n", itineraryID, err)
 		return fmt.Errorf("failed to retrieve PostId and EventIds: %w", err)
 	}
 
-	// Log the Event IDs
+	eventIDs, err := StringsToInts(StringEventIDs)
+	if err != nil {
+		log.Printf("Error converting event IDs to integers: %v\n", err)
+		return fmt.Errorf("failed to convert event IDs to integers: %w", err)
+	}
+
 	log.Println("Associated Event IDs:")
 	for _, eventID := range eventIDs {
 		err = RemoveEventItinerary(eventID, itineraryID)
@@ -81,14 +86,12 @@ func RemoveItinerary(itineraryID int) error {
 		}
 	}
 
-	// Remove the associated post
 	err = RemovePost(postID)
 	if err != nil {
 		log.Printf("Error removing post with ID %d: %v\n", postID, err)
 		return fmt.Errorf("failed to remove associated post: %w", err)
 	}
 
-	// Now delete the itinerary
 	removeItinerarySQL := `DELETE FROM itineraries WHERE itineraryId = $1;`
 	_, err = DB.Exec(removeItinerarySQL, itineraryID)
 	if err != nil {
@@ -102,17 +105,43 @@ func RemoveItinerary(itineraryID int) error {
 
 func GetItinerary(itineraryID int) (Itinerary, error) {
 	getItinerarySQL := `
-	SELECT name, country, languages, tags, events, postId, username, creationDate, lastUpdate
-	FROM itineraries WHERE itineraryId = $1;`
+	SELECT itineraryId, name, country, languages, tags, events, postId, username, creationDate, lastUpdate
+	FROM itineraries
+	WHERE itineraryId = $1;`
 
 	var itinerary Itinerary
+
 	err := DB.QueryRow(getItinerarySQL, itineraryID).Scan(
-		&itinerary.Name, &itinerary.Country, &itinerary.Languages,
-		&itinerary.Tags, &itinerary.Events, &itinerary.PostId,
-		&itinerary.Username, &itinerary.CreationDate, &itinerary.LastUpdate)
-	if err != nil {
+		&itinerary.ItineraryId,
+		&itinerary.Name,
+		&itinerary.Country,
+		pq.Array(&itinerary.Languages),
+		pq.Array(&itinerary.Tags),
+		pq.Array(&itinerary.Events),
+		&itinerary.PostId,
+		&itinerary.Username,
+		&itinerary.CreationDate,
+		&itinerary.LastUpdate,
+	)
+	if err == sql.ErrNoRows {
+		log.Printf("No itinerary found with ID %d\n", itineraryID)
+		return Itinerary{}, fmt.Errorf("no itinerary found with ID: %w", err)
+	} else if err != nil {
 		log.Printf("Error getting itinerary: %v\n", err)
+		log.Println(err)
 		return Itinerary{}, fmt.Errorf("failed to get itinerary: %w", err)
+	}
+
+	if itinerary.Languages == nil {
+		itinerary.Languages = []string{}
+	}
+
+	if itinerary.Tags == nil {
+		itinerary.Tags = []string{}
+	}
+
+	if itinerary.Events == nil {
+		itinerary.Events = []string{}
 	}
 
 	log.Printf("Itinerary retrieved successfully: %+v\n", itinerary)
@@ -186,7 +215,7 @@ func RemoveItineraryTag(itineraryId int, tag string) error {
 }
 
 func AddItineraryEvent(itineraryId int, eventId int) error {
-	err := AddArrayAttribute("itineraries", "itineraryId", itineraryId, "events", []int{eventId})
+	err := AddArrayAttribute("itineraries", "itineraryId", itineraryId, "events", IntsToStrings([]int{eventId}))
 	if err != nil {
 		log.Printf("Error adding itinerary event: %v\n", err)
 		return fmt.Errorf("failed to add itinerary event: %w", err)
@@ -203,7 +232,7 @@ func AddItineraryEvent(itineraryId int, eventId int) error {
 }
 
 func RemoveItineraryEvent(itineraryId int, eventId int) error {
-	err := RemoveArrayAttribute("itineraries", "itineraryId", itineraryId, "events", []int{eventId})
+	err := RemoveArrayAttribute("itineraries", "itineraryId", itineraryId, "events", IntsToStrings([]int{eventId}))
 	if err != nil {
 		log.Printf("Error removing itinerary event: %v\n", err)
 		return fmt.Errorf("failed to remove itinerary event: %w", err)
