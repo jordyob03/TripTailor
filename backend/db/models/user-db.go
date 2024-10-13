@@ -223,8 +223,8 @@ func RemoveUserTag(username string, tags []string) error {
 	return nil
 }
 
-func AddUserBoard(username, boardId string) error {
-	err := AddArrayAttribute("users", "username", username, "boards", []string{boardId})
+func AddUserBoard(username string, boardId int) error {
+	err := AddArrayAttribute("users", "username", username, "boards", []int{boardId})
 	if err != nil {
 		log.Printf("Error adding board for user %s: %v\n", username, err)
 		return err
@@ -233,8 +233,8 @@ func AddUserBoard(username, boardId string) error {
 	return nil
 }
 
-func RemoveUserBoard(username, boardId string) error {
-	err := RemoveArrayAttribute("users", "username", username, "boards", []string{boardId})
+func RemoveUserBoard(username string, boardId int) error {
+	err := RemoveArrayAttribute("users", "username", username, "boards", []int{boardId})
 	if err != nil {
 		log.Printf("Error removing board for user %s: %v\n", username, err)
 		return err
@@ -243,8 +243,8 @@ func RemoveUserBoard(username, boardId string) error {
 	return nil
 }
 
-func AddUserPost(username, postId string) error {
-	err := AddArrayAttribute("users", "username", username, "posts", []string{postId})
+func AddUserPost(username string, postId int) error {
+	err := AddArrayAttribute("users", "username", username, "posts", []int{postId})
 	if err != nil {
 		log.Printf("Error adding post for user %s: %v\n", username, err)
 		return err
@@ -253,8 +253,8 @@ func AddUserPost(username, postId string) error {
 	return nil
 }
 
-func RemoveUserPost(username, postId string) error {
-	err := RemoveArrayAttribute("users", "username", username, "boards", []string{postId})
+func RemoveUserPost(username string, postId int) error {
+	err := RemoveArrayAttribute("users", "username", username, "posts", []int{postId})
 	if err != nil {
 		log.Printf("Error removing post for user %s: %v\n", username, err)
 		return err

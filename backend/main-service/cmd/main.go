@@ -103,6 +103,20 @@ func main() {
 		fmt.Println("Country updated successfully!")
 	}
 
+	err = db.AddUserBoard("WyrdWyn4", 1)
+	if err != nil {
+		log.Println("Error adding board:", err)
+	} else {
+		fmt.Println("Board added successfully!")
+	}
+
+	err = db.AddUserPost("WyrdWyn4", 2)
+	if err != nil {
+		log.Println("Error adding post:", err)
+	} else {
+		fmt.Println("Post added successfully!")
+	}
+
 	http.HandleFunc("/hello", helloHandler)
 	http.HandleFunc("/users", db.UserHandler)
 

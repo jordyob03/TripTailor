@@ -9,10 +9,6 @@ import (
 	"github.com/lib/pq"
 )
 
-// ------------------------------------------------------------------------------------------------------------------------------
-// ----------------------------------------------------- Database Commands ------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------------------------
-
 var DB *sql.DB
 
 func InitDB(connStr string) error {
@@ -34,10 +30,6 @@ func CloseDB() {
 	}
 }
 
-// ------------------------------------------------------------------------------------------------------------------------------
-// ----------------------------------------------------- Table Commands ---------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------------------------
-
 func CreateTable(createTableSQL string) error {
 	_, err := DB.Exec(createTableSQL)
 	if err != nil {
@@ -56,10 +48,6 @@ func DeleteTable(tableName string) error {
 	log.Println("Table deleted successfully")
 	return nil
 }
-
-// ------------------------------------------------------------------------------------------------------------------------------
-// ----------------------------------------------------- Row Commands -----------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------------------------
 
 func AddRow(table string, data map[string]interface{}) error {
 	columns := make([]string, 0, len(data))
@@ -136,51 +124,64 @@ func GetRows(table string, condition string, args ...interface{}) ([]map[string]
 	return results, nil
 }
 
-// ------------------------------------------------------------------------------------------------------------------------------
-// ----------------------------------------------------- Helper Functions -------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------------------------------
-
 func UpdateAttribute(table string, identifierCol string, identifier string, column string, value interface{}) error {
 	updateSQL := fmt.Sprintf("UPDATE %s SET %s = $1 WHERE %s = $2", table, column, identifierCol)
 	_, err := DB.Exec(updateSQL, value, identifier)
 	return err
 }
 
-func AddArrayAttribute(table string, identifierCol string, identifier string, column string, values []string) error {
-	// Step 1: Fetch existing values from the specified column
+func AddArrayAttribute(table string, identifierCol string, identifier string, column string, values interface{}) error {
 	var existingValues []string
+	var existingIntValues []int
+
 	query := fmt.Sprintf("SELECT %s FROM %s WHERE %s = $1", column, table, identifierCol)
-	err := DB.QueryRow(query, identifier).Scan(pq.Array(&existingValues))
+
+	var err error
+	switch v := values.(type) {
+	case []string:
+		err = DB.QueryRow(query, identifier).Scan(pq.Array(&existingValues))
+	case []int:
+		err = DB.QueryRow(query, identifier).Scan(pq.Array(&existingIntValues))
+	default:
+		log.Printf("Unsupported value type: %T\n", v)
+		return fmt.Errorf("unsupported value type")
+	}
+
 	if err != nil {
 		log.Printf("Error fetching %s for %s %s: %v\n", column, table, identifier, err)
 		return err
 	}
 
-	// Step 2: Create a map for existing values for quick lookup
-	existingValueMap := make(map[string]struct{})
+	existingValueMap := make(map[interface{}]struct{})
 	for _, val := range existingValues {
 		existingValueMap[val] = struct{}{}
 	}
+	for _, val := range existingIntValues {
+		existingValueMap[val] = struct{}{}
+	}
 
-	// Step 3: Filter out values that already exist
-	newValues := []string{}
-	for _, val := range values {
-		if _, exists := existingValueMap[val]; !exists {
-			newValues = append(newValues, val)
+	newValues := []interface{}{}
+	switch v := values.(type) {
+	case []string:
+		for _, val := range v {
+			if _, exists := existingValueMap[val]; !exists {
+				newValues = append(newValues, val)
+			}
+		}
+	case []int:
+		for _, val := range v {
+			if _, exists := existingValueMap[val]; !exists {
+				newValues = append(newValues, val)
+			}
 		}
 	}
 
-	// If there are no new values, return without making changes
 	if len(newValues) == 0 {
 		log.Printf("No new values to add for %s %s in column %s\n", table, identifier, column)
 		return nil
 	}
 
-	// Step 4: Update the specified column if there are new values
-	updateSQL := fmt.Sprintf(`
-    UPDATE %s 
-    SET %s = array_cat(%s, $1) 
-    WHERE %s = $2`, table, column, column, identifierCol)
+	updateSQL := fmt.Sprintf(`UPDATE %s SET %s = array_cat(%s, $1) WHERE %s = $2`, table, column, column, identifierCol)
 
 	_, err = DB.Exec(updateSQL, pq.Array(newValues), identifier)
 	if err != nil {
@@ -191,18 +192,31 @@ func AddArrayAttribute(table string, identifierCol string, identifier string, co
 	return nil
 }
 
-func RemoveArrayAttribute(table string, identifierCol, identifier string, column string, values []string) error {
-	for _, val := range values {
-		removeValSQL := fmt.Sprintf(`
-        UPDATE %s 
-        SET %s = array_remove(%s, $1) 
-        WHERE %s = $2`, table, column, column, identifierCol)
+func RemoveArrayAttribute(table string, identifierCol string, identifier string, column string, values interface{}) error {
+	switch v := values.(type) {
+	case []string:
+		for _, val := range v {
+			removeValSQL := fmt.Sprintf(`UPDATE %s SET %s = array_remove(%s, $1) WHERE %s = $2`, table, column, column, identifierCol)
 
-		_, err := DB.Exec(removeValSQL, val, identifier)
-		if err != nil {
-			log.Printf("Error removing %s '%s' for %s %s: %v\n", column, val, table, identifier, err)
-			return err
+			_, err := DB.Exec(removeValSQL, val, identifier)
+			if err != nil {
+				log.Printf("Error removing %s '%s' for %s %s: %v\n", column, val, table, identifier, err)
+				return err
+			}
 		}
+	case []int:
+		for _, val := range v {
+			removeValSQL := fmt.Sprintf(`UPDATE %s SET %s = array_remove(%s, $1) WHERE %s = $2`, table, column, column, identifierCol)
+
+			_, err := DB.Exec(removeValSQL, val, identifier)
+			if err != nil {
+				log.Printf("Error removing %s '%d' for %s %s: %v\n", column, val, table, identifier, err)
+				return err
+			}
+		}
+	default:
+		log.Printf("Unsupported value type: %T\n", v)
+		return fmt.Errorf("unsupported value type")
 	}
 
 	return nil
