@@ -13,7 +13,7 @@ type Board struct {
 	CreationDate time.Time `json:"dateOfCreation"`
 	Description  string    `json:"description"`
 	Username     string    `json:"username"`
-	Posts        []string  `json:"posts"`
+	Posts        []int     `json:"posts"`
 	Tags         []string  `json:"tags"`
 }
 
@@ -29,14 +29,7 @@ func CreateBoardTable() error {
         tags TEXT[]
     );`
 
-	_, err := DB.Exec(createTableSQL)
-	if err != nil {
-		log.Printf("Error creating boards table: %v\n", err)
-		return err
-	}
-
-	log.Println("Boards table created successfully.")
-	return nil
+	return CreateTable(createTableSQL)
 }
 
 func AddBoard(board Board) error {

@@ -23,23 +23,16 @@ func CreatePostTable() error {
 	createTableSQL := `
 	CREATE TABLE IF NOT EXISTS posts (
 		postId SERIAL PRIMARY KEY,
-		itineraryId INT NOT NULL,
+		itineraryId INT REFERENCES itineraries(itineraryId),
 		title TEXT NOT NULL,
 		imageLink TEXT,
 		description TEXT,
 		creationDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-		username TEXT NOT NULL,
+		username VARCHAR(255) REFERENCES users(username),,
 		tags TEXT[]
 	);`
 
-	_, err := DB.Exec(createTableSQL)
-	if err != nil {
-		log.Printf("Error creating posts table: %v\n", err)
-		return fmt.Errorf("failed to create posts table: %w", err)
-	}
-
-	log.Println("Posts table created or already exists.")
-	return nil
+	return CreateTable(createTableSQL)
 }
 
 func AddPost(post Post) (int, error) {
