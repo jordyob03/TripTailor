@@ -1,9 +1,9 @@
 package db
 
 import (
-	"backend/auth-service/internal/models"
 	"database/sql"
 	"fmt"
+	"github.com/jordyob03/TripTailor/backend/services/auth-service/internal/models"
 	"time"
 )
 
