@@ -1,21 +1,31 @@
 package handlers
 
 import (
-	"backend/auth-service/internal/db"
+	db "backend/auth-service/internal/db"
 	"backend/auth-service/utils"
 	"database/sql"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type SignInRequest struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	UserId      int       `json:"userId"`
+	Username    string    `json:"username" binding:"required"`
+	Email       string    `json:"email" binding:"required,email"`
+	Password    string    `json:"password" binding:"required,min=6"`
+	DateOfBirth time.Time `json:"dateOfBirth" binding:"required"`
+	Name        string    `json:"name"`
+	Country     string    `json:"country"`
+	Languages   []string  `json:"languages"`
+	Tags        []string  `json:"tags"`
+	Boards      []string  `json:"boards"`
+	Posts       []string  `json:"posts"`
 }
 
-func SignIn(dbConn *sql.DB) gin.HandlerFunc {
+func SignIn(DB *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req SignInRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
@@ -23,7 +33,7 @@ func SignIn(dbConn *sql.DB) gin.HandlerFunc {
 			return
 		}
 
-		user, err := db.GetUser(dbConn, req.Username)
+		user, err := db.GetUser(DB, req.Username)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
 			return
@@ -35,7 +45,7 @@ func SignIn(dbConn *sql.DB) gin.HandlerFunc {
 			return
 		}
 
-		token, err := utils.GenerateJWT(user.UserID)
+		token, err := utils.GenerateJWT(user.UserId)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 			return
@@ -43,7 +53,7 @@ func SignIn(dbConn *sql.DB) gin.HandlerFunc {
 
 		c.JSON(http.StatusOK, gin.H{
 			"message": "Signin successful",
-			"userId":  user.UserID,
+			"userId":  user.UserId,
 			"token":   token,
 		})
 	}

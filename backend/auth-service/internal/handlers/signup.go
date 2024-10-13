@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"backend/auth-service/internal/db"
+	db "backend/auth-service/internal/db"
 	"backend/auth-service/utils"
 	"database/sql"
 	"net/http"
@@ -12,10 +12,17 @@ import (
 )
 
 type SignUpRequest struct {
-	Username    string `json:"username" binding:"required"`
-	Email       string `json:"email" binding:"required,email"`
-	Password    string `json:"password" binding:"required,min=6"`
-	DateOfBirth string `json:"dateOfBirth" binding:"required"`
+	UserId      int       `json:"userId"`
+	Username    string    `json:"username" binding:"required"`
+	Email       string    `json:"email" binding:"required,email"`
+	Password    string    `json:"password" binding:"required,min=6"`
+	DateOfBirth time.Time `json:"dateOfBirth" binding:"required"`
+	Name        string    `json:"name"`
+	Country     string    `json:"country"`
+	Languages   []string  `json:"languages"`
+	Tags        []string  `json:"tags"`
+	Boards      []string  `json:"boards"`
+	Posts       []string  `json:"posts"`
 }
 
 func SignUp(dbConn *sql.DB) gin.HandlerFunc {
@@ -23,12 +30,6 @@ func SignUp(dbConn *sql.DB) gin.HandlerFunc {
 		var req SignUpRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		dateOfBirth, err := time.Parse("2006-01-02", req.DateOfBirth)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid date format"})
 			return
 		}
 
@@ -43,7 +44,9 @@ func SignUp(dbConn *sql.DB) gin.HandlerFunc {
 			return
 		}
 
-		userId, err := db.AddUser(dbConn, req.Username, req.Email, string(hashedPassword), dateOfBirth)
+		req.Password = string(hashedPassword)
+
+		userId, err := db.AddUser(dbConn, db.User(req))
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
 			return
