@@ -47,84 +47,70 @@ func main() {
 		fmt.Println("Inserted user with id:", id)
 	}
 
-	board := db.Board{
-		Name:        "Sample Board",
-		Description: "This is a test board",
-		Username:    "WyrdWyn4",
-		Posts:       []string{},
-		Tags:        []string{"travel", "fun"},
+	post := db.Post{
+		ItineraryId:  1,
+		Title:        "My First Post",
+		ImageLink:    "http://example.com/image.jpg",
+		Description:  "This is a description of my first post.",
+		CreationDate: time.Now(),
+		Username:     "WyrdWyn4",
+		Tags:         []string{"travel", "adventure"},
 	}
 
-	fmt.Println("Testing AddBoard...")
-	err := db.AddBoard(board)
+	fmt.Println("Testing AddPost...")
+	postId, err := db.AddPost(post)
 	if err != nil {
-		log.Fatalf("AddBoard failed: %v", err)
+		log.Fatalf("AddPost failed: %v", err)
 	}
+	fmt.Printf("Inserted post with ID: %d\n", postId)
 
-	boardID := 1
-
-	fmt.Println("Testing GetBoard...")
-	retrievedBoard, err := db.GetBoard(boardID)
+	fmt.Println("Testing GetPost...")
+	retrievedPost, err := db.GetPost(postId)
 	if err != nil {
-		log.Fatalf("GetBoard failed: %v", err)
+		log.Fatalf("GetPost failed: %v", err)
 	}
-	fmt.Printf("Retrieved Board: %+v\n", retrievedBoard)
+	fmt.Printf("Retrieved Post: %+v\n", retrievedPost)
 
-	fmt.Println("Testing UpdateBoardName...")
-	err = db.UpdateBoardName(boardID, "New Board Name")
+	newDescription := "Updated description for my first post."
+	fmt.Println("Testing UpdatePostDescription...")
+	if err := db.UpdatePostDescription(postId, newDescription); err != nil {
+		log.Fatalf("UpdatePostDescription failed: %v", err)
+	}
+
+	retrievedPost, err = db.GetPost(postId)
 	if err != nil {
-		log.Fatalf("UpdateBoardName failed: %v", err)
+		log.Fatalf("GetPost failed: %v", err)
+	}
+	fmt.Printf("Updated Post: %+v\n", retrievedPost)
+
+	fmt.Println("Testing AddPostTag...")
+	if err := db.AddPostTag(postId, "newTag"); err != nil {
+		log.Fatalf("AddPostTag failed: %v", err)
 	}
 
-	fmt.Println("Testing UpdateBoardDescription...")
-	err = db.UpdateBoardDescription(boardID, "New Board Description")
+	retrievedPost, err = db.GetPost(postId)
 	if err != nil {
-		log.Fatalf("UpdateBoardDescription failed: %v", err)
+		log.Fatalf("GetPost failed: %v", err)
+	}
+	fmt.Printf("Post after adding tag: %+v\n", retrievedPost)
+
+	fmt.Println("Testing RemovePostTag...")
+	if err := db.RemovePostTag(postId, "newTag"); err != nil {
+		log.Fatalf("RemovePostTag failed: %v", err)
 	}
 
-	fmt.Println("Testing UpdateBoardCreationDate...")
-	err = db.UpdateBoardCreationDate(boardID, time.Now())
+	retrievedPost, err = db.GetPost(postId)
 	if err != nil {
-		log.Fatalf("UpdateBoardCreationDate failed: %v", err)
+		log.Fatalf("GetPost failed: %v", err)
 	}
+	fmt.Printf("Post after removing tag: %+v\n", retrievedPost)
 
-	fmt.Println("Testing UpdateBoardDescription...")
-	err = db.UpdateBoardDescription(boardID, "New Board Description")
-	if err != nil {
-		log.Fatalf("UpdateBoardDescription failed: %v", err)
+	fmt.Println("Testing RemovePost...")
+	if err := db.RemovePost(postId); err != nil {
+		log.Fatalf("RemovePost failed: %v", err)
+	} else {
+		fmt.Printf("Post with ID %d successfully removed.\n", postId)
 	}
-
-	fmt.Println("Testing AddBoardTag...")
-	err = db.AddBoardTag(fmt.Sprint(boardID), "newTag")
-	if err != nil {
-		log.Fatalf("AddBoardTag failed: %v", err)
-	}
-
-	fmt.Println("Testing RemoveBoardTag...")
-	err = db.RemoveBoardTag(fmt.Sprint(boardID), "newTag")
-	if err != nil {
-		log.Fatalf("RemoveBoardTag failed: %v", err)
-	}
-
-	fmt.Println("Testing AddBoardPost...")
-	err = db.AddBoardPost(fmt.Sprint(boardID), 123)
-	if err != nil {
-		log.Fatalf("AddBoardPost failed: %v", err)
-	}
-
-	fmt.Println("Testing RemoveBoardPost...")
-	err = db.RemoveBoardPost(fmt.Sprint(boardID), 123)
-	if err != nil {
-		log.Fatalf("RemoveBoardPost failed: %v", err)
-	}
-
-	fmt.Println("Testing RemoveBoard...")
-	err = db.RemoveBoard(retrievedBoard)
-	if err != nil {
-		log.Fatalf("RemoveBoard failed: %v", err)
-	}
-
-	fmt.Println("All tests completed successfully.")
 
 	http.HandleFunc("/hello", helloHandler)
 	http.HandleFunc("/users", db.UserHandler)
