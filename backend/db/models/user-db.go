@@ -1,10 +1,14 @@
 package DBmodels
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
+
+	"github.com/lib/pq"
 )
 
 type User struct {
@@ -13,6 +17,10 @@ type User struct {
 	Email       string    `json:"email"`
 	Password    string    `json:"password"`
 	DateOfBirth time.Time `json:"dateOfBirth"`
+	Name        string    `json:"name"`
+	Country     string    `json:"country"`
+	Languages   []string  `json:"languages"`
+	Tags        []string  `json:"tags"`
 }
 
 func CreateUserTable() error {
@@ -22,19 +30,23 @@ func CreateUserTable() error {
 		username TEXT NOT NULL UNIQUE,
 		email TEXT NOT NULL UNIQUE,
 		password TEXT NOT NULL,
-		dateOfBirth DATE NOT NULL
+		dateOfBirth DATE NOT NULL,
+		name TEXT,
+		country TEXT,
+		languages TEXT[],
+		tags TEXT[]
 	);`
 	return CreateTable(createTableSQL)
 }
 
-func AddUser(username, email, password string, dateOfBirth time.Time) (int, error) {
+func AddUser(username, email, password string, dateOfBirth time.Time, name, country string, languages []string, tags []string) (int, error) {
 	insertUserSQL := `
-	INSERT INTO users (username, email, password, dateOfBirth)
-	VALUES ($1, $2, $3, $4)
+	INSERT INTO users (username, email, password, dateOfBirth, name, country, languages, tags)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 	RETURNING userId;`
 
 	var userId int
-	err := DB.QueryRow(insertUserSQL, username, email, password, dateOfBirth).Scan(&userId)
+	err := DB.QueryRow(insertUserSQL, username, email, password, dateOfBirth, name, country, pq.Array(languages), pq.Array(tags)).Scan(&userId)
 	if err != nil {
 		fmt.Println("Error adding user:", err)
 		return 0, err
@@ -44,21 +56,45 @@ func AddUser(username, email, password string, dateOfBirth time.Time) (int, erro
 }
 
 func GetUser(username string) (User, error) {
-	query := `SELECT userId, username, email, password, dateOfBirth FROM users WHERE username = $1`
-	row := DB.QueryRow(query, username)
+	query := `
+    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags 
+    FROM users 
+    WHERE username = $1`
 
 	var user User
-	err := row.Scan(&user.UserID, &user.Username, &user.Email, &user.Password, &user.DateOfBirth)
-	if err != nil {
+	row := DB.QueryRow(query, username)
+	err := row.Scan(
+		&user.UserID, &user.Username, &user.Email,
+		&user.Password, &user.DateOfBirth, &user.Name, &user.Country,
+		pq.Array(&user.Languages),
+		pq.Array(&user.Tags),
+	)
+
+	if err == sql.ErrNoRows {
 		return User{}, fmt.Errorf("no user found with username: %s", username)
+	} else if err != nil {
+		log.Printf("Error retrieving user: %v\n", err)
+		return User{}, err
+	}
+
+	if user.Languages == nil {
+		user.Languages = []string{}
+	}
+	if user.Tags == nil {
+		user.Tags = []string{}
 	}
 
 	return user, nil
 }
 
 func GetAllUsers() ([]User, error) {
-	rows, err := DB.Query("SELECT userId, username, email, password, dateOfBirth FROM users")
+	query := `
+    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags 
+    FROM users`
+
+	rows, err := DB.Query(query)
 	if err != nil {
+		log.Printf("Error querying users: %v\n", err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -66,14 +102,31 @@ func GetAllUsers() ([]User, error) {
 	var users []User
 	for rows.Next() {
 		var user User
-		if err := rows.Scan(&user.UserID, &user.Username, &user.Email, &user.Password, &user.DateOfBirth); err != nil {
+		if err := rows.Scan(
+			&user.UserID, &user.Username, &user.Email,
+			&user.Password, &user.DateOfBirth, &user.Name, &user.Country,
+			pq.Array(&user.Languages),
+			pq.Array(&user.Tags),
+		); err != nil {
+			log.Printf("Error scanning user: %v\n", err)
 			return nil, err
 		}
+
+		if user.Languages == nil {
+			user.Languages = []string{}
+		}
+		if user.Tags == nil {
+			user.Tags = []string{}
+		}
+
 		users = append(users, user)
 	}
+
 	if err := rows.Err(); err != nil {
+		log.Printf("Error iterating over users: %v\n", err)
 		return nil, err
 	}
+
 	return users, nil
 }
 
@@ -95,7 +148,49 @@ func DeleteUser(username string) error {
 	return DeleteRow(table, condition, username)
 }
 
+func AddUserLanguage(username string, languages []string) error {
+	err := AddArrayAttribute("users", "username", username, "languages", languages)
+	if err != nil {
+		log.Printf("Error adding languages for user %s: %v\n", username, err)
+		return err
+	}
+
+	return nil
+}
+
+func RemoveUserLanguage(username string, languages []string) error {
+	err := RemoveArrayAttribute("users", "username", username, "languages", languages)
+	if err != nil {
+		log.Printf("Error removing languages for user %s: %v\n", username, err)
+		return err
+	}
+
+	return nil
+}
+
+func AddUserTag(username string, tags []string) error {
+	err := AddArrayAttribute("users", "username", username, "tags", tags)
+	if err != nil {
+		log.Printf("Error adding tags for user %s: %v\n", username, err)
+		return err
+	}
+
+	return nil
+}
+
+func RemoveUserTag(username string, tags []string) error {
+	err := RemoveArrayAttribute("users", "username", username, "tags", tags)
+	if err != nil {
+		log.Printf("Error removing tags for user %s: %v\n", username, err)
+		return err
+	}
+
+	return nil
+}
+
 func UserHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
 	switch r.Method {
 	case "GET":
 		username := r.URL.Query().Get("username")
@@ -104,19 +199,17 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 			user, err := GetUser(username)
 			if err != nil {
 				http.Error(w, "User not found", http.StatusNotFound)
-				fmt.Println(err)
+				log.Printf("Error retrieving user: %v\n", err)
 				return
 			}
-			w.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(user)
 		} else {
 			users, err := GetAllUsers()
 			if err != nil {
 				http.Error(w, "Error retrieving users", http.StatusInternalServerError)
-				fmt.Println(err)
+				log.Printf("Error retrieving users: %v\n", err)
 				return
 			}
-			w.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(users)
 		}
 
@@ -127,7 +220,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 			return
 		}
-		userId, err := AddUser(user.Username, user.Email, user.Password, user.DateOfBirth)
+		userId, err := AddUser(user.Username, user.Email, user.Password, user.DateOfBirth, user.Name, user.Country, user.Languages, user.Tags)
 		if err != nil {
 			http.Error(w, "Error adding user", http.StatusInternalServerError)
 			fmt.Println(err)
@@ -140,18 +233,18 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 	case "PUT":
 		username := r.URL.Query().Get("username")
 		if username == "" {
-			http.Error(w, "username is required", http.StatusBadRequest)
+			http.Error(w, "Username is required", http.StatusBadRequest)
 			return
 		}
 
 		var user User
 		if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 			http.Error(w, "Invalid request payload", http.StatusBadRequest)
-			fmt.Println(err)
+			log.Printf("Error decoding request body: %v\n", err)
 			return
 		}
 
-		data := map[string]interface{}{}
+		data := make(map[string]interface{})
 		if user.Username != "" {
 			data["username"] = user.Username
 		}
@@ -161,26 +254,34 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 		if !user.DateOfBirth.IsZero() {
 			data["dateOfBirth"] = user.DateOfBirth
 		}
+		if user.Name != "" {
+			data["name"] = user.Name
+		}
+		if user.Country != "" {
+			data["country"] = user.Country
+		}
 
 		if err := UpdateUser(username, data); err != nil {
 			http.Error(w, "Error updating user", http.StatusInternalServerError)
-			fmt.Println(err)
+			log.Printf("Error updating user: %v\n", err)
 			return
 		}
+
 		w.WriteHeader(http.StatusOK)
 
 	case "DELETE":
 		username := r.URL.Query().Get("username")
 		if username == "" {
-			http.Error(w, "username is required", http.StatusBadRequest)
+			http.Error(w, "Username is required", http.StatusBadRequest)
 			return
 		}
 
 		if err := DeleteUser(username); err != nil {
 			http.Error(w, "Error deleting user", http.StatusInternalServerError)
-			fmt.Println(err)
+			log.Printf("Error deleting user: %v\n", err)
 			return
 		}
+
 		w.WriteHeader(http.StatusOK)
 
 	default:
