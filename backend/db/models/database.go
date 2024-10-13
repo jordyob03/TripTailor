@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/lib/pq"
-	_ "github.com/lib/pq"
 )
 
 // ------------------------------------------------------------------------------------------------------------------------------
@@ -140,6 +139,12 @@ func GetRows(table string, condition string, args ...interface{}) ([]map[string]
 // ------------------------------------------------------------------------------------------------------------------------------
 // ----------------------------------------------------- Helper Functions -------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------------------------------
+
+func UpdateAttribute(table string, identifierCol string, identifier string, column string, value interface{}) error {
+	updateSQL := fmt.Sprintf("UPDATE %s SET %s = $1 WHERE %s = $2", table, column, identifierCol)
+	_, err := DB.Exec(updateSQL, value, identifier)
+	return err
+}
 
 func AddArrayAttribute(table string, identifierCol string, identifier string, column string, values []string) error {
 	// Step 1: Fetch existing values from the specified column

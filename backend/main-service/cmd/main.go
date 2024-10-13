@@ -15,7 +15,6 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	connStr := "postgres://postgres:password@db:5432/database?sslmode=disable"
-
 	if err := db.InitDB(connStr); err != nil {
 		log.Fatal("Error connecting to the database:", err)
 	}
@@ -29,7 +28,6 @@ func main() {
 		log.Fatal("Error creating user table:", err)
 	}
 
-	// Test user
 	user := db.User{
 		Username:    "WyrdWyn4",
 		Email:       "wmksherwani@mun.ca",
@@ -39,9 +37,11 @@ func main() {
 		Country:     "Pakistan",
 		Languages:   []string{"English", "Urdu", "Punjabi"},
 		Tags:        []string{},
+		Boards:      []string{},
+		Posts:       []string{},
 	}
 
-	if id, err := db.AddUser(user.Username, user.Email, user.Password, user.DateOfBirth, user.Name, user.Country, user.Languages, user.Tags); err != nil {
+	if id, err := db.AddUser(user); err != nil {
 		log.Fatal("Error inserting user:", err)
 	} else {
 		fmt.Println("Inserted user with id:", id)
@@ -74,9 +74,34 @@ func main() {
 		fmt.Println("Error removing tag:", err)
 	}
 
-	// if err := db.DeleteUser("WyrdWyn4"); err != nil {
-	// 	log.Fatal("Error deleting user:", err)
-	// }
+	err = db.UpdateUserEmail("WyrdWyn4", "newemail@example.com")
+	if err != nil {
+		log.Println("Error updating email:", err)
+	} else {
+		fmt.Println("Email updated successfully!")
+	}
+
+	err = db.UpdateUserPassword("WyrdWyn4", "newpassword123")
+	if err != nil {
+		log.Println("Error updating password:", err)
+	} else {
+		fmt.Println("Password updated successfully!")
+	}
+
+	newDateOfBirth := time.Date(2000, 01, 01, 0, 0, 0, 0, time.UTC)
+	err = db.UpdateUserDateOfBirth("WyrdWyn4", newDateOfBirth)
+	if err != nil {
+		log.Println("Error updating date of birth:", err)
+	} else {
+		fmt.Println("Date of birth updated successfully!")
+	}
+
+	err = db.UpdateUserCountry("WyrdWyn4", "Canada")
+	if err != nil {
+		log.Println("Error updating country:", err)
+	} else {
+		fmt.Println("Country updated successfully!")
+	}
 
 	http.HandleFunc("/hello", helloHandler)
 	http.HandleFunc("/users", db.UserHandler)

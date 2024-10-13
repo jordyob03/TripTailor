@@ -12,7 +12,7 @@ import (
 )
 
 type User struct {
-	UserID      int       `json:"userId"`
+	UserId      int       `json:"userId"`
 	Username    string    `json:"username"`
 	Email       string    `json:"email"`
 	Password    string    `json:"password"`
@@ -21,6 +21,8 @@ type User struct {
 	Country     string    `json:"country"`
 	Languages   []string  `json:"languages"`
 	Tags        []string  `json:"tags"`
+	Boards      []string  `json:"boards"`
+	Posts       []string  `json:"posts"`
 }
 
 func CreateUserTable() error {
@@ -34,19 +36,25 @@ func CreateUserTable() error {
 		name TEXT,
 		country TEXT,
 		languages TEXT[],
-		tags TEXT[]
+		tags TEXT[],
+		boards TEXT[],
+		posts TEXT[]
 	);`
 	return CreateTable(createTableSQL)
 }
 
-func AddUser(username, email, password string, dateOfBirth time.Time, name, country string, languages []string, tags []string) (int, error) {
+func AddUser(user User) (int, error) {
 	insertUserSQL := `
-	INSERT INTO users (username, email, password, dateOfBirth, name, country, languages, tags)
-	VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+	INSERT INTO users (username, email, password, dateOfBirth, name, country, languages, tags, boards, posts)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 	RETURNING userId;`
 
 	var userId int
-	err := DB.QueryRow(insertUserSQL, username, email, password, dateOfBirth, name, country, pq.Array(languages), pq.Array(tags)).Scan(&userId)
+	err := DB.QueryRow(
+		insertUserSQL, user.Username, user.Email, user.Password,
+		user.DateOfBirth, user.Name, user.Country,
+		pq.Array(user.Languages), pq.Array(user.Tags),
+		pq.Array(user.Boards), pq.Array(user.Posts)).Scan(&userId)
 	if err != nil {
 		fmt.Println("Error adding user:", err)
 		return 0, err
@@ -57,17 +65,19 @@ func AddUser(username, email, password string, dateOfBirth time.Time, name, coun
 
 func GetUser(username string) (User, error) {
 	query := `
-    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags 
+    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts
     FROM users 
     WHERE username = $1`
 
 	var user User
 	row := DB.QueryRow(query, username)
 	err := row.Scan(
-		&user.UserID, &user.Username, &user.Email,
+		&user.UserId, &user.Username, &user.Email,
 		&user.Password, &user.DateOfBirth, &user.Name, &user.Country,
 		pq.Array(&user.Languages),
 		pq.Array(&user.Tags),
+		pq.Array(&user.Boards),
+		pq.Array(&user.Posts),
 	)
 
 	if err == sql.ErrNoRows {
@@ -80,8 +90,17 @@ func GetUser(username string) (User, error) {
 	if user.Languages == nil {
 		user.Languages = []string{}
 	}
+
 	if user.Tags == nil {
 		user.Tags = []string{}
+	}
+
+	if user.Boards == nil {
+		user.Boards = []string{}
+	}
+
+	if user.Posts == nil {
+		user.Posts = []string{}
 	}
 
 	return user, nil
@@ -89,7 +108,7 @@ func GetUser(username string) (User, error) {
 
 func GetAllUsers() ([]User, error) {
 	query := `
-    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags 
+    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts
     FROM users`
 
 	rows, err := DB.Query(query)
@@ -103,10 +122,12 @@ func GetAllUsers() ([]User, error) {
 	for rows.Next() {
 		var user User
 		if err := rows.Scan(
-			&user.UserID, &user.Username, &user.Email,
+			&user.UserId, &user.Username, &user.Email,
 			&user.Password, &user.DateOfBirth, &user.Name, &user.Country,
 			pq.Array(&user.Languages),
 			pq.Array(&user.Tags),
+			pq.Array(&user.Boards),
+			pq.Array(&user.Posts),
 		); err != nil {
 			log.Printf("Error scanning user: %v\n", err)
 			return nil, err
@@ -115,8 +136,17 @@ func GetAllUsers() ([]User, error) {
 		if user.Languages == nil {
 			user.Languages = []string{}
 		}
+
 		if user.Tags == nil {
 			user.Tags = []string{}
+		}
+
+		if user.Boards == nil {
+			user.Boards = []string{}
+		}
+
+		if user.Posts == nil {
+			user.Posts = []string{}
 		}
 
 		users = append(users, user)
@@ -130,15 +160,20 @@ func GetAllUsers() ([]User, error) {
 	return users, nil
 }
 
-func UpdateUser(username string, data map[string]interface{}) error {
-	if len(data) == 0 {
-		return fmt.Errorf("no fields to update for user with username: %s", username)
-	}
+func UpdateUserEmail(username, email string) error {
+	return UpdateAttribute("users", "username", username, "email", email)
+}
 
-	table := "users"
-	condition := "username = $1"
+func UpdateUserPassword(username, password string) error {
+	return UpdateAttribute("users", "username", username, "password", password)
+}
 
-	return UpdateRow(table, data, condition, username)
+func UpdateUserDateOfBirth(username string, dateOfBirth time.Time) error {
+	return UpdateAttribute("users", "username", username, "dateOfBirth", dateOfBirth)
+}
+
+func UpdateUserCountry(username, country string) error {
+	return UpdateAttribute("users", "username", username, "country", country)
 }
 
 func DeleteUser(username string) error {
@@ -220,7 +255,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 			return
 		}
-		userId, err := AddUser(user.Username, user.Email, user.Password, user.DateOfBirth, user.Name, user.Country, user.Languages, user.Tags)
+		userId, err := AddUser(user)
 		if err != nil {
 			http.Error(w, "Error adding user", http.StatusInternalServerError)
 			fmt.Println(err)
@@ -261,13 +296,8 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 			data["country"] = user.Country
 		}
 
-		if err := UpdateUser(username, data); err != nil {
-			http.Error(w, "Error updating user", http.StatusInternalServerError)
-			log.Printf("Error updating user: %v\n", err)
-			return
-		}
-
 		w.WriteHeader(http.StatusOK)
+		return
 
 	case "DELETE":
 		username := r.URL.Query().Get("username")
