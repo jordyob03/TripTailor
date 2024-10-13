@@ -124,13 +124,17 @@ func GetRows(table string, condition string, args ...interface{}) ([]map[string]
 	return results, nil
 }
 
-func UpdateAttribute(table string, identifierCol string, identifier string, column string, value interface{}) error {
+func UpdateAttribute(table string, identifierCol string, identifier interface{}, column string, value interface{}) error {
 	updateSQL := fmt.Sprintf("UPDATE %s SET %s = $1 WHERE %s = $2", table, column, identifierCol)
+
 	_, err := DB.Exec(updateSQL, value, identifier)
-	return err
+	if err != nil {
+		return fmt.Errorf("error updating %s in table %s: %w", column, table, err)
+	}
+	return nil
 }
 
-func AddArrayAttribute(table string, identifierCol string, identifier string, column string, values interface{}) error {
+func AddArrayAttribute(table, identifierCol string, identifier interface{}, column string, values interface{}) error {
 	var existingValues []string
 	var existingIntValues []int
 
@@ -147,8 +151,8 @@ func AddArrayAttribute(table string, identifierCol string, identifier string, co
 		return fmt.Errorf("unsupported value type")
 	}
 
-	if err != nil {
-		log.Printf("Error fetching %s for %s %s: %v\n", column, table, identifier, err)
+	if err != nil && err != sql.ErrNoRows {
+		log.Printf("Error fetching %s for %s: %v\n", column, identifier, err)
 		return err
 	}
 
@@ -177,7 +181,7 @@ func AddArrayAttribute(table string, identifierCol string, identifier string, co
 	}
 
 	if len(newValues) == 0 {
-		log.Printf("No new values to add for %s %s in column %s\n", table, identifier, column)
+		log.Printf("No new values to add for %s in column %s\n", identifier, column)
 		return nil
 	}
 
@@ -185,14 +189,14 @@ func AddArrayAttribute(table string, identifierCol string, identifier string, co
 
 	_, err = DB.Exec(updateSQL, pq.Array(newValues), identifier)
 	if err != nil {
-		log.Printf("Error adding values to %s for %s %s: %v\n", column, table, identifier, err)
+		log.Printf("Error adding values to %s for %s: %v\n", column, identifier, err)
 		return err
 	}
 
 	return nil
 }
 
-func RemoveArrayAttribute(table string, identifierCol string, identifier string, column string, values interface{}) error {
+func RemoveArrayAttribute(table, identifierCol string, identifier interface{}, column string, values interface{}) error {
 	switch v := values.(type) {
 	case []string:
 		for _, val := range v {
@@ -200,7 +204,7 @@ func RemoveArrayAttribute(table string, identifierCol string, identifier string,
 
 			_, err := DB.Exec(removeValSQL, val, identifier)
 			if err != nil {
-				log.Printf("Error removing %s '%s' for %s %s: %v\n", column, val, table, identifier, err)
+				log.Printf("Error removing %s '%s' for %s: %v\n", column, val, identifier, err)
 				return err
 			}
 		}
@@ -210,7 +214,7 @@ func RemoveArrayAttribute(table string, identifierCol string, identifier string,
 
 			_, err := DB.Exec(removeValSQL, val, identifier)
 			if err != nil {
-				log.Printf("Error removing %s '%d' for %s %s: %v\n", column, val, table, identifier, err)
+				log.Printf("Error removing %s '%d' for %s: %v\n", column, val, identifier, err)
 				return err
 			}
 		}
