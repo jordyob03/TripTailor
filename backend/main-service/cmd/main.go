@@ -20,12 +20,12 @@ func main() {
 	}
 	defer db.CloseDB()
 
-	if err := db.DeleteTable("users"); err != nil {
-		log.Fatal("Error deleting user table:", err)
+	if err := db.DeleteAllTables(); err != nil {
+		log.Fatal("Error deleting tables:", err)
 	}
 
-	if err := db.CreateUserTable(); err != nil {
-		log.Fatal("Error creating user table:", err)
+	if err := db.CreateAllTables(); err != nil {
+		log.Fatal("Error creating tables:", err)
 	}
 
 	user := db.User{
@@ -47,75 +47,84 @@ func main() {
 		fmt.Println("Inserted user with id:", id)
 	}
 
-	if user, err := db.GetUser("WyrdWyn4"); err != nil {
-		log.Fatal("Error getting user:", err)
-	} else {
-		fmt.Println("User:")
-		fmt.Println(user)
+	board := db.Board{
+		Name:        "Sample Board",
+		Description: "This is a test board",
+		Username:    "WyrdWyn4",
+		Posts:       []string{},
+		Tags:        []string{"travel", "fun"},
 	}
 
-	err := db.AddUserLanguage("WyrdWyn4", []string{"English", "Arabic", "Pashto"})
+	fmt.Println("Testing AddBoard...")
+	err := db.AddBoard(board)
 	if err != nil {
-		fmt.Println("Error adding languages:", err)
+		log.Fatalf("AddBoard failed: %v", err)
 	}
 
-	err = db.RemoveUserLanguage("WyrdWyn4", []string{"Pashto", "Spanish"})
+	boardID := 1
+
+	fmt.Println("Testing GetBoard...")
+	retrievedBoard, err := db.GetBoard(boardID)
 	if err != nil {
-		fmt.Println("Error removing language:", err)
+		log.Fatalf("GetBoard failed: %v", err)
+	}
+	fmt.Printf("Retrieved Board: %+v\n", retrievedBoard)
+
+	fmt.Println("Testing UpdateBoardName...")
+	err = db.UpdateBoardName(boardID, "New Board Name")
+	if err != nil {
+		log.Fatalf("UpdateBoardName failed: %v", err)
 	}
 
-	err = db.AddUserTag("WyrdWyn4", []string{"Family", "Student"})
+	fmt.Println("Testing UpdateBoardDescription...")
+	err = db.UpdateBoardDescription(boardID, "New Board Description")
 	if err != nil {
-		fmt.Println("Error adding tags:", err)
+		log.Fatalf("UpdateBoardDescription failed: %v", err)
 	}
 
-	err = db.RemoveUserTag("WyrdWyn4", []string{"Student", "Friend"})
+	fmt.Println("Testing UpdateBoardCreationDate...")
+	err = db.UpdateBoardCreationDate(boardID, time.Now())
 	if err != nil {
-		fmt.Println("Error removing tag:", err)
+		log.Fatalf("UpdateBoardCreationDate failed: %v", err)
 	}
 
-	err = db.UpdateUserEmail("WyrdWyn4", "newemail@example.com")
+	fmt.Println("Testing UpdateBoardDescription...")
+	err = db.UpdateBoardDescription(boardID, "New Board Description")
 	if err != nil {
-		log.Println("Error updating email:", err)
-	} else {
-		fmt.Println("Email updated successfully!")
+		log.Fatalf("UpdateBoardDescription failed: %v", err)
 	}
 
-	err = db.UpdateUserPassword("WyrdWyn4", "newpassword123")
+	fmt.Println("Testing AddBoardTag...")
+	err = db.AddBoardTag(fmt.Sprint(boardID), "newTag")
 	if err != nil {
-		log.Println("Error updating password:", err)
-	} else {
-		fmt.Println("Password updated successfully!")
+		log.Fatalf("AddBoardTag failed: %v", err)
 	}
 
-	newDateOfBirth := time.Date(2000, 01, 01, 0, 0, 0, 0, time.UTC)
-	err = db.UpdateUserDateOfBirth("WyrdWyn4", newDateOfBirth)
+	fmt.Println("Testing RemoveBoardTag...")
+	err = db.RemoveBoardTag(fmt.Sprint(boardID), "newTag")
 	if err != nil {
-		log.Println("Error updating date of birth:", err)
-	} else {
-		fmt.Println("Date of birth updated successfully!")
+		log.Fatalf("RemoveBoardTag failed: %v", err)
 	}
 
-	err = db.UpdateUserCountry("WyrdWyn4", "Canada")
+	fmt.Println("Testing AddBoardPost...")
+	err = db.AddBoardPost(fmt.Sprint(boardID), 123)
 	if err != nil {
-		log.Println("Error updating country:", err)
-	} else {
-		fmt.Println("Country updated successfully!")
+		log.Fatalf("AddBoardPost failed: %v", err)
 	}
 
-	err = db.AddUserBoard("WyrdWyn4", 1)
+	fmt.Println("Testing RemoveBoardPost...")
+	err = db.RemoveBoardPost(fmt.Sprint(boardID), 123)
 	if err != nil {
-		log.Println("Error adding board:", err)
-	} else {
-		fmt.Println("Board added successfully!")
+		log.Fatalf("RemoveBoardPost failed: %v", err)
 	}
 
-	err = db.AddUserPost("WyrdWyn4", 2)
+	fmt.Println("Testing RemoveBoard...")
+	err = db.RemoveBoard(retrievedBoard)
 	if err != nil {
-		log.Println("Error adding post:", err)
-	} else {
-		fmt.Println("Post added successfully!")
+		log.Fatalf("RemoveBoard failed: %v", err)
 	}
+
+	fmt.Println("All tests completed successfully.")
 
 	http.HandleFunc("/hello", helloHandler)
 	http.HandleFunc("/users", db.UserHandler)

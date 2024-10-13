@@ -24,6 +24,32 @@ func InitDB(connStr string) error {
 	return nil
 }
 
+func CreateAllTables() error {
+	if err := CreateUserTable(); err != nil {
+		return err
+	}
+	if err := CreateBoardTable(); err != nil {
+		return err
+	}
+	if err := CreatePostTable(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeleteAllTables() error {
+	if err := DeleteTable("users"); err != nil {
+		return err
+	}
+	if err := DeleteTable("boards"); err != nil {
+		return err
+	}
+	if err := DeleteTable("posts"); err != nil {
+		return err
+	}
+	return nil
+}
+
 func CloseDB() {
 	if DB != nil {
 		DB.Close()

@@ -20,9 +20,9 @@ type Board struct {
 func CreateBoardTable() error {
 	createTableSQL := `
     CREATE TABLE IF NOT EXISTS boards (
-        board_id SERIAL PRIMARY KEY,
+        boardId SERIAL PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
-        creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        creationDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         description TEXT,
         username VARCHAR(255) REFERENCES users(username),
         posts TEXT[],
@@ -42,7 +42,7 @@ func CreateBoardTable() error {
 func AddBoard(board Board) error {
 	insertBoardSQL := `
     INSERT INTO boards (name, description, username, posts, tags) 
-    VALUES ($1, $2, $3, $4, $5) RETURNING board_id;`
+    VALUES ($1, $2, $3, $4, $5) RETURNING boardId;`
 
 	var boardID int
 	err := DB.QueryRow(
@@ -61,7 +61,7 @@ func AddBoard(board Board) error {
 }
 
 func RemoveBoard(board Board) error {
-	deleteBoardSQL := `DELETE FROM boards WHERE board_id = $1;`
+	deleteBoardSQL := `DELETE FROM boards WHERE boardId = $1;`
 
 	_, err := DB.Exec(deleteBoardSQL, board.BoardId)
 	if err != nil {
@@ -79,9 +79,9 @@ func GetBoard(boardId int) (Board, error) {
 	var board Board
 
 	query := `
-	SELECT board_id, name, creation_date, description, username, posts, tags 
+	SELECT boardId, name, creationDate, description, username, posts, tags 
 	FROM boards 
-	WHERE board_id = $1;
+	WHERE boardId = $1;
 	`
 
 	err := DB.QueryRow(query, boardId).Scan(
@@ -100,6 +100,39 @@ func GetBoard(boardId int) (Board, error) {
 
 	log.Printf("Board with ID %d retrieved successfully.\n", boardId)
 	return board, nil
+}
+
+func UpdateBoardName(boardId int, name string) error {
+	err := UpdateAttribute("boards", "boardId", boardId, "name", name)
+	if err != nil {
+		log.Printf("Error updating board name: %v\n", err)
+		return err
+	}
+
+	log.Println("Board name updated successfully.")
+	return nil
+}
+
+func UpdateBoardDescription(boardId int, description string) error {
+	err := UpdateAttribute("boards", "boardId", boardId, "description", description)
+	if err != nil {
+		log.Printf("Error updating board description: %v\n", err)
+		return err
+	}
+
+	log.Println("Board description updated successfully.")
+	return nil
+}
+
+func UpdateBoardCreationDate(boardId int, creationDate time.Time) error {
+	err := UpdateAttribute("boards", "boardId", boardId, "creationDate", creationDate)
+	if err != nil {
+		log.Printf("Error updating board creation date: %v\n", err)
+		return err
+	}
+
+	log.Println("Board creation date updated successfully.")
+	return nil
 }
 
 func AddBoardPost(boardId string, postId int) error {
