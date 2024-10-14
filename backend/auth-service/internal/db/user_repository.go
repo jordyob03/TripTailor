@@ -1,27 +1,13 @@
 package DBAuth
 
 import (
+	"backend/auth-service/internal/models"
 	"database/sql"
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/lib/pq"
 )
-
-type User struct {
-	UserId      int       `json:"userId"`
-	Username    string    `json:"username"`
-	Email       string    `json:"email"`
-	Password    string    `json:"password"`
-	DateOfBirth time.Time `json:"dateOfBirth"`
-	Name        string    `json:"name"`
-	Country     string    `json:"country"`
-	Languages   []string  `json:"languages"`
-	Tags        []string  `json:"tags"`
-	Boards      []string  `json:"boards"`
-	Posts       []string  `json:"posts"`
-}
 
 func CreateUserTable(DB *sql.DB) error {
 	createTableSQL := `
@@ -41,7 +27,7 @@ func CreateUserTable(DB *sql.DB) error {
 	return CreateTable(DB, createTableSQL)
 }
 
-func AddUser(DB *sql.DB, user User) (int, error) {
+func AddUser(DB *sql.DB, user models.User) (int, error) {
 	insertUserSQL := `
 	INSERT INTO users (username, email, password, dateOfBirth, name, country, languages, tags, boards, posts)
 	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
@@ -61,13 +47,13 @@ func AddUser(DB *sql.DB, user User) (int, error) {
 	return userId, nil
 }
 
-func GetUser(DB *sql.DB, username string) (User, error) {
+func GetUser(DB *sql.DB, username string) (models.User, error) {
 	query := `
     SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts
     FROM users 
     WHERE username = $1`
 
-	var user User
+	var user models.User
 	row := DB.QueryRow(query, username)
 	err := row.Scan(
 		&user.UserId, &user.Username, &user.Email,
@@ -79,10 +65,10 @@ func GetUser(DB *sql.DB, username string) (User, error) {
 	)
 
 	if err == sql.ErrNoRows {
-		return User{}, fmt.Errorf("no user found with username: %s", username)
+		return models.User{}, fmt.Errorf("no user found with username: %s", username)
 	} else if err != nil {
 		log.Printf("Error retrieving user: %v\n", err)
-		return User{}, err
+		return models.User{}, err
 	}
 
 	if user.Languages == nil {
@@ -104,7 +90,7 @@ func GetUser(DB *sql.DB, username string) (User, error) {
 	return user, nil
 }
 
-func GetAllUsers(DB *sql.DB) ([]User, error) {
+func GetAllUsers(DB *sql.DB) ([]models.User, error) {
 	query := `
     SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts
     FROM users`
@@ -116,9 +102,9 @@ func GetAllUsers(DB *sql.DB) ([]User, error) {
 	}
 	defer rows.Close()
 
-	var users []User
+	var users []models.User
 	for rows.Next() {
-		var user User
+		var user models.User
 		if err := rows.Scan(
 			&user.UserId, &user.Username, &user.Email,
 			&user.Password, &user.DateOfBirth, &user.Name, &user.Country,
