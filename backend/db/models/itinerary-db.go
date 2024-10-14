@@ -12,6 +12,7 @@ import (
 type Itinerary struct {
 	ItineraryId  int       `json:"itineraryId"`
 	Name         string    `json:"name"`
+	City         string    `json:"city"`
 	Country      string    `json:"country"`
 	Languages    []string  `json:"languages"`
 	Tags         []string  `json:"tags"`
@@ -27,6 +28,7 @@ func CreateItineraryTable() error {
 	CREATE TABLE IF NOT EXISTS itineraries (
 		itineraryId SERIAL PRIMARY KEY,
 		name TEXT NOT NULL,
+		city TEXT NOT NULL,
 		country TEXT NOT NULL,
 		languages TEXT[],
 		tags TEXT[],
@@ -42,12 +44,12 @@ func CreateItineraryTable() error {
 
 func AddItinerary(itinerary Itinerary) (int, error) {
 	insertItinerarySQL := `
-	INSERT INTO itineraries (name, country, languages, tags, events, postId, username, creationDate, lastUpdate)
-	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING itineraryId;`
+	INSERT INTO itineraries (name, city, country, languages, tags, events, postId, username, creationDate, lastUpdate)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING itineraryId;`
 
 	var itineraryID int
 	err := DB.QueryRow(
-		insertItinerarySQL, itinerary.Name, itinerary.Country,
+		insertItinerarySQL, itinerary.Name, itinerary.City, itinerary.Country,
 		pq.Array(itinerary.Languages), pq.Array(itinerary.Tags),
 		pq.Array(itinerary.Events), itinerary.PostId,
 		itinerary.Username, itinerary.CreationDate, itinerary.LastUpdate).Scan(&itineraryID)
@@ -105,7 +107,7 @@ func RemoveItinerary(itineraryID int) error {
 
 func GetItinerary(itineraryID int) (Itinerary, error) {
 	getItinerarySQL := `
-	SELECT itineraryId, name, country, languages, tags, events, postId, username, creationDate, lastUpdate
+	SELECT itineraryId, name, city, country, languages, tags, events, postId, username, creationDate, lastUpdate
 	FROM itineraries
 	WHERE itineraryId = $1;`
 
@@ -114,6 +116,7 @@ func GetItinerary(itineraryID int) (Itinerary, error) {
 	err := DB.QueryRow(getItinerarySQL, itineraryID).Scan(
 		&itinerary.ItineraryId,
 		&itinerary.Name,
+		&itinerary.City,
 		&itinerary.Country,
 		pq.Array(&itinerary.Languages),
 		pq.Array(&itinerary.Tags),
@@ -156,6 +159,17 @@ func UpdateItineraryName(itineraryId int, name string) error {
 	}
 
 	log.Printf("Itinerary name updated successfully for ID %d.\n", itineraryId)
+	return nil
+}
+
+func UpdateItineraryCity(itineraryId int, city string) error {
+	err := UpdateAttribute("itineraries", "itineraryId", itineraryId, "city", city)
+	if err != nil {
+		log.Printf("Error updating itinerary city: %v\n", err)
+		return fmt.Errorf("failed to update itinerary city: %w", err)
+	}
+
+	log.Printf("Itinerary city updated successfully for ID %d.\n", itineraryId)
 	return nil
 }
 
