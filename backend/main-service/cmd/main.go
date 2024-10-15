@@ -14,18 +14,17 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	connStr := "postgres://postgres:password@db:5432/database?sslmode=disable"
-
 	if err := db.InitDB(connStr); err != nil {
 		log.Fatal("Error connecting to the database:", err)
 	}
 	defer db.CloseDB()
 
-	if err := db.DeleteTable("users"); err != nil {
-		log.Fatal("Error deleting user table:", err)
+	if err := db.DeleteAllTables(); err != nil {
+		log.Fatal("Error deleting tables:", err)
 	}
 
-	if err := db.CreateUserTable(); err != nil {
-		log.Fatal("Error creating user table:", err)
+	if err := db.CreateAllTables(); err != nil {
+		log.Fatal("Error creating tables:", err)
 	}
 
 	http.HandleFunc("/hello", helloHandler)

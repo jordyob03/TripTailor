@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"backend/auth-service/internal/db"
+	db "backend/auth-service/internal/db"
 	"backend/auth-service/utils"
 	"database/sql"
 	"net/http"
@@ -15,7 +15,7 @@ type SignInRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
-func SignIn(dbConn *sql.DB) gin.HandlerFunc {
+func SignIn(DB *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req SignInRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
@@ -23,19 +23,19 @@ func SignIn(dbConn *sql.DB) gin.HandlerFunc {
 			return
 		}
 
-		user, err := db.GetUser(dbConn, req.Username)
+		user, err := db.GetUser(DB, req.Username)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Cant access user"})
 			return
 		}
 
 		err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Incorrect password"})
 			return
 		}
 
-		token, err := utils.GenerateJWT(user.UserID)
+		token, err := utils.GenerateJWT(user.UserId)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 			return
@@ -43,7 +43,7 @@ func SignIn(dbConn *sql.DB) gin.HandlerFunc {
 
 		c.JSON(http.StatusOK, gin.H{
 			"message": "Signin successful",
-			"userId":  user.UserID,
+			"userId":  user.UserId,
 			"token":   token,
 		})
 	}
