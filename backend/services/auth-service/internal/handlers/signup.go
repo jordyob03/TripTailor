@@ -32,6 +32,8 @@ func SignUp(dbConn *sql.DB) gin.HandlerFunc {
 			return
 		}
 
+		var user models.User
+
 		if _, err := db.GetUser(dbConn, req.Username); err == nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Username already exists"})
 			return
@@ -43,7 +45,14 @@ func SignUp(dbConn *sql.DB) gin.HandlerFunc {
 			return
 		}
 
-		userId, err := db.AddUser(dbConn, req.Username, req.Email, string(hashedPassword), dateOfBirth)
+		req.Password = string(hashedPassword)
+
+		user.Username = req.Username
+		user.Email = req.Email
+		user.Password = req.Password
+		user.DateOfBirth = dateOfBirth
+
+		userId, err := db.AddUser(dbConn, user)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
 			return
