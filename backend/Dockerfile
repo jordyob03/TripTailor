@@ -14,9 +14,9 @@ COPY ./main-service/api/ ./main-service/api/
 COPY ./main-service/cmd/ ./main-service/cmd/
 COPY ./main-service/internal/ ./main-service/internal/
 
-COPY ./event-service/api/ ./event-service/api/
-COPY ./event-service/cmd/ ./event-service/cmd/
-COPY ./event-service/internal/ ./event-service/internal/
+#COPY ./event-service/api/ ./event-service/api/
+#COPY ./event-service/cmd/ ./event-service/cmd/
+#COPY ./event-service/internal/ ./event-service/internal/
 
 COPY ./auth-service/api/ ./auth-service/api/
 COPY ./auth-service/cmd/ ./auth-service/cmd/
