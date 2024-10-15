@@ -4,7 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/jordyob03/TripTailor/backend/services/auth-service/internal/models"
-	"time"
+	"github.com/lib/pq"
+	"log"
 )
 
 func CreateUserTable(DB *sql.DB) error {
