@@ -76,7 +76,7 @@ func RemoveUser(username string) error {
 
 	err := DB.QueryRow(getPostsAndBoardsSQL, username).Scan(pq.Array(&Stringposts), pq.Array(&Stringboards))
 	if err != nil {
-		log.Printf("Error retrieving posts and boards for user ID %d: %v\n", username, err)
+		log.Printf("Error retrieving posts and boards for user ID %s: %v\n", username, err)
 		return err
 	}
 
@@ -95,7 +95,7 @@ func RemoveUser(username string) error {
 	for _, post := range posts {
 		err := RemovePost(post)
 		if err != nil {
-			log.Printf("Error removing post %s: %v\n", post, err)
+			log.Printf("Error removing post %d: %v\n", post, err)
 			return err
 		}
 	}
@@ -103,7 +103,7 @@ func RemoveUser(username string) error {
 	for _, board := range boards {
 		err := RemoveBoard(board)
 		if err != nil {
-			log.Printf("Error removing board %s: %v\n", board, err)
+			log.Printf("Error removing board %d: %v\n", board, err)
 			return err
 		}
 	}

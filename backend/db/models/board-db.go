@@ -138,40 +138,50 @@ func UpdateBoardCreationDate(boardId int, creationDate time.Time) error {
 	return nil
 }
 
-func AddBoardPost(boardId string, postId int) error {
+func AddBoardPost(boardId int, postId int, recursive bool) error {
+	if !recursive {
+		return nil
+	}
+
 	err := AddArrayAttribute("boards", "boardId", boardId, "posts", IntsToStrings([]int{postId}))
 	if err != nil {
-		log.Printf("Error adding post for board %s: %v\n", boardId, err)
+		log.Printf("Error adding post for board %d: %v\n", boardId, err)
+		return err
+	}
+
+	err = AddPostBoard(postId, boardId, false)
+	if err != nil {
+		log.Printf("Error adding board to post %d: %v\n", postId, err)
 		return err
 	}
 
 	return nil
 }
 
-func RemoveBoardPost(boardId string, postId int) error {
+func RemoveBoardPost(boardId int, postId int) error {
 	err := RemoveArrayAttribute("boards", "boardId", boardId, "posts", IntsToStrings([]int{postId}))
 	if err != nil {
-		log.Printf("Error removing post for board %s: %v\n", boardId, err)
+		log.Printf("Error removing post for board %d: %v\n", boardId, err)
 		return err
 	}
 
 	return nil
 }
 
-func AddBoardTag(boardId string, tag string) error {
+func AddBoardTag(boardId int, tag string) error {
 	err := AddArrayAttribute("boards", "boardId", boardId, "tags", []string{tag})
 	if err != nil {
-		log.Printf("Error adding tag for board %s: %v\n", boardId, err)
+		log.Printf("Error adding tag for board %d: %v\n", boardId, err)
 		return err
 	}
 
 	return nil
 }
 
-func RemoveBoardTag(boardId string, tag string) error {
+func RemoveBoardTag(boardId int, tag string) error {
 	err := RemoveArrayAttribute("boards", "boardId", boardId, "tags", []string{tag})
 	if err != nil {
-		log.Printf("Error removing tag for board %s: %v\n", boardId, err)
+		log.Printf("Error removing tag for board %d: %v\n", boardId, err)
 		return err
 	}
 

@@ -228,14 +228,18 @@ func RemoveItineraryTag(itineraryId int, tag string) error {
 	return nil
 }
 
-func AddItineraryEvent(itineraryId int, eventId int) error {
+func AddItineraryEvent(itineraryId int, eventId int, recursive bool) error {
+	if !recursive {
+		return nil
+	}
+
 	err := AddArrayAttribute("itineraries", "itineraryId", itineraryId, "events", IntsToStrings([]int{eventId}))
 	if err != nil {
 		log.Printf("Error adding itinerary event: %v\n", err)
 		return fmt.Errorf("failed to add itinerary event: %w", err)
 	}
 
-	err = AddEventItinerary(eventId, itineraryId)
+	err = AddEventItinerary(eventId, itineraryId, false)
 	if err != nil {
 		log.Printf("Error adding event to itinerary: %v\n", err)
 		return fmt.Errorf("failed to add event to itinerary: %w", err)

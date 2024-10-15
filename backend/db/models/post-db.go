@@ -75,8 +75,8 @@ func RemovePost(postId int) error {
 	`
 
 	var username string
-	var boards []string
-	err := DB.QueryRow(getBoardsSQL, postId).Scan(&username, pq.Array(&boards))
+	var boardStringIds []string
+	err := DB.QueryRow(getBoardsSQL, postId).Scan(&username, pq.Array(&boardStringIds))
 	if err == sql.ErrNoRows {
 		log.Printf("No boards found with postID %d.\n", postId)
 		return nil
@@ -85,10 +85,16 @@ func RemovePost(postId int) error {
 		return err
 	}
 
-	for _, board := range boards {
+	boardIds, err := StringsToInts(boardStringIds)
+	if err != nil {
+		log.Printf("Error converting board IDs to integers: %v\n", err)
+		return err
+	}
+
+	for _, board := range boardIds {
 		err = RemoveBoardPost(board, postId)
 		if err != nil {
-			log.Printf("Error removing post %d from board %s: %v\n", postId, board, err)
+			log.Printf("Error removing post %d from board %d: %v\n", postId, board, err)
 			return err
 		}
 	}
@@ -168,11 +174,21 @@ func RemovePostTag(postId int, tag string) error {
 	return nil
 }
 
-func AddPostBoard(postId int, board int) error {
+func AddPostBoard(postId int, board int, recursive bool) error {
+	if !recursive {
+		return nil
+	}
+
 	err := AddArrayAttribute("posts", "postId", postId, "boards", IntsToStrings([]int{board}))
 	if err != nil {
 		log.Printf("Error adding board to post %d: %v\n", postId, err)
 		return fmt.Errorf("failed to add board to post: %w", err)
+	}
+
+	err = AddBoardPost(board, postId, false)
+	if err != nil {
+		log.Printf("Error adding post %d to board %d: %v\n", postId, board, err)
+		return fmt.Errorf("failed to add post to board: %w", err)
 	}
 
 	log.Printf("Board added to post %d successfully.\n", postId)
