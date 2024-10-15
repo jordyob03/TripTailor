@@ -42,9 +42,10 @@ func SignIn(DB *sql.DB) gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"message": "Signin successful",
-			"userId":  user.UserId,
-			"token":   token,
+			"message":  "Signin successful",
+			"userId":   user.UserId,
+			"token":    token,
+			"username": user.Username,
 		})
 	}
 }
