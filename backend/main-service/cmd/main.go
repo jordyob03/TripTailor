@@ -1,8 +1,8 @@
 package main
 
 import (
+	db "backend/db/models"
 	"fmt"
-	db "github.com/jordyob03/TripTailor/backend/services/main-service/api"
 	"log"
 	"net/http"
 )

@@ -1,21 +1,8 @@
 version: '3'
 services:
-  auth-service:
-      build:
-        context: ./backend/services/auth-service
-        dockerfile: Dockerfile
-      container_name: auth-service-container
-      ports:
-        - "8081:8081"
-      environment:
-        - DATABASE_URL=postgres://postgres:password@db:5432/database
-      depends_on:
-        - db
-      command: sh -c "sleep 10; /auth-service-container" 
-      
-  main-service:
+  backend:
     build:
-      context: ./backend/services/main-service
+      context: ./backend
       dockerfile: Dockerfile
     container_name: backend-container
     ports:
@@ -24,7 +11,7 @@ services:
       - DATABASE_URL=postgres://postgres:password@db:5432/database
     depends_on:
       - db
-    command: sh -c "sleep 3; go run ./cmd/main.go"
+    command: sh -c "sleep 3; go run ./main-service/cmd/main.go"
 
   db:
     image: postgres:17.0
