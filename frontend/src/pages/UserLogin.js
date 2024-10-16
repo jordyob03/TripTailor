@@ -43,6 +43,11 @@ function UserLogin() {
     navigate('/sign-up');
   };
 
+  const handleItinClick = () => {
+    navigate('/itin-creation');
+  };
+
+
   return (
     <>
       {/* navBar */}
@@ -96,6 +101,10 @@ function UserLogin() {
           >
             Don't have an account? Sign up
           </button>
+          <button
+          type="button"
+          onClick={handleItinClick}
+          >Bruh</button>
         </div>
       </div>
     </>
