@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"github.com/jordyob03/TripTailor/backend/services/auth-service/utils"
+	"backend/auth-service/utils"
 	"net/http"
 	"strings"
 
