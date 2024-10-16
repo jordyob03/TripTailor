@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	db "backend/auth-service/internal/db"
-	"backend/auth-service/internal/models"
-	"backend/auth-service/utils"
 	"database/sql"
+	db "github.com/jordyob03/TripTailor/backend/services/auth-service/internal/db"
+	"github.com/jordyob03/TripTailor/backend/services/auth-service/internal/models"
+	utils "github.com/jordyob03/TripTailor/backend/services/auth-service/utils"
 	"net/http"
 	"time"
 

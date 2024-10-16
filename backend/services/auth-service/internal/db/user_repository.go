@@ -1,12 +1,11 @@
 package DBAuth
 
 import (
-	"backend/auth-service/internal/models"
 	"database/sql"
 	"fmt"
-	"log"
-
+	"github.com/jordyob03/TripTailor/backend/services/auth-service/internal/models"
 	"github.com/lib/pq"
+	"log"
 )
 
 func CreateUserTable(DB *sql.DB) error {
