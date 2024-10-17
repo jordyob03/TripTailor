@@ -1,4 +1,4 @@
-package db
+package DBmodels
 
 import (
 	"database/sql"
@@ -10,7 +10,9 @@ import (
 	"github.com/lib/pq"
 )
 
-func InitDB(DB *sql.DB, connStr string) error {
+var DB *sql.DB
+
+func InitDB(connStr string) error {
 	var err error
 	DB, err = sql.Open("postgres", connStr)
 	if err != nil {
@@ -23,15 +25,27 @@ func InitDB(DB *sql.DB, connStr string) error {
 	return nil
 }
 
-func CreateAllTables(DB *sql.DB) error {
-	if err := CreateUserTable(DB); err != nil {
+func CreateAllTables() error {
+	if err := CreateUserTable(); err != nil {
+		return err
+	}
+	if err := CreateBoardTable(); err != nil {
+		return err
+	}
+	if err := CreatePostTable(); err != nil {
+		return err
+	}
+	if err := CreateItineraryTable(); err != nil {
+		return err
+	}
+	if err := CreateEventTable(); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func DeleteAllTables(DB *sql.DB) error {
+func DeleteAllTables() error {
 	dropTablesSQL := `
 	DROP TABLE IF EXISTS users, boards, posts, itineraries, events CASCADE;`
 
@@ -43,13 +57,13 @@ func DeleteAllTables(DB *sql.DB) error {
 	return nil
 }
 
-func CloseDB(DB *sql.DB) {
+func CloseDB() {
 	if DB != nil {
 		DB.Close()
 	}
 }
 
-func CreateTable(DB *sql.DB, createTableSQL string) error {
+func CreateTable(createTableSQL string) error {
 	_, err := DB.Exec(createTableSQL)
 	if err != nil {
 		return fmt.Errorf("error creating table: %w", err)
@@ -58,7 +72,7 @@ func CreateTable(DB *sql.DB, createTableSQL string) error {
 	return nil
 }
 
-func DeleteTable(DB *sql.DB, tableName string) error {
+func DeleteTable(tableName string) error {
 	query := fmt.Sprintf("DROP TABLE IF EXISTS %s CASCADE", tableName)
 	_, err := DB.Exec(query)
 	if err != nil {
@@ -68,7 +82,7 @@ func DeleteTable(DB *sql.DB, tableName string) error {
 	return nil
 }
 
-func AddRow(DB *sql.DB, table string, data map[string]interface{}) error {
+func AddRow(table string, data map[string]interface{}) error {
 	columns := make([]string, 0, len(data))
 	placeholders := make([]string, 0, len(data))
 	values := make([]interface{}, 0, len(data))
@@ -85,13 +99,13 @@ func AddRow(DB *sql.DB, table string, data map[string]interface{}) error {
 	return err
 }
 
-func DeleteRow(DB *sql.DB, table string, condition string, args ...interface{}) error {
+func DeleteRow(table string, condition string, args ...interface{}) error {
 	query := fmt.Sprintf("DELETE FROM %s WHERE %s", table, condition)
 	_, err := DB.Exec(query, args...)
 	return err
 }
 
-func UpdateRow(DB *sql.DB, table string, data map[string]interface{}, condition string, args ...interface{}) error {
+func UpdateRow(table string, data map[string]interface{}, condition string, args ...interface{}) error {
 	setClauses := make([]string, 0, len(data))
 
 	for column := range data {
@@ -111,7 +125,7 @@ func UpdateRow(DB *sql.DB, table string, data map[string]interface{}, condition 
 	return err
 }
 
-func GetRows(DB *sql.DB, table string, condition string, args ...interface{}) ([]map[string]interface{}, error) {
+func GetRows(table string, condition string, args ...interface{}) ([]map[string]interface{}, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE %s", table, condition)
 
 	rows, err := DB.Query(query, args...)
@@ -163,7 +177,7 @@ func StringsToInts(strings []string) ([]int, error) {
 	return ints, nil
 }
 
-func UpdateAttribute(DB *sql.DB, table string, identifierCol string, identifier interface{}, column string, value interface{}) error {
+func UpdateAttribute(table string, identifierCol string, identifier interface{}, column string, value interface{}) error {
 	updateSQL := fmt.Sprintf("UPDATE %s SET %s = $1 WHERE %s = $2", table, column, identifierCol)
 
 	_, err := DB.Exec(updateSQL, value, identifier)
@@ -173,7 +187,7 @@ func UpdateAttribute(DB *sql.DB, table string, identifierCol string, identifier 
 	return nil
 }
 
-func AddArrayAttribute(DB *sql.DB, table, identifierCol string, identifier interface{}, column string, values interface{}) error {
+func AddArrayAttribute(table, identifierCol string, identifier interface{}, column string, values interface{}) error {
 	var existingValues []string
 	var existingIntValues []int
 
@@ -235,7 +249,7 @@ func AddArrayAttribute(DB *sql.DB, table, identifierCol string, identifier inter
 	return nil
 }
 
-func RemoveArrayAttribute(DB *sql.DB, table, identifierCol string, identifier interface{}, column string, values interface{}) error {
+func RemoveArrayAttribute(table, identifierCol string, identifier interface{}, column string, values interface{}) error {
 	switch v := values.(type) {
 	case []string:
 		for _, val := range v {

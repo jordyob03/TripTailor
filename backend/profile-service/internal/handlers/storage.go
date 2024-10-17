@@ -10,6 +10,7 @@ type CreateProfileRequest struct {
 	Country  string `json:"country" binding:"required"`
 	Tags     string `json:"tags" binding:"required"`
 	Name     string `json:"name"`
+	Username string `json:"username" binding:"required"`
 }
 
 // ParseTags trims and splits comma-separated tags into a slice.

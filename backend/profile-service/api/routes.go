@@ -1,4 +1,4 @@
-package api
+package routes
 
 import (
 	"backend/profile-service/internal/handlers"
@@ -7,11 +7,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// RegisterRoutes registers all routes for the profile service
-func RegisterRoutes(router *gin.Engine, DB *sql.DB) {
-	// Route to create a new profile
-	router.POST("/profile/:username", handlers.CreateProfile(DB)) // Ensure username is part of the URL path
+// SetupRoutes sets up all the routes for the application.
+func SetupRoutes(router *gin.Engine, dbConn *sql.DB) {
+	// Group for user-related routes
+	userGroup := router.Group("/user")
+	{
+		// Create or update a user profile
+		userGroup.POST("/create", handlers.CreateProfile(dbConn))
 
-	// Route to update an existing profile
-	router.PUT("/profile/:username", handlers.UpdateProfile(DB)) // Use the same username parameter for consistency
+		// Update an existing user profile
+		userGroup.PUT("/update", handlers.UpdateProfile(dbConn))
+	}
 }

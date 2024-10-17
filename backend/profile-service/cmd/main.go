@@ -1,7 +1,7 @@
 package main
 
 import (
-	"backend/profile-service/api"
+	api "backend/profile-service/api"
 	"database/sql"
 	"log"
 	"time"
@@ -29,7 +29,7 @@ func main() {
 	}
 	defer dbConn.Close()
 
-	api.RegisterRoutes(r, dbConn)
+	api.SetupRoutes(r, connStr)
 
 	r.Run(":8085")
 }
