@@ -66,9 +66,10 @@ func SignUp(dbConn *sql.DB) gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"message": "User created successfully",
-			"userId":  userId,
-			"token":   token,
+			"message":  "User created successfully",
+			"userId":   userId,
+			"token":    token,
+			"username": user.Username,
 		})
 	}
 }
