@@ -1,0 +1,20 @@
+name: Base CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  docker_compose:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Build and Start Docker Compose services
+      run: docker compose up -d --build
+
+    - name: Tear down services
+      if: always()
+      run: docker compose down
