@@ -21,7 +21,7 @@ type Post struct {
 	Boards       []string  `json:"boards"`
 }
 
-func CreatePostTable() error {
+func CreatePostTable(DB *sql.DB) error {
 	createTableSQL := `
 	CREATE TABLE IF NOT EXISTS posts (
 		postId SERIAL PRIMARY KEY,
@@ -35,10 +35,10 @@ func CreatePostTable() error {
 		boards TEXT[]
 	);`
 
-	return CreateTable(createTableSQL)
+	return CreateTable(DB, createTableSQL)
 }
 
-func AddPost(post Post) (int, error) {
+func AddPost(DB *sql.DB, post Post) (int, error) {
 	insertSQL := `
 	INSERT INTO posts (itineraryId, title, imageLink, description, creationDate, username, tags, boards)
 	VALUES ($1, $2, $3, $4, $5, $6, $7, '$8')
@@ -67,7 +67,7 @@ func AddPost(post Post) (int, error) {
 	return postId, nil
 }
 
-func RemovePost(postId int) error {
+func RemovePost(DB *sql.DB, postId int) error {
 	getBoardsSQL := `
 	SELECT username, boards
 	FROM posts
@@ -92,14 +92,14 @@ func RemovePost(postId int) error {
 	}
 
 	for _, board := range boardIds {
-		err = RemoveBoardPost(board, postId)
+		err = RemoveBoardPost(DB, board, postId)
 		if err != nil {
 			log.Printf("Error removing post %d from board %d: %v\n", postId, board, err)
 			return err
 		}
 	}
 
-	RemoveUserPost(username, postId)
+	RemoveUserPost(DB, username, postId)
 
 	deleteSQL := `
 	DELETE FROM posts
@@ -122,7 +122,7 @@ func RemovePost(postId int) error {
 	return nil
 }
 
-func GetPost(postId int) (Post, error) {
+func GetPost(DB *sql.DB, postId int) (Post, error) {
 	var post Post
 
 	query := `
@@ -152,8 +152,8 @@ func GetPost(postId int) (Post, error) {
 	return post, nil
 }
 
-func AddPostTag(postId int, tag string) error {
-	err := AddArrayAttribute("posts", "postId", postId, "tags", []string{tag})
+func AddPostTag(DB *sql.DB, postId int, tag string) error {
+	err := AddArrayAttribute(DB, "posts", "postId", postId, "tags", []string{tag})
 	if err != nil {
 		log.Printf("Error adding tag to post %d: %v\n", postId, err)
 		return fmt.Errorf("failed to add tag to post: %w", err)
@@ -163,8 +163,8 @@ func AddPostTag(postId int, tag string) error {
 	return nil
 }
 
-func RemovePostTag(postId int, tag string) error {
-	err := RemoveArrayAttribute("posts", "postId", postId, "tags", []string{tag})
+func RemovePostTag(DB *sql.DB, postId int, tag string) error {
+	err := RemoveArrayAttribute(DB, "posts", "postId", postId, "tags", []string{tag})
 	if err != nil {
 		log.Printf("Error removing tag from post %d: %v\n", postId, err)
 		return fmt.Errorf("failed to remove tag from post: %w", err)
@@ -174,18 +174,18 @@ func RemovePostTag(postId int, tag string) error {
 	return nil
 }
 
-func AddPostBoard(postId int, board int, recursive bool) error {
+func AddPostBoard(DB *sql.DB, postId int, board int, recursive bool) error {
 	if !recursive {
 		return nil
 	}
 
-	err := AddArrayAttribute("posts", "postId", postId, "boards", IntsToStrings([]int{board}))
+	err := AddArrayAttribute(DB, "posts", "postId", postId, "boards", IntsToStrings([]int{board}))
 	if err != nil {
 		log.Printf("Error adding board to post %d: %v\n", postId, err)
 		return fmt.Errorf("failed to add board to post: %w", err)
 	}
 
-	err = AddBoardPost(board, postId, false)
+	err = AddBoardPost(DB, board, postId, false)
 	if err != nil {
 		log.Printf("Error adding post %d to board %d: %v\n", postId, board, err)
 		return fmt.Errorf("failed to add post to board: %w", err)
@@ -195,8 +195,8 @@ func AddPostBoard(postId int, board int, recursive bool) error {
 	return nil
 }
 
-func RemovePostBoard(postId int, board int) error {
-	err := RemoveArrayAttribute("posts", "postId", postId, "boards", IntsToStrings([]int{board}))
+func RemovePostBoard(DB *sql.DB, postId int, board int) error {
+	err := RemoveArrayAttribute(DB, "posts", "postId", postId, "boards", IntsToStrings([]int{board}))
 	if err != nil {
 		log.Printf("Error removing board from post %d: %v\n", postId, err)
 		return fmt.Errorf("failed to remove board from post: %w", err)
@@ -206,8 +206,8 @@ func RemovePostBoard(postId int, board int) error {
 	return nil
 }
 
-func UpdatePostImageLink(postId int, imageLink string) error {
-	err := UpdateAttribute("posts", "postId", postId, "imageLink", imageLink)
+func UpdatePostImageLink(DB *sql.DB, postId int, imageLink string) error {
+	err := UpdateAttribute(DB, "posts", "postId", postId, "imageLink", imageLink)
 	if err != nil {
 		log.Printf("Error adding image link to post %d: %v\n", postId, err)
 		return fmt.Errorf("failed to add image link to post: %w", err)
@@ -217,8 +217,8 @@ func UpdatePostImageLink(postId int, imageLink string) error {
 	return nil
 }
 
-func UpdatePostDescription(postId int, description string) error {
-	err := UpdateAttribute("posts", "postId", postId, "description", description)
+func UpdatePostDescription(DB *sql.DB, postId int, description string) error {
+	err := UpdateAttribute(DB, "posts", "postId", postId, "description", description)
 	if err != nil {
 		log.Printf("Error updating description for post %d: %v\n", postId, err)
 		return fmt.Errorf("failed to update description for post: %w", err)
@@ -228,8 +228,8 @@ func UpdatePostDescription(postId int, description string) error {
 	return nil
 }
 
-func UpdatePostTitle(postId int, title string) error {
-	err := UpdateAttribute("posts", "postId", postId, "title", title)
+func UpdatePostTitle(DB *sql.DB, postId int, title string) error {
+	err := UpdateAttribute(DB, "posts", "postId", postId, "title", title)
 	if err != nil {
 		log.Printf("Error updating title for post %d: %v\n", postId, err)
 		return fmt.Errorf("failed to update title for post: %w", err)
@@ -239,8 +239,8 @@ func UpdatePostTitle(postId int, title string) error {
 	return nil
 }
 
-func UpdatePostCreationDate(postId int, creationDate time.Time) error {
-	err := UpdateAttribute("posts", "postId", postId, "creationDate", creationDate)
+func UpdatePostCreationDate(DB *sql.DB, postId int, creationDate time.Time) error {
+	err := UpdateAttribute(DB, "posts", "postId", postId, "creationDate", creationDate)
 	if err != nil {
 		log.Printf("Error updating creation date for post %d: %v\n", postId, err)
 		return fmt.Errorf("failed to update creation date for post: %w", err)

@@ -23,7 +23,7 @@ type Itinerary struct {
 	LastUpdate   time.Time `json:"lastUpdate"`
 }
 
-func CreateItineraryTable() error {
+func CreateItineraryTable(DB *sql.DB) error {
 	createTableSQL := `
 	CREATE TABLE IF NOT EXISTS itineraries (
 		itineraryId SERIAL PRIMARY KEY,
@@ -39,10 +39,10 @@ func CreateItineraryTable() error {
 		lastUpdate TIMESTAMPTZ NOT NULL DEFAULT NOW()
 	);`
 
-	return CreateTable(createTableSQL)
+	return CreateTable(DB, createTableSQL)
 }
 
-func AddItinerary(itinerary Itinerary) (int, error) {
+func AddItinerary(DB *sql.DB, itinerary Itinerary) (int, error) {
 	insertItinerarySQL := `
 	INSERT INTO itineraries (name, city, country, languages, tags, events, postId, username, creationDate, lastUpdate)
 	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING itineraryId;`
@@ -58,11 +58,25 @@ func AddItinerary(itinerary Itinerary) (int, error) {
 		return 0, fmt.Errorf("failed to add itinerary: %w", err)
 	}
 
+	EventIDs, err := StringsToInts(itinerary.Events)
+	if err != nil {
+		log.Printf("Error converting event IDs to integers: %v\n", err)
+		return 0, fmt.Errorf("failed to convert event IDs to integers: %w", err)
+	}
+
+	for _, eventID := range EventIDs {
+		err = AddEventItinerary(DB, eventID, itineraryID, false)
+		if err != nil {
+			log.Printf("Error adding event to itinerary: %v\n", err)
+			return 0, fmt.Errorf("failed to add event to itinerary: %w", err)
+		}
+	}
+
 	log.Printf("Itinerary added successfully with ID: %d\n", itineraryID)
 	return itineraryID, nil
 }
 
-func RemoveItinerary(itineraryID int) error {
+func RemoveItinerary(DB *sql.DB, itineraryID int) error {
 	var postID int
 	var StringEventIDs []string
 
@@ -81,14 +95,14 @@ func RemoveItinerary(itineraryID int) error {
 
 	log.Println("Associated Event IDs:")
 	for _, eventID := range eventIDs {
-		err = RemoveEventItinerary(eventID, itineraryID)
+		err = RemoveEventItinerary(DB, eventID, itineraryID)
 		if err != nil {
 			log.Printf("Error removing event from itinerary: %v\n", err)
 			return fmt.Errorf("failed to remove event from itinerary: %w", err)
 		}
 	}
 
-	err = RemovePost(postID)
+	err = RemovePost(DB, postID)
 	if err != nil {
 		log.Printf("Error removing post with ID %d: %v\n", postID, err)
 		return fmt.Errorf("failed to remove associated post: %w", err)
@@ -105,7 +119,7 @@ func RemoveItinerary(itineraryID int) error {
 	return nil
 }
 
-func GetItinerary(itineraryID int) (Itinerary, error) {
+func GetItinerary(DB *sql.DB, itineraryID int) (Itinerary, error) {
 	getItinerarySQL := `
 	SELECT itineraryId, name, city, country, languages, tags, events, postId, username, creationDate, lastUpdate
 	FROM itineraries
@@ -151,8 +165,8 @@ func GetItinerary(itineraryID int) (Itinerary, error) {
 	return itinerary, nil
 }
 
-func UpdateItineraryName(itineraryId int, name string) error {
-	err := UpdateAttribute("itineraries", "itineraryId", itineraryId, "name", name)
+func UpdateItineraryName(DB *sql.DB, itineraryId int, name string) error {
+	err := UpdateAttribute(DB, "itineraries", "itineraryId", itineraryId, "name", name)
 	if err != nil {
 		log.Printf("Error updating itinerary name: %v\n", err)
 		return fmt.Errorf("failed to update itinerary name: %w", err)
@@ -162,8 +176,8 @@ func UpdateItineraryName(itineraryId int, name string) error {
 	return nil
 }
 
-func UpdateItineraryCity(itineraryId int, city string) error {
-	err := UpdateAttribute("itineraries", "itineraryId", itineraryId, "city", city)
+func UpdateItineraryCity(DB *sql.DB, itineraryId int, city string) error {
+	err := UpdateAttribute(DB, "itineraries", "itineraryId", itineraryId, "city", city)
 	if err != nil {
 		log.Printf("Error updating itinerary city: %v\n", err)
 		return fmt.Errorf("failed to update itinerary city: %w", err)
@@ -173,8 +187,8 @@ func UpdateItineraryCity(itineraryId int, city string) error {
 	return nil
 }
 
-func UpdateItineraryCountry(itineraryId int, country string) error {
-	err := UpdateAttribute("itineraries", "itineraryId", itineraryId, "country", country)
+func UpdateItineraryCountry(DB *sql.DB, itineraryId int, country string) error {
+	err := UpdateAttribute(DB, "itineraries", "itineraryId", itineraryId, "country", country)
 	if err != nil {
 		log.Printf("Error updating itinerary country: %v\n", err)
 		return fmt.Errorf("failed to update itinerary country: %w", err)
@@ -184,8 +198,8 @@ func UpdateItineraryCountry(itineraryId int, country string) error {
 	return nil
 }
 
-func AddItineraryLanguage(itineraryId int, language string) error {
-	err := AddArrayAttribute("itineraries", "itineraryId", itineraryId, "languages", []string{language})
+func AddItineraryLanguage(DB *sql.DB, itineraryId int, language string) error {
+	err := AddArrayAttribute(DB, "itineraries", "itineraryId", itineraryId, "languages", []string{language})
 	if err != nil {
 		log.Printf("Error adding itinerary language: %v\n", err)
 		return fmt.Errorf("failed to add itinerary language: %w", err)
@@ -195,8 +209,8 @@ func AddItineraryLanguage(itineraryId int, language string) error {
 	return nil
 }
 
-func RemoveItineraryLanguage(itineraryId int, language string) error {
-	err := RemoveArrayAttribute("itineraries", "itineraryId", itineraryId, "languages", []string{language})
+func RemoveItineraryLanguage(DB *sql.DB, itineraryId int, language string) error {
+	err := RemoveArrayAttribute(DB, "itineraries", "itineraryId", itineraryId, "languages", []string{language})
 	if err != nil {
 		log.Printf("Error removing itinerary language: %v\n", err)
 		return fmt.Errorf("failed to remove itinerary language: %w", err)
@@ -206,8 +220,8 @@ func RemoveItineraryLanguage(itineraryId int, language string) error {
 	return nil
 }
 
-func AddItineraryTag(itineraryId int, tag string) error {
-	err := AddArrayAttribute("itineraries", "itineraryId", itineraryId, "tags", []string{tag})
+func AddItineraryTag(DB *sql.DB, itineraryId int, tag string) error {
+	err := AddArrayAttribute(DB, "itineraries", "itineraryId", itineraryId, "tags", []string{tag})
 	if err != nil {
 		log.Printf("Error adding itinerary tag: %v\n", err)
 		return fmt.Errorf("failed to add itinerary tag: %w", err)
@@ -217,8 +231,8 @@ func AddItineraryTag(itineraryId int, tag string) error {
 	return nil
 }
 
-func RemoveItineraryTag(itineraryId int, tag string) error {
-	err := RemoveArrayAttribute("itineraries", "itineraryId", itineraryId, "tags", []string{tag})
+func RemoveItineraryTag(DB *sql.DB, itineraryId int, tag string) error {
+	err := RemoveArrayAttribute(DB, "itineraries", "itineraryId", itineraryId, "tags", []string{tag})
 	if err != nil {
 		log.Printf("Error removing itinerary tag: %v\n", err)
 		return fmt.Errorf("failed to remove itinerary tag: %w", err)
@@ -228,18 +242,18 @@ func RemoveItineraryTag(itineraryId int, tag string) error {
 	return nil
 }
 
-func AddItineraryEvent(itineraryId int, eventId int, recursive bool) error {
+func AddItineraryEvent(DB *sql.DB, itineraryId int, eventId int, recursive bool) error {
 	if !recursive {
 		return nil
 	}
 
-	err := AddArrayAttribute("itineraries", "itineraryId", itineraryId, "events", IntsToStrings([]int{eventId}))
+	err := AddArrayAttribute(DB, "itineraries", "itineraryId", itineraryId, "events", IntsToStrings([]int{eventId}))
 	if err != nil {
 		log.Printf("Error adding itinerary event: %v\n", err)
 		return fmt.Errorf("failed to add itinerary event: %w", err)
 	}
 
-	err = AddEventItinerary(eventId, itineraryId, false)
+	err = AddEventItinerary(DB, eventId, itineraryId, false)
 	if err != nil {
 		log.Printf("Error adding event to itinerary: %v\n", err)
 		return fmt.Errorf("failed to add event to itinerary: %w", err)
@@ -249,14 +263,14 @@ func AddItineraryEvent(itineraryId int, eventId int, recursive bool) error {
 	return nil
 }
 
-func RemoveItineraryEvent(itineraryId int, eventId int) error {
-	err := RemoveArrayAttribute("itineraries", "itineraryId", itineraryId, "events", IntsToStrings([]int{eventId}))
+func RemoveItineraryEvent(DB *sql.DB, itineraryId int, eventId int) error {
+	err := RemoveArrayAttribute(DB, "itineraries", "itineraryId", itineraryId, "events", IntsToStrings([]int{eventId}))
 	if err != nil {
 		log.Printf("Error removing itinerary event: %v\n", err)
 		return fmt.Errorf("failed to remove itinerary event: %w", err)
 	}
 
-	err = RemoveEventItinerary(eventId, itineraryId)
+	err = RemoveEventItinerary(DB, eventId, itineraryId)
 	if err != nil {
 		log.Printf("Error removing event from itinerary: %v\n", err)
 		return fmt.Errorf("failed to remove event from itinerary: %w", err)
@@ -266,8 +280,8 @@ func RemoveItineraryEvent(itineraryId int, eventId int) error {
 	return nil
 }
 
-func UpdateItineraryCreationDate(itineraryId int, creationDate time.Time) error {
-	err := UpdateAttribute("itineraries", "itineraryId", itineraryId, "creationDate", creationDate)
+func UpdateItineraryCreationDate(DB *sql.DB, itineraryId int, creationDate time.Time) error {
+	err := UpdateAttribute(DB, "itineraries", "itineraryId", itineraryId, "creationDate", creationDate)
 	if err != nil {
 		log.Printf("Error updating itinerary creation date: %v\n", err)
 		return fmt.Errorf("failed to update itinerary creation date: %w", err)
@@ -277,8 +291,8 @@ func UpdateItineraryCreationDate(itineraryId int, creationDate time.Time) error 
 	return nil
 }
 
-func UpdateItineraryLastUpdate(itineraryId int, lastUpdate time.Time) error {
-	err := UpdateAttribute("itineraries", "itineraryId", itineraryId, "lastUpdate", lastUpdate)
+func UpdateItineraryLastUpdate(DB *sql.DB, itineraryId int, lastUpdate time.Time) error {
+	err := UpdateAttribute(DB, "itineraries", "itineraryId", itineraryId, "lastUpdate", lastUpdate)
 	if err != nil {
 		log.Printf("Error updating itinerary last update: %v\n", err)
 		return fmt.Errorf("failed to update itinerary last update: %w", err)
