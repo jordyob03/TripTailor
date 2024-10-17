@@ -25,7 +25,7 @@ type User struct {
 	Posts       []string  `json:"posts"`
 }
 
-func CreateUserTable() error {
+func CreateUserTable(DB *sql.DB) error {
 	createTableSQL := `
 	CREATE TABLE IF NOT EXISTS users (
 		userId SERIAL PRIMARY KEY,
@@ -40,10 +40,10 @@ func CreateUserTable() error {
 		boards INTEGER[],
 		posts INTEGER[]
 	);`
-	return CreateTable(createTableSQL)
+	return CreateTable(DB, createTableSQL)
 }
 
-func AddUser(user User) (int, error) {
+func AddUser(DB *sql.DB, user User) (int, error) {
 	insertUserSQL := `
 	INSERT INTO users (username, email, password, dateOfBirth, name, country, languages, tags, boards, posts)
 	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
@@ -63,7 +63,7 @@ func AddUser(user User) (int, error) {
 	return userId, nil
 }
 
-func RemoveUser(username string) error {
+func RemoveUser(DB *sql.DB, username string) error {
 
 	getPostsAndBoardsSQL := `
 	SELECT title, boards 
@@ -93,7 +93,7 @@ func RemoveUser(username string) error {
 	}
 
 	for _, post := range posts {
-		err := RemovePost(post)
+		err := RemovePost(DB, post)
 		if err != nil {
 			log.Printf("Error removing post %d: %v\n", post, err)
 			return err
@@ -101,7 +101,7 @@ func RemoveUser(username string) error {
 	}
 
 	for _, board := range boards {
-		err := RemoveBoard(board)
+		err := RemoveBoard(DB, board)
 		if err != nil {
 			log.Printf("Error removing board %d: %v\n", board, err)
 			return err
@@ -119,7 +119,7 @@ func RemoveUser(username string) error {
 	return nil
 }
 
-func GetUser(username string) (User, error) {
+func GetUser(DB *sql.DB, username string) (User, error) {
 	query := `
     SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts
     FROM users 
@@ -162,7 +162,7 @@ func GetUser(username string) (User, error) {
 	return user, nil
 }
 
-func GetAllUsers() ([]User, error) {
+func GetAllUsers(DB *sql.DB) ([]User, error) {
 	query := `
     SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts
     FROM users`
@@ -216,24 +216,24 @@ func GetAllUsers() ([]User, error) {
 	return users, nil
 }
 
-func UpdateUserEmail(username, email string) error {
-	return UpdateAttribute("users", "username", username, "email", email)
+func UpdateUserEmail(DB *sql.DB, username, email string) error {
+	return UpdateAttribute(DB, "users", "username", username, "email", email)
 }
 
-func UpdateUserPassword(username, password string) error {
-	return UpdateAttribute("users", "username", username, "password", password)
+func UpdateUserPassword(DB *sql.DB, username, password string) error {
+	return UpdateAttribute(DB, "users", "username", username, "password", password)
 }
 
-func UpdateUserDateOfBirth(username string, dateOfBirth time.Time) error {
-	return UpdateAttribute("users", "username", username, "dateOfBirth", dateOfBirth)
+func UpdateUserDateOfBirth(DB *sql.DB, username string, dateOfBirth time.Time) error {
+	return UpdateAttribute(DB, "users", "username", username, "dateOfBirth", dateOfBirth)
 }
 
-func UpdateUserCountry(username, country string) error {
-	return UpdateAttribute("users", "username", username, "country", country)
+func UpdateUserCountry(DB *sql.DB, username, country string) error {
+	return UpdateAttribute(DB, "users", "username", username, "country", country)
 }
 
-func AddUserLanguage(username string, languages []string) error {
-	err := AddArrayAttribute("users", "username", username, "languages", languages)
+func AddUserLanguage(DB *sql.DB, username string, languages []string) error {
+	err := AddArrayAttribute(DB, "users", "username", username, "languages", languages)
 	if err != nil {
 		log.Printf("Error adding languages for user %s: %v\n", username, err)
 		return err
@@ -242,8 +242,8 @@ func AddUserLanguage(username string, languages []string) error {
 	return nil
 }
 
-func RemoveUserLanguage(username string, languages []string) error {
-	err := RemoveArrayAttribute("users", "username", username, "languages", languages)
+func RemoveUserLanguage(DB *sql.DB, username string, languages []string) error {
+	err := RemoveArrayAttribute(DB, "users", "username", username, "languages", languages)
 	if err != nil {
 		log.Printf("Error removing languages for user %s: %v\n", username, err)
 		return err
@@ -252,8 +252,8 @@ func RemoveUserLanguage(username string, languages []string) error {
 	return nil
 }
 
-func AddUserTag(username string, tags []string) error {
-	err := AddArrayAttribute("users", "username", username, "tags", tags)
+func AddUserTag(DB *sql.DB, username string, tags []string) error {
+	err := AddArrayAttribute(DB, "users", "username", username, "tags", tags)
 	if err != nil {
 		log.Printf("Error adding tags for user %s: %v\n", username, err)
 		return err
@@ -262,8 +262,8 @@ func AddUserTag(username string, tags []string) error {
 	return nil
 }
 
-func RemoveUserTag(username string, tags []string) error {
-	err := RemoveArrayAttribute("users", "username", username, "tags", tags)
+func RemoveUserTag(DB *sql.DB, username string, tags []string) error {
+	err := RemoveArrayAttribute(DB, "users", "username", username, "tags", tags)
 	if err != nil {
 		log.Printf("Error removing tags for user %s: %v\n", username, err)
 		return err
@@ -272,8 +272,8 @@ func RemoveUserTag(username string, tags []string) error {
 	return nil
 }
 
-func AddUserBoard(username string, boardId int) error {
-	err := AddArrayAttribute("users", "username", username, "boards", IntsToStrings([]int{boardId}))
+func AddUserBoard(DB *sql.DB, username string, boardId int) error {
+	err := AddArrayAttribute(DB, "users", "username", username, "boards", IntsToStrings([]int{boardId}))
 	if err != nil {
 		log.Printf("Error adding board for user %s: %v\n", username, err)
 		return err
@@ -282,8 +282,8 @@ func AddUserBoard(username string, boardId int) error {
 	return nil
 }
 
-func RemoveUserBoard(username string, boardId int) error {
-	err := RemoveArrayAttribute("users", "username", username, "boards", IntsToStrings([]int{boardId}))
+func RemoveUserBoard(DB *sql.DB, username string, boardId int) error {
+	err := RemoveArrayAttribute(DB, "users", "username", username, "boards", IntsToStrings([]int{boardId}))
 	if err != nil {
 		log.Printf("Error removing board for user %s: %v\n", username, err)
 		return err
@@ -292,8 +292,8 @@ func RemoveUserBoard(username string, boardId int) error {
 	return nil
 }
 
-func AddUserPost(username string, postId int) error {
-	err := AddArrayAttribute("users", "username", username, "posts", IntsToStrings([]int{postId}))
+func AddUserPost(DB *sql.DB, username string, postId int) error {
+	err := AddArrayAttribute(DB, "users", "username", username, "posts", IntsToStrings([]int{postId}))
 	if err != nil {
 		log.Printf("Error adding post for user %s: %v\n", username, err)
 		return err
@@ -302,8 +302,8 @@ func AddUserPost(username string, postId int) error {
 	return nil
 }
 
-func RemoveUserPost(username string, postId int) error {
-	err := RemoveArrayAttribute("users", "username", username, "posts", IntsToStrings([]int{postId}))
+func RemoveUserPost(DB *sql.DB, username string, postId int) error {
+	err := RemoveArrayAttribute(DB, "users", "username", username, "posts", IntsToStrings([]int{postId}))
 	if err != nil {
 		log.Printf("Error removing post for user %s: %v\n", username, err)
 		return err
@@ -312,7 +312,7 @@ func RemoveUserPost(username string, postId int) error {
 	return nil
 }
 
-func UserHandler(w http.ResponseWriter, r *http.Request) {
+func UserHandler(DB *sql.DB, w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	switch r.Method {
@@ -320,7 +320,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 		username := r.URL.Query().Get("username")
 
 		if username != "" {
-			user, err := GetUser(username)
+			user, err := GetUser(DB, username)
 			if err != nil {
 				http.Error(w, "User not found", http.StatusNotFound)
 				log.Printf("Error retrieving user: %v\n", err)
@@ -328,7 +328,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			json.NewEncoder(w).Encode(user)
 		} else {
-			users, err := GetAllUsers()
+			users, err := GetAllUsers(DB)
 			if err != nil {
 				http.Error(w, "Error retrieving users", http.StatusInternalServerError)
 				log.Printf("Error retrieving users: %v\n", err)
@@ -344,7 +344,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 			return
 		}
-		userId, err := AddUser(user)
+		userId, err := AddUser(DB, user)
 		if err != nil {
 			http.Error(w, "Error adding user", http.StatusInternalServerError)
 			fmt.Println(err)
@@ -395,7 +395,7 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if err := RemoveUser(username); err != nil {
+		if err := RemoveUser(DB, username); err != nil {
 			http.Error(w, "Error deleting user", http.StatusInternalServerError)
 			log.Printf("Error deleting user: %v\n", err)
 			return
@@ -405,5 +405,11 @@ func UserHandler(w http.ResponseWriter, r *http.Request) {
 
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	}
+}
+
+func UserHandlerWrapper(DB *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		UserHandler(DB, w, r)
 	}
 }
