@@ -24,8 +24,9 @@ function UserLogin() {
 
     try {
       const response = await authAPI.post('/signin', loginData);
-      const { token } = response.data;  
+      const { token, username } = response.data;    
       localStorage.setItem('token', token);  
+      localStorage.setItem('username', username); 
       console.log('User signed in successfully:', response.data);
 
       navigate('/profile-creation');
