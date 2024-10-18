@@ -11,6 +11,9 @@ COPY ./cmd/ ./cmd/
 COPY ./internal/ ./internal/
 COPY ./utils/ ./utils/
 
+COPY wait-for-it.sh /wait-for-it.sh
+RUN chmod +x /wait-for-it.sh
+
 RUN CGO_ENABLED=0 GOOS=linux go build -o /auth-service-container ./cmd/main.go
 
 EXPOSE 8081
