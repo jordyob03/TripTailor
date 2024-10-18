@@ -5,19 +5,11 @@ import (
 	"fmt"
 	"log"
 	"strconv"
-	"strings"
 
 	"github.com/lib/pq"
 )
 
-var DB *sql.DB
-
-func InitDB(connStr string) error {
-	var err error
-	DB, err = sql.Open("postgres", connStr)
-	if err != nil {
-		return err
-	}
+func InitDB(DB *sql.DB, connStr string) error {
 	if err := DB.Ping(); err != nil {
 		return err
 	}
@@ -25,27 +17,27 @@ func InitDB(connStr string) error {
 	return nil
 }
 
-func CreateAllTables() error {
-	if err := CreateUserTable(); err != nil {
+func CreateAllTables(DB *sql.DB) error {
+	if err := CreateUserTable(DB); err != nil {
 		return err
 	}
-	if err := CreateBoardTable(); err != nil {
+	if err := CreateBoardTable(DB); err != nil {
 		return err
 	}
-	if err := CreatePostTable(); err != nil {
+	if err := CreatePostTable(DB); err != nil {
 		return err
 	}
-	if err := CreateItineraryTable(); err != nil {
+	if err := CreateItineraryTable(DB); err != nil {
 		return err
 	}
-	if err := CreateEventTable(); err != nil {
+	if err := CreateEventTable(DB); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func DeleteAllTables() error {
+func DeleteAllTables(DB *sql.DB) error {
 	dropTablesSQL := `
 	DROP TABLE IF EXISTS users, boards, posts, itineraries, events CASCADE;`
 
@@ -57,13 +49,13 @@ func DeleteAllTables() error {
 	return nil
 }
 
-func CloseDB() {
+func CloseDB(DB *sql.DB) {
 	if DB != nil {
 		DB.Close()
 	}
 }
 
-func CreateTable(createTableSQL string) error {
+func CreateTable(DB *sql.DB, createTableSQL string) error {
 	_, err := DB.Exec(createTableSQL)
 	if err != nil {
 		return fmt.Errorf("error creating table: %w", err)
@@ -72,7 +64,7 @@ func CreateTable(createTableSQL string) error {
 	return nil
 }
 
-func DeleteTable(tableName string) error {
+func DeleteTable(DB *sql.DB, tableName string) error {
 	query := fmt.Sprintf("DROP TABLE IF EXISTS %s CASCADE", tableName)
 	_, err := DB.Exec(query)
 	if err != nil {
@@ -80,81 +72,6 @@ func DeleteTable(tableName string) error {
 	}
 	log.Println("Table deleted successfully")
 	return nil
-}
-
-func AddRow(table string, data map[string]interface{}) error {
-	columns := make([]string, 0, len(data))
-	placeholders := make([]string, 0, len(data))
-	values := make([]interface{}, 0, len(data))
-
-	for column, value := range data {
-		columns = append(columns, column)
-		placeholders = append(placeholders, fmt.Sprintf("$%d", len(values)+1))
-		values = append(values, value)
-	}
-
-	query := fmt.Sprintf("INSERT INTO %s (%s) VALUES (%s)", table, strings.Join(columns, ", "), strings.Join(placeholders, ", "))
-	_, err := DB.Exec(query, values...)
-
-	return err
-}
-
-func DeleteRow(table string, condition string, args ...interface{}) error {
-	query := fmt.Sprintf("DELETE FROM %s WHERE %s", table, condition)
-	_, err := DB.Exec(query, args...)
-	return err
-}
-
-func UpdateRow(table string, data map[string]interface{}, condition string, args ...interface{}) error {
-	setClauses := make([]string, 0, len(data))
-
-	for column := range data {
-		setClauses = append(setClauses, fmt.Sprintf("%s = $1", column))
-	}
-
-	query := fmt.Sprintf("UPDATE %s SET %s WHERE %s", table, strings.Join(setClauses, ", "), condition)
-
-	values := make([]interface{}, 0, len(data)+len(args))
-	for _, value := range data {
-		values = append(values, value)
-	}
-
-	values = append(values, args...)
-	_, err := DB.Exec(query, values...)
-
-	return err
-}
-
-func GetRows(table string, condition string, args ...interface{}) ([]map[string]interface{}, error) {
-	query := fmt.Sprintf("SELECT * FROM %s WHERE %s", table, condition)
-
-	rows, err := DB.Query(query, args...)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	results := make([]map[string]interface{}, 0)
-	columns, _ := rows.Columns()
-
-	for rows.Next() {
-		rowValues := make([]interface{}, len(columns))
-		for i := range rowValues {
-			var v interface{}
-			rowValues[i] = &v
-		}
-		if err := rows.Scan(rowValues...); err != nil {
-			return nil, err
-		}
-
-		rowMap := make(map[string]interface{})
-		for i, colName := range columns {
-			rowMap[colName] = *(rowValues[i].(*interface{}))
-		}
-		results = append(results, rowMap)
-	}
-
-	return results, nil
 }
 
 func IntsToStrings(ints []int) []string {
@@ -177,7 +94,7 @@ func StringsToInts(strings []string) ([]int, error) {
 	return ints, nil
 }
 
-func UpdateAttribute(table string, identifierCol string, identifier interface{}, column string, value interface{}) error {
+func UpdateAttribute(DB *sql.DB, table string, identifierCol string, identifier interface{}, column string, value interface{}) error {
 	updateSQL := fmt.Sprintf("UPDATE %s SET %s = $1 WHERE %s = $2", table, column, identifierCol)
 
 	_, err := DB.Exec(updateSQL, value, identifier)
@@ -187,7 +104,7 @@ func UpdateAttribute(table string, identifierCol string, identifier interface{},
 	return nil
 }
 
-func AddArrayAttribute(table, identifierCol string, identifier interface{}, column string, values interface{}) error {
+func AddArrayAttribute(DB *sql.DB, table, identifierCol string, identifier interface{}, column string, values interface{}) error {
 	var existingValues []string
 	var existingIntValues []int
 
@@ -249,7 +166,7 @@ func AddArrayAttribute(table, identifierCol string, identifier interface{}, colu
 	return nil
 }
 
-func RemoveArrayAttribute(table, identifierCol string, identifier interface{}, column string, values interface{}) error {
+func RemoveArrayAttribute(DB *sql.DB, table, identifierCol string, identifier interface{}, column string, values interface{}) error {
 	switch v := values.(type) {
 	case []string:
 		for _, val := range v {

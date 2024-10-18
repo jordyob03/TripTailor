@@ -1,8 +1,8 @@
 package api
 
 import (
+	"backend/auth-service/internal/handlers"
 	"database/sql"
-	"github.com/jordyob03/TripTailor/backend/services/auth-service/internal/handlers"
 
 	"github.com/gin-gonic/gin"
 )

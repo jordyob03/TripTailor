@@ -1,9 +1,9 @@
 package handlers
 
 import (
+	db "backend/auth-service/internal/db"
+	"backend/auth-service/utils"
 	"database/sql"
-	db "github.com/jordyob03/TripTailor/backend/services/auth-service/internal/db"
-	utils "github.com/jordyob03/TripTailor/backend/services/auth-service/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
