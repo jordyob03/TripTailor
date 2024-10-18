@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import navBarLogo from '../assets/logo-long-transparent.png';
 import authLogo from '../assets/logo-circle-white.png';
-import '../styles/styles.css'; // Import external CSS file
+import '../styles/styles.css'; 
+import authAPI from '../api/authAPI.js';
 
 function UserSignup() {
   const [username, setUsername] = useState('');
@@ -19,7 +20,7 @@ function UserSignup() {
     const noWhitespace = !/\s/.test(username); 
     const validChars = /^[A-Za-z0-9_]+$/.test(username); 
     const lengthValid = username.length > 0 && username.length <= 24; 
-
+    
     if (!noWhitespace) {
       return 'Username must not contain spaces.';
     }
@@ -33,12 +34,20 @@ function UserSignup() {
   };
 
   const validatePassword = (password) => {
-    const containsNumber = /\d/.test(password); 
+    const containsLetter = /[a-zA-Z]/.test(password);
+    const containsNumber = /\d/.test(password);
+    const containsSpecial = /[^a-zA-Z0-9]/.test(password);
     const noSpaces = !/\s/.test(password); 
     const lengthValid = password.length >= 8 && password.length <= 24;
 
+    if (!containsLetter) {
+      return 'Password must contain at least one letter.';
+    }
     if (!containsNumber) {
       return 'Password must contain at least one number.';
+    }
+    if (!containsSpecial) {
+      return 'Password must contain at least one special character.';
     }
     if (!noSpaces) {
       return 'Password must not contain spaces.';
@@ -49,9 +58,9 @@ function UserSignup() {
     return ''; 
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     // Validate the username
     const usernameError = validateUsername(username);
     if (usernameError) {
@@ -71,9 +80,30 @@ function UserSignup() {
       setErrorMessage('Passwords do not match. Please try again.');
       return;
     }
-
+    
     setErrorMessage('');
-    navigate('/profile-creation');
+
+    const userData = {
+      username: username,
+      email: email,
+      password: password,
+      dateOfBirth: dob
+    };
+
+    try {
+      const response = await authAPI.post('/signup', userData);
+      const { token } = response.data;  
+      localStorage.setItem('token', token);  
+      console.log('User signed up successfully:', response.data);
+
+      navigate('/profile-creation');
+    } catch (error) {
+      if (error.response && error.response.data) {
+        setErrorMessage(error.response.data.error); 
+      } else {
+        setErrorMessage('Signup failed. Please try again.');
+      }
+    }
   };
 
   return (
