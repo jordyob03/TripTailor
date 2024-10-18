@@ -10,42 +10,100 @@ function UserSignup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [dob, setDob] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [continueIsHovered, setContinueIsHovered] = useState(false);
 
   const navigate = useNavigate();
 
+  const validateUsername = (username) => {
+    const noWhitespace = !/\s/.test(username); 
+    const validChars = /^[A-Za-z0-9_]+$/.test(username); 
+    const lengthValid = username.length > 0 && username.length <= 24; 
+    
+    if (!noWhitespace) {
+      return 'Username must not contain spaces.';
+    }
+    if (!validChars) {
+      return 'Username can only contain letters, numbers, and underscores.';
+    }
+    if (!lengthValid) {
+      return 'Username must be less than 24 characters.';
+    }
+    return ''; 
+  };
+
+  const validatePassword = (password) => {
+    const containsLetter = /[a-zA-Z]/.test(password);
+    const containsNumber = /\d/.test(password);
+    const containsSpecial = /[^a-zA-Z0-9]/.test(password);
+    const noSpaces = !/\s/.test(password); 
+    const lengthValid = password.length >= 8 && password.length <= 24;
+
+    if (!containsLetter) {
+      return 'Password must contain at least one letter.';
+    }
+    if (!containsNumber) {
+      return 'Password must contain at least one number.';
+    }
+    if (!containsSpecial) {
+      return 'Password must contain at least one special character.';
+    }
+    if (!noSpaces) {
+      return 'Password must not contain spaces.';
+    }
+    if (!lengthValid) {
+      return 'Password must be between 8 and 24 characters.';
+    }
+    return ''; 
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (password === confirmPassword) {
-      setErrorMessage('');
+    
+    // Validate the username
+    const usernameError = validateUsername(username);
+    if (usernameError) {
+      setErrorMessage(usernameError);
+      return;
+    }
 
-      const userData = {
-        username: username, 
-        email: email,
-        password: password,
-        dateOfBirth: '1990-01-01'
-      }
+    // Validate the password
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      setErrorMessage(passwordError);
+      return;
+    }
 
-      try {
-        const response = await authAPI.post('/signup', userData);
-        const { token, username } = response.data;  
-        localStorage.setItem('token', token);  
-        localStorage.setItem('username', username); 
-        console.log('User signed up successfully:', response.data);
-
-        navigate('/profile-creation');
-      } catch (error) {
-        if (error.response && error.response.data) {
-          setErrorMessage(error.response.data.error); 
-        } else {
-          setErrorMessage('Signup failed. Please try again.');
-        }
-      }
-
-
-    } else {
+    // Confirm passwords match
+    if (password !== confirmPassword) {
       setErrorMessage('Passwords do not match. Please try again.');
+      return;
+    }
+    
+    setErrorMessage('');
+
+    const userData = {
+      username: username,
+      email: email,
+      password: password,
+      dateOfBirth: dob
+    };
+
+    try {
+      const response = await authAPI.post('/signup', userData);
+      const { token, username } = response.data;
+      localStorage.setItem('token', token);  
+      localStorage.setItem('username', username);
+      console.log('User signed up successfully:', response.data);
+
+      navigate('/profile-creation');
+    } catch (error) {
+      if (error.response && error.response.data) {
+        setErrorMessage(error.response.data.error); 
+      } else {
+        setErrorMessage('Signup failed. Please try again.');
+      }
     }
   };
 
@@ -98,13 +156,26 @@ function UserSignup() {
               type="password"
               placeholder="Confirm Password"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)} 
+              onChange={(e) => setConfirmPassword(e.target.value)}
               required
               className="input"
             />
 
-            {/* Display error message if passwords don't match */}
+            {/* Display error message */}
             {errorMessage && <div className="errorMessage">{errorMessage}</div>}
+
+            <hr className="separatorLine" />
+
+            <h6 className="subheading1">Date of Birth</h6>
+
+            {/* Date of Birth Input */}
+            <input
+              type="date"
+              value={dob}
+              onChange={(e) => setDob(e.target.value)}
+              required
+              className="input"
+            />
 
             <button
               type="submit"

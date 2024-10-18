@@ -15,7 +15,6 @@ function InitialUserProfile() {
   const [country, setCountry] = useState('');
   const [languages, setLanguages] = useState([]);
   const [shuffledTags, setShuffledTags] = useState([]);
-  const [errorMessage, setErrorMessage] = useState('');
 
   const countries = ['USA', 'Canada', 'UK', 'Australia', 'Other'];
   const languageOptions = ['English', 'Spanish', 'French', 'German', 'Chinese'];
@@ -25,8 +24,6 @@ function InitialUserProfile() {
     return [...array].sort(() => Math.random() - 0.5);
   };
 
-  const navigate = useNavigate()
-
   useEffect(() => {
     const shuffled = shuffleArray(allTags);
     setShuffledTags(shuffled);
@@ -34,23 +31,34 @@ function InitialUserProfile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!name) {
+      setNameErrorMessage('Please enter your name.');
+      return;
+    } else {
+      setNameErrorMessage('');
+    }
+
     if (selectedTags.length >= 3) {
-      console.log({ selectedTags, country, languages });
-      setTagErrorMessage(''); // Clear error message if valid
+      setTagErrorMessage('');
     } else {
       setTagErrorMessage('Please select at least 3 tags.');
     }
+    
     if (country.length >= 1) {
-      console.log({ selectedTags, country, languages });
-      setTagErrorMessage(''); // Clear error message if valid
+      setCountryErrorMessage('');
     } else {
       setCountryErrorMessage('Please select a country.');
     }
+
     if (languages.length >= 1) {
-      console.log({ selectedTags, country, languages });
-      setTagErrorMessage(''); // Clear error message if valid
+      setLangErrorMessage('')
     } else {
       setLangErrorMessage('Please select at least 1 language.');
+    }
+
+    if (name && selectedTags.length >= 3 && country.length >= 1 && languages.length >= 1) {
+      console.log({ name, selectedTags, country, languages });
     }
     const profile_data = {
       languages: languages,
@@ -98,26 +106,34 @@ function InitialUserProfile() {
       <nav className="navBar">
         <img src={navBarLogo} alt="Trip Tailor Logo" className="navBarLogo" />
 
-        {/* Logout Button */}
-        <button className="logoutButton" onClick={handleLogout}>
-          Logout
-        </button>
-
         {/* Profile Button */}
         <button className="profileButton">
           <i className="fas fa-bars" style={{ fontSize: '16px', color: '#00509e', marginRight: '15px' }}></i>
           <i className="fa-regular fa-user" style={{ fontSize: '24px', color: '#00509e' }}></i>
         </button>
-
-        
       </nav>
 
       {/* Main Container */}
       <div className="centeredContainer">
         <div className="centeredBox">
           <h5 className="heading">Tell us more about you</h5>
-          <h6 className="subheadingIUP">What tags are important to you on your travels?</h6>
 
+          <h6 className="subheadingIUP">What's your name?</h6>
+
+          {/* Error message above name */}
+          {nameErrorMessage && <div className="errorMessage">{nameErrorMessage}</div>}
+
+          {/* Name input */}
+          <input
+            type="text"
+            placeholder="Enter your name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            className="input"
+          />
+
+          <h6 className="subheadingIUP">What tags are important to you on your travels?</h6>
 
           {/* Error message above tags */}
           {tagErrorMessage && <div className="errorMessage">{tagErrorMessage}</div>}
@@ -136,8 +152,8 @@ function InitialUserProfile() {
           </div>
 
           <h6 className="subheadingIUP">Where do you live?</h6>
-                    
-          {/* Error message above tags */}
+
+          {/* Error message above country */}
           {countryErrorMessage && <div className="errorMessage">{countryErrorMessage}</div>}
 
           <select
@@ -155,9 +171,9 @@ function InitialUserProfile() {
 
           <h6 className="subheadingIUP">What languages do you speak?</h6>
 
-          {/* Error message above tags */}
+          {/* Error message above languages */}
           {langErrorMessage && <div className="errorMessage">{langErrorMessage}</div>}
-          
+
           <select
             multiple
             value={languages}
