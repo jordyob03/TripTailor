@@ -6,13 +6,14 @@ import ProtectedRoute from './components/Protectedroute';
 import UserSignup from './pages/UserSignup';
 import UserProfile from './pages/InitialUserProfile';
 import UserLogin from './pages/UserLogin';
+import CreateItinerary from './pages/CreateItinerary';
 
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<UserLogin />} />
+        <Route path="/" element={<CreateItinerary />} />
         <Route path="/sign-up" element={<UserSignup />} /> 
         <Route path="/profile-creation" element={<ProtectedRoute> <UserProfile /> </ProtectedRoute>} />
       </Routes>
