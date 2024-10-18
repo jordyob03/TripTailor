@@ -18,4 +18,4 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /backend-container ./cmd/main.go
 
 EXPOSE 8080
 
-CMD ["/backend-container"]
+ENTRYPOINT ["/backend-container"]
