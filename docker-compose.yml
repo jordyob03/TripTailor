@@ -17,7 +17,7 @@ services:
 
   main-service:
     build:
-      context: ./backend
+      context: ./backend/services/main-service
       dockerfile: Dockerfile
     container_name: backend-container
     ports:

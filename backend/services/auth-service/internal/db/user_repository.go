@@ -1,9 +1,9 @@
 package DBAuth
 
 import (
-	"backend/auth-service/internal/models"
 	"database/sql"
 	"fmt"
+	models "github.com/jordyob03/TripTailor/backend/services/auth-service/internal/models"
 	"log"
 
 	"github.com/lib/pq"

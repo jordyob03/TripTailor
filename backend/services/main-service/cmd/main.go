@@ -1,9 +1,9 @@
 package main
 
 import (
-	db "backend/db/models"
 	"database/sql"
 	"fmt"
+	db "github.com/jordyob03/TripTailor/backend/services/main-service/internal/db/models"
 	"log"
 	"net/http"
 )

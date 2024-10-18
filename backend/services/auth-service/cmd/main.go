@@ -1,9 +1,9 @@
 package main
 
 import (
-	"backend/auth-service/api"
-	"backend/auth-service/internal/middleware"
 	"database/sql"
+	api "github.com/jordyob03/TripTailor/backend/services/auth-service/api"
+	middleware "github.com/jordyob03/TripTailor/backend/services/auth-service/internal/middleware"
 	"log"
 	"net/http"
 	"time"
