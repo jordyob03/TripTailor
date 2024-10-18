@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"database/sql"
+	"fmt"
+	"net/http"
+
 	db "github.com/jordyob03/TripTailor/backend/services/auth-service/internal/db"
 	utils "github.com/jordyob03/TripTailor/backend/services/auth-service/utils"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -40,11 +42,12 @@ func SignIn(DB *sql.DB) gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 			return
 		}
-
+		fmt.Print(user.Username)
 		c.JSON(http.StatusOK, gin.H{
-			"message": "Signin successful",
-			"userId":  user.UserId,
-			"token":   token,
+			"message":  "Signin successful",
+			"userId":   user.UserId,
+			"token":    token,
+			"username": user.Username,
 		})
 	}
 }
