@@ -10,6 +10,10 @@ COPY ./api/ ./api/
 COPY ./cmd/ ./cmd/
 COPY ./internal/ ./internal/
 
+COPY wait-for-it.sh /wait-for-it.sh
+RUN chmod +x /wait-for-it.sh
+
+
 RUN CGO_ENABLED=0 GOOS=linux go build -o /backend-container ./cmd/main.go
 
 EXPOSE 8080
