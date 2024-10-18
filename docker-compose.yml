@@ -26,7 +26,7 @@ services:
       - DATABASE_URL=postgres://postgres:password@db:5432/database
     depends_on:
       - db
-    command: ["/wait-for-it.sh", "db:5432", "--strict", "--", "go", "run", "./cmd/main.go"]
+    command: ["/wait-for-it.sh", "db:5432", "--strict", "--", "/backend-container"]
     networks:
       - backend-network
 
