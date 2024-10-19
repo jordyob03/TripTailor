@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"backend/profile-service/internal/db"
+	db "github.com/jordyob03/TripTailor/backend/services/profile-service/internal/db"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,7 +29,7 @@ func UpdateProfile(dbConn *sql.DB) gin.HandlerFunc {
 		}
 
 		// Fetch the user from the database
-		user, err := DBmodels.GetUser(dbConn, username)
+		user, err := db.GetUser(dbConn, username)
 		if err != nil {
 			if err == sql.ErrNoRows {
 				c.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("User %s not found", username)})
@@ -41,7 +41,7 @@ func UpdateProfile(dbConn *sql.DB) gin.HandlerFunc {
 
 		// Update country if provided
 		if profileReq.Country != "" {
-			err = DBmodels.UpdateUserCountry(dbConn, username, profileReq.Country)
+			err = db.UpdateUserCountry(dbConn, username, profileReq.Country)
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Error updating country"})
 				return
@@ -51,7 +51,7 @@ func UpdateProfile(dbConn *sql.DB) gin.HandlerFunc {
 		// Update languages if provided
 		if profileReq.Language != "" {
 			user.Languages = strings.Split(profileReq.Language, ",")
-			err = DBmodels.AddUserLanguage(dbConn, username, user.Languages)
+			err = db.AddUserLanguage(dbConn, username, user.Languages)
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Error updating languages"})
 				return
@@ -61,7 +61,7 @@ func UpdateProfile(dbConn *sql.DB) gin.HandlerFunc {
 		// Update tags if provided
 		if profileReq.Tags != "" {
 			user.Tags = ParseTags(profileReq.Tags)
-			err = DBmodels.AddUserTag(dbConn, username, user.Tags)
+			err = db.AddUserTag(dbConn, username, user.Tags)
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Error updating tags"})
 				return

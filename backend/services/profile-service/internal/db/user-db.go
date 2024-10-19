@@ -113,19 +113,28 @@ func UpdateUserCountry(dbConn *sql.DB, username string, country string) error {
 	return nil
 }
 
+func UpdateName(dbConn *sql.DB, username string, name string) error {
+	query := `UPDATE users SET name = $1 WHERE username = $2`
+	_, err := dbConn.Exec(query, name, username)
+	if err != nil {
+		return fmt.Errorf("error updating country for user %s: %v", username, err)
+	}
+	return nil
+}
+
 // AddUserLanguage adds languages to a user
 func AddUserLanguage(dbConn *sql.DB, username string, languages []string) error {
-	query := `UPDATE users SET languages = array_append(languages, unnest($1::text[])) WHERE username = $2`
+	query := `UPDATE users SET languages = $1::text[] WHERE username = $2`
 	_, err := dbConn.Exec(query, pq.Array(languages), username)
 	if err != nil {
-		return fmt.Errorf("error adding languages for user %s: %v", username, err)
+		return fmt.Errorf("error updating languages for user %s: %v", username, err)
 	}
 	return nil
 }
 
 // AddUserTag adds tags to a user
 func AddUserTag(dbConn *sql.DB, username string, tags []string) error {
-	query := `UPDATE users SET tags = array_append(tags, unnest($1::text[])) WHERE username = $2`
+	query := `UPDATE users SET tags = $1::text[] WHERE username = $2`
 	_, err := dbConn.Exec(query, pq.Array(tags), username)
 	if err != nil {
 		return fmt.Errorf("error adding tags for user %s: %v", username, err)

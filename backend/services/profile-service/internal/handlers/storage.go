@@ -21,3 +21,11 @@ func ParseTags(tags string) []string {
 	}
 	return parsedTags
 }
+
+func ParseLang(tags string) []string {
+	parsedLang := strings.Split(tags, ",")
+	for i, tag := range parsedLang {
+		parsedLang[i] = strings.TrimSpace(tag)
+	}
+	return parsedLang
+}

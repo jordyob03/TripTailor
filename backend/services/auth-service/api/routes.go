@@ -2,6 +2,7 @@ package api
 
 import (
 	"database/sql"
+
 	handlers "github.com/jordyob03/TripTailor/backend/services/auth-service/internal/handlers"
 
 	"github.com/gin-gonic/gin"

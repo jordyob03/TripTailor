@@ -1,10 +1,11 @@
 package main
 
 import (
-	api "backend/profile-service/api"
 	"database/sql"
 	"log"
 	"time"
+
+	api "github.com/jordyob03/TripTailor/backend/services/profile-service/api"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -29,7 +30,7 @@ func main() {
 	}
 	defer dbConn.Close()
 
-	api.SetupRoutes(r, connStr)
+	api.SetupRoutes(r, dbConn)
 
 	r.Run(":8085")
 }

@@ -2,11 +2,12 @@ package main
 
 import (
 	"database/sql"
-	api "github.com/jordyob03/TripTailor/backend/services/auth-service/api"
-	middleware "github.com/jordyob03/TripTailor/backend/services/auth-service/internal/middleware"
 	"log"
 	"net/http"
 	"time"
+
+	api "github.com/jordyob03/TripTailor/backend/services/auth-service/api"
+	middleware "github.com/jordyob03/TripTailor/backend/services/auth-service/internal/middleware"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
