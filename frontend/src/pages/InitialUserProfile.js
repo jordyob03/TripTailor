@@ -15,11 +15,13 @@ function InitialUserProfile() {
   const [country, setCountry] = useState('');
   const [languages, setLanguages] = useState([]);
   const [shuffledTags, setShuffledTags] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [name, setName] = useState('');
+  const [nameErrorMessage, setNameErrorMessage] = useState('');
 
   const countries = ['USA', 'Canada', 'UK', 'Australia', 'Other'];
   const languageOptions = ['English', 'Spanish', 'French', 'German', 'Chinese'];
   const username = localStorage.getItem('username')
-  const name = "John Doe"
   const shuffleArray = (array) => {
     return [...array].sort(() => Math.random() - 0.5);
   };
@@ -63,14 +65,14 @@ function InitialUserProfile() {
     const profile_data = {
       languages: languages,
       country: country, 
-      selectedTags: selectedTags,
+      tags: selectedTags,
       name: name, 
       username: username, 
     }
 
     try {
       console.log('Trying to save', profile_data);
-      const response = await profileAPI.post('/profile', profile_data);
+      const response = await profileAPI.post('/create', profile_data);
       console.log('Profile saved', response.data);
 
     } catch (error) {
@@ -95,10 +97,6 @@ function InitialUserProfile() {
     setLanguages(selectedOptions); 
   };
 
-  const handleLogout = () => {
-    localStorage.clear() 
-    navigate('/'); 
-  };
 
   return (
     <>
