@@ -3,7 +3,11 @@ package DBmodels
 import (
 	"database/sql"
 	"fmt"
+	"io"
 	"log"
+	"net/http"
+	"net/url"
+	"os"
 	"strconv"
 
 	"github.com/lib/pq"
@@ -192,6 +196,58 @@ func RemoveArrayAttribute(DB *sql.DB, table, identifierCol string, identifier in
 		log.Printf("Unsupported value type: %T\n", v)
 		return fmt.Errorf("unsupported value type")
 	}
+
+	return nil
+}
+
+func isValidURL(u string) bool {
+	_, err := url.ParseRequestURI(u)
+	return err == nil
+}
+
+func ImageToByte(imagePath string) []byte {
+	imageData, err := os.ReadFile(imagePath)
+	if err != nil {
+		fmt.Printf("failed to read image: %s", err)
+		return nil
+	}
+	return imageData
+}
+
+func WebImageToByte(url string) []byte {
+	resp, err := http.Get(url)
+	if err != nil {
+		fmt.Printf("failed to download image: %s", err)
+		return nil
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		fmt.Printf("unexpected status: %s", resp.Status)
+		return nil
+	}
+
+	imageData, err := io.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Printf("failed to read image data: %s", err)
+		return nil
+	}
+	return imageData
+}
+
+func ByteToImage(imageData []byte, outputPath string) error {
+	file, err := os.Create(outputPath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	_, err = file.Write(imageData)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Image saved to %s\n", outputPath)
 
 	return nil
 }

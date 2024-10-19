@@ -18,7 +18,7 @@ type Event struct {
 	StartDate    time.Time `json:"startDate"`
 	EndDate      time.Time `json:"endDate"`
 	ItineraryIds []string  `json:"itineraryIds"`
-	PhotoLinks   []string  `json:"photoLinks"`
+	EventImages  []string  `json:"eventImages"`
 }
 
 func CreateEventTable(DB *sql.DB) error {
@@ -32,7 +32,7 @@ func CreateEventTable(DB *sql.DB) error {
 		startDate TIMESTAMPTZ NOT NULL,
 		endDate TIMESTAMPTZ NOT NULL,
 		itineraryIds INTEGER[],
-		photoLinks TEXT[]
+		eventImages TEXT[]
 	);`
 
 	return CreateTable(DB, createTableSQL)
@@ -40,7 +40,7 @@ func CreateEventTable(DB *sql.DB) error {
 
 func AddEvent(DB *sql.DB, event Event) (int, error) {
 	insertEventSQL := `
-	INSERT INTO events (name, price, location, description, startDate, endDate, itineraryIds, photoLinks)
+	INSERT INTO events (name, price, location, description, startDate, endDate, itineraryIds, eventImages)
 	VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING eventId;`
 
 	var eventID int
@@ -48,7 +48,7 @@ func AddEvent(DB *sql.DB, event Event) (int, error) {
 		insertEventSQL, event.Name, event.Price,
 		event.Location, event.Description,
 		event.StartDate, event.EndDate,
-		pq.Array(event.ItineraryIds), pq.Array(event.PhotoLinks)).Scan(&eventID)
+		pq.Array(event.ItineraryIds), pq.Array(event.EventImages)).Scan(&eventID)
 	if err != nil {
 		log.Printf("Error adding event: %v\n", err)
 		return 0, fmt.Errorf("failed to add event: %w", err)
@@ -110,7 +110,7 @@ func GetEvent(DB *sql.DB, eventID int) (Event, error) {
 		&event.EventId, &event.Name, &event.Price,
 		&event.Location, &event.Description,
 		&event.StartDate, &event.EndDate,
-		pq.Array(&event.ItineraryIds), pq.Array(&event.PhotoLinks),
+		pq.Array(&event.ItineraryIds), pq.Array(&event.EventImages),
 	)
 
 	if err != nil {
@@ -188,28 +188,6 @@ func UpdateEventEndDate(DB *sql.DB, eventID int, endDate time.Time) error {
 	return nil
 }
 
-func AddEventPhotoLink(DB *sql.DB, eventID int, photoLink string) error {
-	err := AddArrayAttribute(DB, "events", "eventId", eventID, "photoLinks", []string{photoLink})
-	if err != nil {
-		log.Printf("Error adding photo link to event: %v\n", err)
-		return fmt.Errorf("failed to add photo link to event: %w", err)
-	}
-
-	log.Printf("Photo link added successfully for ID %d.\n", eventID)
-	return nil
-}
-
-func RemoveEventPhotoLink(DB *sql.DB, eventID int, photoLink string) error {
-	err := RemoveArrayAttribute(DB, "events", "eventId", eventID, "photoLinks", []string{photoLink})
-	if err != nil {
-		log.Printf("Error removing photo link from event: %v\n", err)
-		return fmt.Errorf("failed to remove photo link from event: %w", err)
-	}
-
-	log.Printf("Photo link removed successfully for ID %d.\n", eventID)
-	return nil
-}
-
 func AddEventItinerary(DB *sql.DB, eventID int, itineraryID int, recursive bool) error {
 	if !recursive {
 		return nil
@@ -240,4 +218,20 @@ func RemoveEventItinerary(DB *sql.DB, eventID int, itineraryID int) error {
 
 	log.Printf("Itinerary removed successfully for ID %d.\n", eventID)
 	return nil
+}
+
+func AddEventImage(DB *sql.DB, eventID int, image string) error {
+	if isValidURL(image) {
+		return AddArrayAttribute(DB, "events", "eventId", eventID, "eventImages", WebImageToByte(image))
+	} else {
+		return UpdateAttribute(DB, "events", "eventId", eventID, "eventImages", ImageToByte(image))
+	}
+}
+
+func RemoveEventImage(DB *sql.DB, eventID int, image string) error {
+	if isValidURL(image) {
+		return RemoveArrayAttribute(DB, "events", "eventId", eventID, "eventImages", WebImageToByte(image))
+	} else {
+		return RemoveArrayAttribute(DB, "events", "eventId", eventID, "eventImages", ImageToByte(image))
+	}
 }

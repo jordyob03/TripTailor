@@ -12,17 +12,19 @@ import (
 )
 
 type User struct {
-	UserId      int       `json:"userId"`
-	Username    string    `json:"username"`
-	Email       string    `json:"email"`
-	Password    string    `json:"password"`
-	DateOfBirth time.Time `json:"dateOfBirth"`
-	Name        string    `json:"name"`
-	Country     string    `json:"country"`
-	Languages   []string  `json:"languages"`
-	Tags        []string  `json:"tags"`
-	Boards      []string  `json:"boards"`
-	Posts       []string  `json:"posts"`
+	UserId       int       `json:"userId"`
+	Username     string    `json:"username"`
+	Email        string    `json:"email"`
+	Password     string    `json:"password"`
+	DateOfBirth  time.Time `json:"dateOfBirth"`
+	Name         string    `json:"name"`
+	Country      string    `json:"country"`
+	Languages    []string  `json:"languages"`
+	Tags         []string  `json:"tags"`
+	Boards       []string  `json:"boards"`
+	Posts        []string  `json:"posts"`
+	ProfileImage []byte    `json:"profileImage"`
+	CoverImage   []byte    `json:"coverImage"`
 }
 
 func CreateUserTable(DB *sql.DB) error {
@@ -38,15 +40,17 @@ func CreateUserTable(DB *sql.DB) error {
 		languages TEXT[],
 		tags TEXT[],
 		boards INTEGER[],
-		posts INTEGER[]
+		posts INTEGER[],
+		profileImage BYTEA,
+		coverImage BYTEA
 	);`
 	return CreateTable(DB, createTableSQL)
 }
 
 func AddUser(DB *sql.DB, user User) (int, error) {
 	insertUserSQL := `
-	INSERT INTO users (username, email, password, dateOfBirth, name, country, languages, tags, boards, posts)
-	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+	INSERT INTO users (username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, profileImage, coverImage)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
 	RETURNING userId;`
 
 	var userId int
@@ -54,7 +58,8 @@ func AddUser(DB *sql.DB, user User) (int, error) {
 		insertUserSQL, user.Username, user.Email, user.Password,
 		user.DateOfBirth, user.Name, user.Country,
 		pq.Array(user.Languages), pq.Array(user.Tags),
-		pq.Array(user.Boards), pq.Array(user.Posts)).Scan(&userId)
+		pq.Array(user.Boards), pq.Array(user.Posts),
+		user.ProfileImage, user.CoverImage).Scan(&userId)
 	if err != nil {
 		fmt.Println("Error adding user:", err)
 		return 0, err
@@ -121,7 +126,7 @@ func RemoveUser(DB *sql.DB, username string) error {
 
 func GetUser(DB *sql.DB, username string) (User, error) {
 	query := `
-    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts
+    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, profileImage, coverImage
     FROM users 
     WHERE username = $1`
 
@@ -134,6 +139,8 @@ func GetUser(DB *sql.DB, username string) (User, error) {
 		pq.Array(&user.Tags),
 		pq.Array(&user.Boards),
 		pq.Array(&user.Posts),
+		&user.ProfileImage,
+		&user.CoverImage,
 	)
 
 	if err == sql.ErrNoRows {
@@ -164,7 +171,7 @@ func GetUser(DB *sql.DB, username string) (User, error) {
 
 func GetAllUsers(DB *sql.DB) ([]User, error) {
 	query := `
-    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts
+    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, profileImage, coverImage
     FROM users`
 
 	rows, err := DB.Query(query)
@@ -184,6 +191,8 @@ func GetAllUsers(DB *sql.DB) ([]User, error) {
 			pq.Array(&user.Tags),
 			pq.Array(&user.Boards),
 			pq.Array(&user.Posts),
+			&user.ProfileImage,
+			&user.CoverImage,
 		); err != nil {
 			log.Printf("Error scanning user: %v\n", err)
 			return nil, err
@@ -307,6 +316,64 @@ func RemoveUserPost(DB *sql.DB, username string, postId int) error {
 	if err != nil {
 		log.Printf("Error removing post for user %s: %v\n", username, err)
 		return err
+	}
+
+	return nil
+}
+
+func UpdateUserProfileImage(DB *sql.DB, username, profileImage string) error {
+	if isValidURL(profileImage) {
+		return UpdateAttribute(DB, "users", "username", username, "profileImage", WebImageToByte(profileImage))
+	} else {
+		return UpdateAttribute(DB, "users", "username", username, "profileImage", ImageToByte(profileImage))
+	}
+}
+
+func UpdateUserCoverImage(DB *sql.DB, username, CoverImage string) error {
+	if isValidURL(CoverImage) {
+		return UpdateAttribute(DB, "users", "username", username, "coverImage", WebImageToByte(CoverImage))
+	} else {
+		return UpdateAttribute(DB, "users", "username", username, "coverImage", ImageToByte(CoverImage))
+	}
+}
+
+func SaveProfileImage(DB *sql.DB, username string) error {
+	query := `SELECT profileImage FROM users WHERE username = $1`
+
+	var profileImage string
+	err := DB.QueryRow(query, username).Scan(&profileImage)
+	if err != nil {
+		log.Printf("Error retrieving profile image for user %s: %v\n", username, err)
+		return err
+	}
+
+	if profileImage != "" {
+		err := ByteToImage([]byte(profileImage), fmt.Sprintf("/images/%s-profile.png", username))
+		if err != nil {
+			log.Printf("Error saving profile image for user %s: %v\n", username, err)
+			return err
+		}
+	}
+
+	return nil
+}
+
+func SaveCoverImage(DB *sql.DB, username string) error {
+	query := `SELECT coverImage FROM users WHERE username = $1`
+
+	var coverImage string
+	err := DB.QueryRow(query, username).Scan(&coverImage)
+	if err != nil {
+		log.Printf("Error retrieving cover image for user %s: %v\n", username, err)
+		return err
+	}
+
+	if coverImage != "" {
+		err := ByteToImage([]byte(coverImage), fmt.Sprintf("/images/%s-cover.png", username))
+		if err != nil {
+			log.Printf("Error saving profile image for user %s: %v\n", username, err)
+			return err
+		}
 	}
 
 	return nil

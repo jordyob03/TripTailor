@@ -26,6 +26,8 @@ services:
       - DATABASE_URL=postgres://postgres:password@db:5432/database
     depends_on:
       - db
+    volumes:
+      - ./images:/images
     command: ["/wait-for-it.sh", "db:5432", "--strict", "--", "/backend-container"]
     networks:
       - backend-network
