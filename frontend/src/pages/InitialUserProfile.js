@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import navBarLogo from '../assets/logo-long-transparent.png';
 import Tags from '../config/tags.json';
-import '../styles/styles.css';  // Import your external CSS
+import '../styles/styles.css';  
 import { useNavigate } from 'react-router';
 
 function InitialUserProfile() {
@@ -45,7 +45,7 @@ function InitialUserProfile() {
     }
     if (languages.length >= 1) {
       console.log({ selectedTags, country, languages });
-      setTagErrorMessage(''); // Clear error message if valid
+      setTagErrorMessage(''); 
     } else {
       setLangErrorMessage('Please select at least 1 language.');
     }
@@ -148,7 +148,7 @@ function InitialUserProfile() {
             ))}
           </select>
 
-          <button type="submit" className="continueButtonIUP" onClick={handleSubmit}>
+          <button type="submit" className="continueButton" onClick={handleSubmit}>
             Continue
           </button>
         </div>

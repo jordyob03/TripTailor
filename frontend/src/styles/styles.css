@@ -135,22 +135,6 @@
     font-family: 'Red Hat Display', sans-serif;
   }
   
-  .continueButtonIUP {
-    padding: 12px;
-    background-color: #002f6c;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-family: 'Red Hat Display', sans-serif;
-  }
-  
-  .continueButtonIUP:hover {
-    background-color: #00509e;
-  }
-  
   .signUpButton {
     padding: 1px;
     background-color: #ffffff;
@@ -332,14 +316,59 @@
   .timeSelect {
     display: flex;
     gap: 10px;
-    width: 60%;
+    width: 70%;
   }
   
 .eventBox {
+  position: relative;
   background-color: #e0e7f1;
   padding: 0 30px; 
   padding-bottom: 20px; 
   border-radius: 12px;
   margin-bottom: 20px; 
   border: 1px solid #d3d9e3; 
+}
+
+.imagePreview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.imageContainer {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.previewImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.removeButton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: none; 
+  border: none; 
+  color: white; 
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer; 
+}
+
+.inputFile {
+  display: none; 
+}
+
+.addImageButton label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
