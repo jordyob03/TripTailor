@@ -16,8 +16,12 @@ function Search() {
         try {
             console.log("search api sent")
             console.log(searchData)
-            const response = await searchAPI.get('/search', searchData)
+            const response = await searchAPI.get('/search', {
+                params: searchData,
+            });
+            console.log("API response:", response);
             console.log("idk if this is reached")
+            console.log(searchData)
 
         } catch (error) {
             if (error.response && error.response.data) {

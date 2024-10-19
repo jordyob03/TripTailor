@@ -10,7 +10,7 @@ import (
 // QueryItinerariesByLocation queries the database for itineraries based on country and city
 func QueryItinerariesByLocation(db *sql.DB, country, city string) ([]models.Itinerary, error) {
 	rows, err := db.Query(`
-		SELECT itinerary_id, name, city, country, languages, tags, events, post_id, username, creation_date, last_update
+		SELECT itineraryid, name, city, country, languages, tags, events, postid, username, creationdate, lastupdate
 		FROM itineraries
 		WHERE country = $1 AND city = $2`, country, city)
 	if err != nil {

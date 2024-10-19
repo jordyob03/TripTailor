@@ -5,7 +5,7 @@ import (
 )
 
 type Itinerary struct {
-	ItineraryId  int       `json:"itineraryId"`
+	ItineraryId  int       `json:"itineraryId" db:"itineraryid"`
 	Name         string    `json:"name"`
 	City         string    `json:"city"`
 	Country      string    `json:"country"`
