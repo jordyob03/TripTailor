@@ -35,17 +35,18 @@ function InitialUserProfile() {
       console.log({ selectedTags, country, languages });
       setTagErrorMessage(''); // Clear error message if valid
     } else {
+      console.log({ selectedTags, country, languages });
       setTagErrorMessage('Please select at least 3 tags.');
     }
     if (country.length >= 1) {
       console.log({ selectedTags, country, languages });
-      setTagErrorMessage(''); // Clear error message if valid
+      setCountryErrorMessage(''); // Clear error message if valid
     } else {
       setCountryErrorMessage('Please select a country.');
     }
     if (languages.length >= 1) {
       console.log({ selectedTags, country, languages });
-      setTagErrorMessage(''); 
+      setLangErrorMessage(''); 
     } else {
       setLangErrorMessage('Please select at least 1 language.');
     }

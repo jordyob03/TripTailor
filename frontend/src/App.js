@@ -13,7 +13,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<CreateItinerary />} />
+        <Route path="/" element={<UserLogin />} />
         <Route path="/sign-up" element={<UserSignup />} /> 
         <Route path="/profile-creation" element={<ProtectedRoute> <UserProfile /> </ProtectedRoute>} />
       </Routes>
