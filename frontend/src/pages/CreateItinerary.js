@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import navBarLogo from '../assets/logo-long-transparent.png';
 import Tags from '../config/tags.json';
 import '../styles/styles.css'; 
+import { useNavigate } from 'react-router';
 
 function CreateItinerary() {
   const categories = Tags.categories;
@@ -16,6 +17,8 @@ function CreateItinerary() {
     description: '',
     estimatedCost: ''
   });
+
+  const navigate = useNavigate()
 
   const [events, setEvents] = useState([{ ampm: 'AM', time: '1:00', location: '', description: ''}]);
 
@@ -122,6 +125,11 @@ function CreateItinerary() {
       return times;
     };
 
+    const handleLogout = () => {
+      localStorage.removeItem('token'); 
+      navigate('/'); 
+    };
+
     const removeEvent = (index) => {
       const updatedEvents = events.filter((_, i) => i !== index);
       setEvents(updatedEvents);
@@ -131,10 +139,18 @@ function CreateItinerary() {
     <>
       <nav className="navBar">
         <img src={navBarLogo} alt="Trip Tailor Logo" className="navBarLogo" />
-        <button className="profileButton">
-          <i className="fas fa-bars icon"></i>
-          <i className="fa-regular fa-user icon"></i>
-        </button>
+        <div className="buttonsContainer">
+          {/* Logout Button */}
+          <button className="logoutButton" onClick={handleLogout}>
+            <i className="fas fa-sign-out-alt" style={{ fontSize: '24px', color: '#00509e', marginLeft: '5px', marginRight: '10px' }}></i>
+            Log Out
+          </button>
+          {/* Profile Button */}
+          <button className="profileButton">
+            <i className="fas fa-bars" style={{ fontSize: '16px', color: '#00509e', marginRight: '15px' }}></i>
+            <i className="fa-regular fa-user" style={{ fontSize: '24px', color: '#00509e' }}></i>
+          </button>
+        </div>
       </nav>
       <div className="centeredContainer">
         <div className="leftBox">

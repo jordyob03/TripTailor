@@ -75,9 +75,7 @@ function InitialUserProfile() {
       {/* navBar */}
       <nav className="navBar">
         <img src={navBarLogo} alt="Trip Tailor Logo" className="navBarLogo" />
-        
-        {/* Buttons Container */}
-        <div className="buttonsContainer">
+          <div className="buttonsContainer">
           {/* Logout Button */}
           <button className="logoutButton" onClick={handleLogout}>
             <i className="fas fa-sign-out-alt" style={{ fontSize: '24px', color: '#00509e', marginLeft: '5px', marginRight: '10px' }}></i>
