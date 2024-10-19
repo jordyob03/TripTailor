@@ -1,18 +1,20 @@
 version: '3'
 services:
   auth-service:
-      build:
-        context: ./backend/services/auth-service
-        dockerfile: Dockerfile
-      container_name: auth-service-container
-      ports:
-        - "8081:8081"
-      environment:
-        - DATABASE_URL=postgres://postgres:password@db:5432/database
-      depends_on:
-        - db
-      command: sh -c "sleep 10; /auth-service-container" 
-      
+    build:
+      context: ./backend/services/auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service-container
+    ports:
+      - "8081:8081"
+    environment:
+      - DATABASE_URL=postgres://postgres:password@db:5432/database
+    depends_on:
+      - db
+    command: ["/wait-for-it.sh", "db:5432", "--strict", "--", "/auth-service-container"]
+    networks:
+      - backend-network
+
   main-service:
     build:
       context: ./backend/services/main-service
@@ -24,7 +26,9 @@ services:
       - DATABASE_URL=postgres://postgres:password@db:5432/database
     depends_on:
       - db
-    command: sh -c "sleep 3; go run ./cmd/main.go"
+    command: ["/wait-for-it.sh", "db:5432", "--strict", "--", "/backend-container"]
+    networks:
+      - backend-network
 
   db:
     image: postgres:17.0
@@ -36,7 +40,9 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: database
     volumes:
-      - ./pgdata:/var/lib/postgresql/data  
+      - db_data:/var/lib/postgresql/data  
+    networks:
+      - backend-network
 
   pgadmin:
     image: dpage/pgadmin4
@@ -48,6 +54,11 @@ services:
       - "8082:80" 
     depends_on:
       - db
+    networks:
+      - backend-network
 
 volumes:
   db_data:
+
+networks:
+  backend-network:

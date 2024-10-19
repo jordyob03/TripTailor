@@ -3,9 +3,10 @@ package DBAuth
 import (
 	"database/sql"
 	"fmt"
-	"github.com/jordyob03/TripTailor/backend/services/auth-service/internal/models"
-	"github.com/lib/pq"
+	models "github.com/jordyob03/TripTailor/backend/services/auth-service/internal/models"
 	"log"
+
+	"github.com/lib/pq"
 )
 
 func CreateUserTable(DB *sql.DB) error {

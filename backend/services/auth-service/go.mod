@@ -1,6 +1,6 @@
 module github.com/jordyob03/TripTailor/backend/services/auth-service
 
-go 1.23.1
+go 1.22.7
 
 require (
 	github.com/gin-contrib/cors v1.7.2

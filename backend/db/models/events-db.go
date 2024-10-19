@@ -1,6 +1,7 @@
 package DBmodels
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"time"
@@ -20,7 +21,7 @@ type Event struct {
 	PhotoLinks   []string  `json:"photoLinks"`
 }
 
-func CreateEventTable() error {
+func CreateEventTable(DB *sql.DB) error {
 	createTableSQL := `
 	CREATE TABLE IF NOT EXISTS events (
 		eventId SERIAL PRIMARY KEY,
@@ -34,10 +35,10 @@ func CreateEventTable() error {
 		photoLinks TEXT[]
 	);`
 
-	return CreateTable(createTableSQL)
+	return CreateTable(DB, createTableSQL)
 }
 
-func AddEvent(event Event) (int, error) {
+func AddEvent(DB *sql.DB, event Event) (int, error) {
 	insertEventSQL := `
 	INSERT INTO events (name, price, location, description, startDate, endDate, itineraryIds, photoLinks)
 	VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING eventId;`
@@ -53,11 +54,25 @@ func AddEvent(event Event) (int, error) {
 		return 0, fmt.Errorf("failed to add event: %w", err)
 	}
 
+	ItineraryIds, err := StringsToInts(event.ItineraryIds)
+	if err != nil {
+		log.Printf("Error converting itinerary IDs to integers: %v\n", err)
+		return 0, fmt.Errorf("failed to convert itinerary IDs: %w", err)
+	}
+
+	for _, itineraryID := range ItineraryIds {
+		err := AddItineraryEvent(DB, itineraryID, eventID, false)
+		if err != nil {
+			log.Printf("Error adding event to itinerary ID %d: %v\n", itineraryID, err)
+			return 0, fmt.Errorf("failed to add event to itinerary: %w", err)
+		}
+	}
+
 	log.Printf("Event added successfully with ID: %d\n", eventID)
 	return eventID, nil
 }
 
-func RemoveEvent(eventID int) error {
+func RemoveEvent(DB *sql.DB, eventID int) error {
 	var itineraryIds []int
 
 	getItineraryIdsSQL := `SELECT itineraryIds FROM events WHERE eventId = $1;`
@@ -76,7 +91,7 @@ func RemoveEvent(eventID int) error {
 
 	log.Println("Removal of Event from Associated Itinerary IDs:")
 	for _, itineraryID := range itineraryIds {
-		err := RemoveItineraryEvent(itineraryID, eventID)
+		err := RemoveItineraryEvent(DB, itineraryID, eventID)
 		if err != nil {
 			log.Printf("Error removing event from itinerary ID %d: %v\n", itineraryID, err)
 			return fmt.Errorf("failed to remove event from itinerary: %w", err)
@@ -87,7 +102,7 @@ func RemoveEvent(eventID int) error {
 	return nil
 }
 
-func GetEvent(eventID int) (Event, error) {
+func GetEvent(DB *sql.DB, eventID int) (Event, error) {
 	query := `SELECT * FROM events WHERE eventId = $1;`
 
 	var event Event
@@ -107,8 +122,8 @@ func GetEvent(eventID int) (Event, error) {
 	return event, nil
 }
 
-func UpdateEventName(eventID int, name string) error {
-	err := UpdateAttribute("events", "eventId", eventID, "name", name)
+func UpdateEventName(DB *sql.DB, eventID int, name string) error {
+	err := UpdateAttribute(DB, "events", "eventId", eventID, "name", name)
 	if err != nil {
 		log.Printf("Error updating event name: %v\n", err)
 		return fmt.Errorf("failed to update event name: %w", err)
@@ -118,8 +133,8 @@ func UpdateEventName(eventID int, name string) error {
 	return nil
 }
 
-func UpdateEventPrice(eventID int, price int) error {
-	err := UpdateAttribute("events", "eventId", eventID, "price", price)
+func UpdateEventPrice(DB *sql.DB, eventID int, price int) error {
+	err := UpdateAttribute(DB, "events", "eventId", eventID, "price", price)
 	if err != nil {
 		log.Printf("Error updating event price: %v\n", err)
 		return fmt.Errorf("failed to update event price: %w", err)
@@ -129,8 +144,8 @@ func UpdateEventPrice(eventID int, price int) error {
 	return nil
 }
 
-func UpdateEventLocation(eventID int, location string) error {
-	err := UpdateAttribute("events", "eventId", eventID, "location", location)
+func UpdateEventLocation(DB *sql.DB, eventID int, location string) error {
+	err := UpdateAttribute(DB, "events", "eventId", eventID, "location", location)
 	if err != nil {
 		log.Printf("Error updating event location: %v\n", err)
 		return fmt.Errorf("failed to update event location: %w", err)
@@ -140,8 +155,8 @@ func UpdateEventLocation(eventID int, location string) error {
 	return nil
 }
 
-func UpdateEventDescription(eventID int, description string) error {
-	err := UpdateAttribute("events", "eventId", eventID, "description", description)
+func UpdateEventDescription(DB *sql.DB, eventID int, description string) error {
+	err := UpdateAttribute(DB, "events", "eventId", eventID, "description", description)
 	if err != nil {
 		log.Printf("Error updating event description: %v\n", err)
 		return fmt.Errorf("failed to update event description: %w", err)
@@ -151,8 +166,8 @@ func UpdateEventDescription(eventID int, description string) error {
 	return nil
 }
 
-func UpdateEventStartDate(eventID int, startDate time.Time) error {
-	err := UpdateAttribute("events", "eventId", eventID, "startDate", startDate)
+func UpdateEventStartDate(DB *sql.DB, eventID int, startDate time.Time) error {
+	err := UpdateAttribute(DB, "events", "eventId", eventID, "startDate", startDate)
 	if err != nil {
 		log.Printf("Error updating event start date: %v\n", err)
 		return fmt.Errorf("failed to update event start date: %w", err)
@@ -162,8 +177,8 @@ func UpdateEventStartDate(eventID int, startDate time.Time) error {
 	return nil
 }
 
-func UpdateEventEndDate(eventID int, endDate time.Time) error {
-	err := UpdateAttribute("events", "eventId", eventID, "endDate", endDate)
+func UpdateEventEndDate(DB *sql.DB, eventID int, endDate time.Time) error {
+	err := UpdateAttribute(DB, "events", "eventId", eventID, "endDate", endDate)
 	if err != nil {
 		log.Printf("Error updating event end date: %v\n", err)
 		return fmt.Errorf("failed to update event end date: %w", err)
@@ -173,8 +188,8 @@ func UpdateEventEndDate(eventID int, endDate time.Time) error {
 	return nil
 }
 
-func AddEventPhotoLink(eventID int, photoLink string) error {
-	err := AddArrayAttribute("events", "eventId", eventID, "photoLinks", []string{photoLink})
+func AddEventPhotoLink(DB *sql.DB, eventID int, photoLink string) error {
+	err := AddArrayAttribute(DB, "events", "eventId", eventID, "photoLinks", []string{photoLink})
 	if err != nil {
 		log.Printf("Error adding photo link to event: %v\n", err)
 		return fmt.Errorf("failed to add photo link to event: %w", err)
@@ -184,8 +199,8 @@ func AddEventPhotoLink(eventID int, photoLink string) error {
 	return nil
 }
 
-func RemoveEventPhotoLink(eventID int, photoLink string) error {
-	err := RemoveArrayAttribute("events", "eventId", eventID, "photoLinks", []string{photoLink})
+func RemoveEventPhotoLink(DB *sql.DB, eventID int, photoLink string) error {
+	err := RemoveArrayAttribute(DB, "events", "eventId", eventID, "photoLinks", []string{photoLink})
 	if err != nil {
 		log.Printf("Error removing photo link from event: %v\n", err)
 		return fmt.Errorf("failed to remove photo link from event: %w", err)
@@ -195,18 +210,18 @@ func RemoveEventPhotoLink(eventID int, photoLink string) error {
 	return nil
 }
 
-func AddEventItinerary(eventID int, itineraryID int, recursive bool) error {
+func AddEventItinerary(DB *sql.DB, eventID int, itineraryID int, recursive bool) error {
 	if !recursive {
 		return nil
 	}
 
-	err := AddArrayAttribute("events", "eventId", eventID, "itineraryIds", IntsToStrings([]int{itineraryID}))
+	err := AddArrayAttribute(DB, "events", "eventId", eventID, "itineraryIds", IntsToStrings([]int{itineraryID}))
 	if err != nil {
 		log.Printf("Error adding itinerary to event: %v\n", err)
 		return fmt.Errorf("failed to add itinerary to event: %w", err)
 	}
 
-	err = AddItineraryEvent(itineraryID, eventID, false)
+	err = AddItineraryEvent(DB, itineraryID, eventID, false)
 	if err != nil {
 		log.Printf("Error adding event to itinerary: %v\n", err)
 		return fmt.Errorf("failed to add event to itinerary: %w", err)
@@ -216,8 +231,8 @@ func AddEventItinerary(eventID int, itineraryID int, recursive bool) error {
 	return nil
 }
 
-func RemoveEventItinerary(eventID int, itineraryID int) error {
-	err := RemoveArrayAttribute("events", "eventId", eventID, "itineraryIds", IntsToStrings([]int{itineraryID}))
+func RemoveEventItinerary(DB *sql.DB, eventID int, itineraryID int) error {
+	err := RemoveArrayAttribute(DB, "events", "eventId", eventID, "itineraryIds", IntsToStrings([]int{itineraryID}))
 	if err != nil {
 		log.Printf("Error removing itinerary from event: %v\n", err)
 		return fmt.Errorf("failed to remove itinerary from event: %w", err)

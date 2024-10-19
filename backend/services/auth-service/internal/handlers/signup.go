@@ -3,7 +3,7 @@ package handlers
 import (
 	"database/sql"
 	db "github.com/jordyob03/TripTailor/backend/services/auth-service/internal/db"
-	"github.com/jordyob03/TripTailor/backend/services/auth-service/internal/models"
+	models "github.com/jordyob03/TripTailor/backend/services/auth-service/internal/models"
 	utils "github.com/jordyob03/TripTailor/backend/services/auth-service/utils"
 	"net/http"
 	"time"

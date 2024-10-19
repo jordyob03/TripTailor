@@ -1,6 +1,7 @@
 package DBmodels
 
 import (
+	"database/sql"
 	"log"
 	"time"
 
@@ -17,7 +18,7 @@ type Board struct {
 	Tags         []string  `json:"tags"`
 }
 
-func CreateBoardTable() error {
+func CreateBoardTable(DB *sql.DB) error {
 	createTableSQL := `
     CREATE TABLE IF NOT EXISTS boards (
         boardId SERIAL PRIMARY KEY,
@@ -29,10 +30,10 @@ func CreateBoardTable() error {
         tags TEXT[]
     );`
 
-	return CreateTable(createTableSQL)
+	return CreateTable(DB, createTableSQL)
 }
 
-func AddBoard(board Board) error {
+func AddBoard(DB *sql.DB, board Board) error {
 	insertBoardSQL := `
     INSERT INTO boards (name, description, username, posts, tags) 
     VALUES ($1, $2, $3, $4, $5) RETURNING boardId;`
@@ -47,13 +48,13 @@ func AddBoard(board Board) error {
 		return err
 	}
 
-	AddUserBoard(board.Username, boardID)
+	AddUserBoard(DB, board.Username, boardID)
 
 	log.Printf("Board added successfully with ID: %d\n", boardID)
 	return nil
 }
 
-func RemoveBoard(boardId int) error {
+func RemoveBoard(DB *sql.DB, boardId int) error {
 	getUsernameSQL := `SELECT username, boards FROM posts WHERE postId = $1;`
 
 	var username string
@@ -72,13 +73,13 @@ func RemoveBoard(boardId int) error {
 		return err
 	}
 
-	RemoveUserBoard(username, boardId)
+	RemoveUserBoard(DB, username, boardId)
 
 	log.Println("Board removed successfully.")
 	return nil
 }
 
-func GetBoard(boardId int) (Board, error) {
+func GetBoard(DB *sql.DB, boardId int) (Board, error) {
 	var board Board
 
 	query := `
@@ -105,8 +106,8 @@ func GetBoard(boardId int) (Board, error) {
 	return board, nil
 }
 
-func UpdateBoardName(boardId int, name string) error {
-	err := UpdateAttribute("boards", "boardId", boardId, "name", name)
+func UpdateBoardName(DB *sql.DB, boardId int, name string) error {
+	err := UpdateAttribute(DB, "boards", "boardId", boardId, "name", name)
 	if err != nil {
 		log.Printf("Error updating board name: %v\n", err)
 		return err
@@ -116,8 +117,8 @@ func UpdateBoardName(boardId int, name string) error {
 	return nil
 }
 
-func UpdateBoardDescription(boardId int, description string) error {
-	err := UpdateAttribute("boards", "boardId", boardId, "description", description)
+func UpdateBoardDescription(DB *sql.DB, boardId int, description string) error {
+	err := UpdateAttribute(DB, "boards", "boardId", boardId, "description", description)
 	if err != nil {
 		log.Printf("Error updating board description: %v\n", err)
 		return err
@@ -127,8 +128,8 @@ func UpdateBoardDescription(boardId int, description string) error {
 	return nil
 }
 
-func UpdateBoardCreationDate(boardId int, creationDate time.Time) error {
-	err := UpdateAttribute("boards", "boardId", boardId, "creationDate", creationDate)
+func UpdateBoardCreationDate(DB *sql.DB, boardId int, creationDate time.Time) error {
+	err := UpdateAttribute(DB, "boards", "boardId", boardId, "creationDate", creationDate)
 	if err != nil {
 		log.Printf("Error updating board creation date: %v\n", err)
 		return err
@@ -138,18 +139,18 @@ func UpdateBoardCreationDate(boardId int, creationDate time.Time) error {
 	return nil
 }
 
-func AddBoardPost(boardId int, postId int, recursive bool) error {
+func AddBoardPost(DB *sql.DB, boardId int, postId int, recursive bool) error {
 	if !recursive {
 		return nil
 	}
 
-	err := AddArrayAttribute("boards", "boardId", boardId, "posts", IntsToStrings([]int{postId}))
+	err := AddArrayAttribute(DB, "boards", "boardId", boardId, "posts", IntsToStrings([]int{postId}))
 	if err != nil {
 		log.Printf("Error adding post for board %d: %v\n", boardId, err)
 		return err
 	}
 
-	err = AddPostBoard(postId, boardId, false)
+	err = AddPostBoard(DB, postId, boardId, false)
 	if err != nil {
 		log.Printf("Error adding board to post %d: %v\n", postId, err)
 		return err
@@ -158,8 +159,8 @@ func AddBoardPost(boardId int, postId int, recursive bool) error {
 	return nil
 }
 
-func RemoveBoardPost(boardId int, postId int) error {
-	err := RemoveArrayAttribute("boards", "boardId", boardId, "posts", IntsToStrings([]int{postId}))
+func RemoveBoardPost(DB *sql.DB, boardId int, postId int) error {
+	err := RemoveArrayAttribute(DB, "boards", "boardId", boardId, "posts", IntsToStrings([]int{postId}))
 	if err != nil {
 		log.Printf("Error removing post for board %d: %v\n", boardId, err)
 		return err
@@ -168,8 +169,8 @@ func RemoveBoardPost(boardId int, postId int) error {
 	return nil
 }
 
-func AddBoardTag(boardId int, tag string) error {
-	err := AddArrayAttribute("boards", "boardId", boardId, "tags", []string{tag})
+func AddBoardTag(DB *sql.DB, boardId int, tag string) error {
+	err := AddArrayAttribute(DB, "boards", "boardId", boardId, "tags", []string{tag})
 	if err != nil {
 		log.Printf("Error adding tag for board %d: %v\n", boardId, err)
 		return err
@@ -178,8 +179,8 @@ func AddBoardTag(boardId int, tag string) error {
 	return nil
 }
 
-func RemoveBoardTag(boardId int, tag string) error {
-	err := RemoveArrayAttribute("boards", "boardId", boardId, "tags", []string{tag})
+func RemoveBoardTag(DB *sql.DB, boardId int, tag string) error {
+	err := RemoveArrayAttribute(DB, "boards", "boardId", boardId, "tags", []string{tag})
 	if err != nil {
 		log.Printf("Error removing tag for board %d: %v\n", boardId, err)
 		return err
