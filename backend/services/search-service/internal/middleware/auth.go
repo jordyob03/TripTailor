@@ -1,12 +1,10 @@
 package middleware
 
 import (
+	"github.com/gin-gonic/gin"
+	"github.com/jordyob03/TripTailor/backend/services/search-service/utils"
 	"net/http"
 	"strings"
-
-	"github.com/jordyob03/TripTailor/backend/services/search-service/utils"
-
-	"github.com/gin-gonic/gin"
 )
 
 func AuthMiddleware() gin.HandlerFunc {
