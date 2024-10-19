@@ -66,7 +66,7 @@ function InitialUserProfile() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); 
+    localStorage.clear(); 
     navigate('/'); 
   };
 
