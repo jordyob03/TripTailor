@@ -27,7 +27,7 @@ func TestQueryItinerariesByLocation(t *testing.T) {
 
 	rows := sqlmock.NewRows([]string{"itineraryid", "name", "city", "country", "languages", "tags", "events", "postid", "username", "creationdate", "lastupdate"}).
 		AddRow(1, "Tokyo Forest Exploration", "Tokyo", "Japan", "English,Japanese", "Food,History", "1,2", 1, "johndoe", creationDate, lastUpdate).
-		AddRow(2, "Tokyo Furry Convention", "Tokyo", "Japan", "English", "Food", "1", 2, "janedoe", creationDate, lastUpdate)
+		AddRow(2, "Tokyo Nerd Convention", "Tokyo", "Japan", "English", "Food", "1", 2, "janedoe", creationDate, lastUpdate)
 
 	mock.ExpectQuery(query).WithArgs(country, city).WillReturnRows(rows)
 
@@ -40,6 +40,10 @@ func TestQueryItinerariesByLocation(t *testing.T) {
 	assert.Equal(t, "Tokyo Forest Exploration", itineraries[0].Name)
 	assert.Equal(t, "Tokyo", itineraries[0].City)
 	assert.Equal(t, "Japan", itineraries[0].Country)
+
+	assert.Equal(t, "Tokyo Nerd Convention", itineraries[1].Name)
+	assert.Equal(t, "Tokyo", itineraries[1].City)
+	assert.Equal(t, "Japan", itineraries[1].Country)
 
 	if err := mock.ExpectationsWereMet(); err != nil {
 		t.Errorf("there were unfulfilled expectations: %s", err)
