@@ -9,13 +9,11 @@ function Itinerary() {
     <>
         <div>
 
-        <input
-              type="text"
-              placeholder="Username"
-        
-              className="input"
-            />
-
+          <input
+            type="text"
+            placeholder="Location"
+            className="input"
+          />
         </div>
     </>
   );

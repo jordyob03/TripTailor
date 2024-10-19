@@ -104,7 +104,7 @@ function UserLogin() {
           <button
           type="button"
           onClick={handleItinClick}
-          >Bruh</button>
+          >Create Itinerary</button>
         </div>
       </div>
     </>
