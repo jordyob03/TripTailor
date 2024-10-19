@@ -1,8 +1,10 @@
 package api
 
 import (
-	"backend/search-service/internal/handlers"
 	"database/sql"
+
+	"github.com/jordyob03/TripTailor/backend/services/search-service/internal/handlers"
+
 	"github.com/gin-gonic/gin"
 )
 

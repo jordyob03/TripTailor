@@ -1,9 +1,10 @@
 package middleware
 
 import (
-	"backend/auth-service/utils"
 	"net/http"
 	"strings"
+
+	"github.com/jordyob03/TripTailor/backend/services/search-service/utils"
 
 	"github.com/gin-gonic/gin"
 )

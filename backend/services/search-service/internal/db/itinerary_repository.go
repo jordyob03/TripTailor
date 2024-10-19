@@ -1,9 +1,10 @@
 package db
 
 import (
-	"backend/search-service/internal/models" // Import the models package
 	"database/sql"
 	"strings"
+
+	"github.com/jordyob03/TripTailor/backend/services/search-service/internal/models" // Import the models package
 )
 
 // QueryItinerariesByLocation queries the database for itineraries based on country and city

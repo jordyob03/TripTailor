@@ -1,10 +1,12 @@
 package handlers
 
 import (
-	db "backend/search-service/internal/db" // Import from internal/db
 	"database/sql"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	db "github.com/jordyob03/TripTailor/backend/services/search-service/internal/db" // Import from internal/db
+
+	"github.com/gin-gonic/gin"
 )
 
 // SearchItineraries handles the search request
