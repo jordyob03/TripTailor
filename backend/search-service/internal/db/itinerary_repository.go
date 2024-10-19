@@ -1,108 +1,50 @@
 package db
 
 import (
-	"backend/search-service/internal/models"
+	"backend/search-service/internal/models" // Import the models package
 	"database/sql"
-	"github.com/lib/pq"
 	"strings"
 )
 
-// QueryItinerariesByLocation queries the database for itineraries by country and city,
-// including their associated events.
+// QueryItinerariesByLocation queries the database for itineraries based on country and city
 func QueryItinerariesByLocation(db *sql.DB, country, city string) ([]models.Itinerary, error) {
-	// Query the itineraries based on location
-	itineraryRows, err := db.Query(`
-		SELECT id, description, name, location, date, tags 
+	rows, err := db.Query(`
+		SELECT itinerary_id, name, city, country, languages, tags, events, post_id, username, creation_date, last_update
 		FROM itineraries
-		WHERE country=$1 AND city=$2`, country, city)
+		WHERE country = $1 AND city = $2`, country, city)
 	if err != nil {
 		return nil, err
 	}
-	defer itineraryRows.Close()
+	defer rows.Close()
 
-	// Create a map to store itineraries by ID so we can associate events later
-	itinerariesMap := make(map[int]*models.Itinerary)
-
-	for itineraryRows.Next() {
+	itineraries := []models.Itinerary{}
+	for rows.Next() {
 		var itinerary models.Itinerary
-		var itineraryID int
-		var tags string
+		var languages, tags, events string
 
-		// Scan itinerary fields
-		err := itineraryRows.Scan(&itineraryID, &itinerary.Description, &itinerary.Name, &itinerary.Location, &itinerary.Date, &tags)
-		if err != nil {
+		// Scan each row into the itinerary struct
+		if err := rows.Scan(
+			&itinerary.ItineraryId, &itinerary.Name, &itinerary.City, &itinerary.Country,
+			&languages, &tags, &events, &itinerary.PostId, &itinerary.Username,
+			&itinerary.CreationDate, &itinerary.LastUpdate,
+		); err != nil {
 			return nil, err
 		}
 
-		// Convert tags (comma-separated) into a slice
+		// Convert comma-separated strings to slices
+		itinerary.Languages = splitTags(languages)
 		itinerary.Tags = splitTags(tags)
+		itinerary.Events = splitTags(events)
 
-		// Store the itinerary in the map by ID
-		itinerariesMap[itineraryID] = &itinerary
+		itineraries = append(itineraries, itinerary)
 	}
-
-	// If there are no itineraries, return an empty slice
-	if len(itinerariesMap) == 0 {
-		return []models.Itinerary{}, nil
-	}
-
-	// Query the events associated with the itineraries
-	itineraryIDs := make([]int, 0, len(itinerariesMap))
-	for id := range itinerariesMap {
-		itineraryIDs = append(itineraryIDs, id)
-	}
-
-	// Query for events associated with the itineraries
-	eventRows, err := db.Query(`
-		SELECT id, itinerary_id, name, date, time, location, price, description, photos
-		FROM events
-		WHERE itinerary_id = ANY($1)`, pq.Array(itineraryIDs))
-	if err != nil {
-		return nil, err
-	}
-	defer eventRows.Close()
-
-	// Process events and associate them with the correct itineraries
-	for eventRows.Next() {
-		var event models.Event
-		var itineraryID int
-		var photos string
-
-		// Scan event fields
-		err := eventRows.Scan(&event.Id, &itineraryID, &event.Name, &event.Date, &event.Time, &event.Location, &event.Price, &event.Description, &photos)
-		if err != nil {
-			return nil, err
-		}
-
-		// Convert photos (comma-separated) into a slice
-		event.Photos = splitPhotos(photos)
-
-		// Add the event to the correct itinerary
-		itinerary := itinerariesMap[itineraryID]
-		itinerary.Events = append(itinerary.Events, event)
-	}
-
-	// Collect the itineraries from the map into a slice
-	itineraries := make([]models.Itinerary, 0, len(itinerariesMap))
-	for _, itinerary := range itinerariesMap {
-		itineraries = append(itineraries, *itinerary)
-	}
-
 	return itineraries, nil
 }
 
-// Helper function to split comma-separated tags into a slice of strings
-func splitTags(tags string) []string {
-	if tags == "" {
+// Helper function to split comma-separated values into a slice of strings
+func splitTags(input string) []string {
+	if input == "" {
 		return []string{}
 	}
-	return strings.Split(tags, ",")
-}
-
-// Helper function to split comma-separated photos into a slice of strings
-func splitPhotos(photos string) []string {
-	if photos == "" {
-		return []string{}
-	}
-	return strings.Split(photos, ",")
+	return strings.Split(input, ",")
 }

@@ -1,31 +1,33 @@
 package handlers
 
 import (
-	"backend/search-service/internal/db"
+	db "backend/search-service/internal/db" // Import from internal/db
 	"database/sql"
-	"encoding/json"
+	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-// SearchItineraries returns an HTTP handler function with a database connection
-func SearchItineraries(database *sql.DB) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		country := r.URL.Query().Get("country")
-		city := r.URL.Query().Get("city")
+// SearchItineraries handles the search request
+func SearchItineraries(database *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Extract query parameters
+		country := c.Query("country")
+		city := c.Query("city")
 
+		// Validate query parameters
 		if country == "" || city == "" {
-			http.Error(w, "Missing query parameters", http.StatusBadRequest)
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Missing query parameters"})
 			return
 		}
 
-		// Use the database connection passed from the main function
+		// Query the database for itineraries using the db package
 		itineraries, err := db.QueryItinerariesByLocation(database, country, city)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(itineraries)
+		// Return the itineraries as JSON
+		c.JSON(http.StatusOK, itineraries)
 	}
 }
