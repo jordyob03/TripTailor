@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import navBarLogo from '../assets/logo-long-transparent.png';
 import Tags from '../config/tags.json';
 import '../styles/styles.css';  // Import your external CSS
+import { useNavigate } from 'react-router';
+import  profileAPI from '../api/profileAPI.js';
 
 function InitialUserProfile() {
   const allTags = Object.values(Tags.categories).flat();
@@ -13,12 +15,13 @@ function InitialUserProfile() {
   const [country, setCountry] = useState('');
   const [languages, setLanguages] = useState([]);
   const [shuffledTags, setShuffledTags] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
   const [name, setName] = useState('');
   const [nameErrorMessage, setNameErrorMessage] = useState('');
 
   const countries = ['USA', 'Canada', 'UK', 'Australia', 'Other'];
   const languageOptions = ['English', 'Spanish', 'French', 'German', 'Chinese'];
-
+  const username = localStorage.getItem('username')
   const shuffleArray = (array) => {
     return [...array].sort(() => Math.random() - 0.5);
   };
@@ -28,7 +31,7 @@ function InitialUserProfile() {
     setShuffledTags(shuffled);
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!name) {
@@ -59,6 +62,26 @@ function InitialUserProfile() {
     if (name && selectedTags.length >= 3 && country.length >= 1 && languages.length >= 1) {
       console.log({ name, selectedTags, country, languages });
     }
+    const profile_data = {
+      languages: languages,
+      country: country, 
+      tags: selectedTags,
+      name: name, 
+      username: username, 
+    }
+
+    try {
+      console.log('Trying to save', profile_data);
+      const response = await profileAPI.post('/create', profile_data);
+      console.log('Profile saved', response.data);
+
+    } catch (error) {
+      if (error.response && error.response.data) {
+        setErrorMessage(error.response.data.error);  
+      } else {
+        setErrorMessage('Saving profile failed');
+      }
+    }
   };
 
   const handleTagSelection = (tag) => {
@@ -73,6 +96,7 @@ function InitialUserProfile() {
     const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
     setLanguages(selectedOptions); 
   };
+
 
   return (
     <>
