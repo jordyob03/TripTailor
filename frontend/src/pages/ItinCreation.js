@@ -3,7 +3,14 @@ import itineraryAPI from '../api/itineraryAPI.js';
 
 function Itinerary() {
 
-  const [location, setLocation] = useState('');
+  const [Name, setName] = useState('');
+  const [City, setCity] = useState('');
+  const [Country, setCountry] = useState('');
+  const [Languages, setLaguages] = useState([]);
+  const [Tags, setTags] = useState([]);
+  const [Events, setEvents] = useState([]);
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -11,8 +18,9 @@ function Itinerary() {
 
 
       const Data = {
-        location: location, 
-
+        Name: Name,
+        City: City, 
+        Country: Country
       }
 
       try {
@@ -35,9 +43,25 @@ function Itinerary() {
           <form onSubmit={handleSubmit} className="form">
               <input
                 type="text"
-                placeholder="Location"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
+                placeholder="Name"
+                value={Name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className="input"
+              />
+              <input
+                type="text"
+                placeholder="City"
+                value={City}
+                onChange={(e) => setCity(e.target.value)}
+                required
+                className="input"
+              />
+              <input
+                type="text"
+                placeholder="Country"
+                value={Country}
+                onChange={(e) => setCountry(e.target.value)}
                 required
                 className="input"
               />

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const authAPI = axios.create({
+const itineraryAPI  = axios.create({
   baseURL: 'http://localhost:8083',
   headers: {
     'Content-Type': 'application/json',
@@ -8,7 +8,7 @@ const authAPI = axios.create({
 });
 
 
-authAPI.interceptors.request.use((config) => {
+itineraryAPI.interceptors.request.use((config) => {
   const token = localStorage.getItem('token'); 
   if (token) {
     config.headers['Itinerary'] = `Bearer ${token}`; 
@@ -18,4 +18,4 @@ authAPI.interceptors.request.use((config) => {
   return Promise.reject(error);
 });
 
-export default authAPI;
+export default itineraryAPI ;
