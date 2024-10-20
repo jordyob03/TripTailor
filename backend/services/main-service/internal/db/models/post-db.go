@@ -241,7 +241,13 @@ func UpdatePostCreationDate(DB *sql.DB, postId int, creationDate time.Time) erro
 }
 
 func AddPostImage(DB *sql.DB, postId int, imageId int) error {
-	err := AddArrayAttribute(DB, "posts", "postId", postId, "postImages", IntsToStrings([]int{imageId}))
+	err := AddImageMetaData(DB, imageId, "post")
+	if err != nil {
+		log.Printf("Error adding image metadata: %v\n", err)
+		return fmt.Errorf("failed to add image metadata: %w", err)
+	}
+
+	err = AddArrayAttribute(DB, "posts", "postId", postId, "postImages", IntsToStrings([]int{imageId}))
 	if err != nil {
 		log.Printf("Error adding images to post %d: %v\n", postId, err)
 		return fmt.Errorf("failed to add image to post: %w", err)
@@ -252,7 +258,34 @@ func AddPostImage(DB *sql.DB, postId int, imageId int) error {
 }
 
 func RemovePostImage(DB *sql.DB, postId int, imageId int) error {
-	err := RemoveArrayAttribute(DB, "posts", "postId", postId, "postImages", IntsToStrings([]int{imageId}))
+	query := `SELECT postId FROM posts WHERE $1 = ANY(postImages);`
+	rows, err := DB.Query(query, imageId)
+	if err != nil {
+		log.Printf("Error retrieving post with image ID %d: %v\n", imageId, err)
+		return fmt.Errorf("failed to retrieve post with image ID: %w", err)
+	}
+
+	var postIDs []int
+	for rows.Next() {
+		var postID int
+		err := rows.Scan(&postID)
+		if err != nil {
+			log.Printf("Error scanning event ID: %v\n", err)
+			return fmt.Errorf("failed to scan event ID: %w", err)
+		}
+
+		postIDs = append(postIDs, postID)
+	}
+
+	if len(postIDs) == 1 {
+		err := RemoveImageMetaData(DB, imageId, "event")
+		if err != nil {
+			log.Printf("Error removing image metadata: %v\n", err)
+			return fmt.Errorf("failed to remove image metadata: %w", err)
+		}
+	}
+
+	err = RemoveArrayAttribute(DB, "posts", "postId", postId, "postImages", IntsToStrings([]int{imageId}))
 	if err != nil {
 		log.Printf("Error removing images from post %d: %v\n", postId, err)
 		return fmt.Errorf("failed to remove image from post: %w", err)
