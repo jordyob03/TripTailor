@@ -96,7 +96,7 @@ func RemoveImage(DB *sql.DB, imageId int) error {
 }
 
 func AddImageMetaData(DB *sql.DB, imageId int, metadata string) error {
-	return AddArrayAttribute(DB, "images", "imagesId", imageId, "metadata", metadata)
+	return AddArrayAttribute(DB, "images", "imageId", imageId, "metadata", []string{metadata})
 }
 
 func RemoveImageMetaData(DB *sql.DB, imageId int, metadata string) error {
