@@ -26,6 +26,8 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 
 		var itin models.Itinerary
 
+		// test itin
+
 		itin.Name = req.Name
 		itin.City = req.City
 		itin.Country = req.Country
@@ -33,6 +35,8 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 		itin.Tags = []string{"Family", "Vegetarian"}
 		itin.Events = []string{}
 		itin.Username = "jordyob"
+
+		//Needs to be added to db here
 
 		fmt.Printf("Received Itinerary: Name=%s, City=%s, Country=%s\n", req.Name, req.City, req.Country)
 
