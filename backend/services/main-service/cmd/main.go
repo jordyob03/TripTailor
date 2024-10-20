@@ -3,9 +3,10 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	db "github.com/jordyob03/TripTailor/backend/services/main-service/internal/db/models"
 	"log"
 	"net/http"
+
+	db "github.com/jordyob03/TripTailor/backend/services/main-service/internal/db/models"
 )
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {

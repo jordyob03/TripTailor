@@ -6,6 +6,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+
+	models "github.com/jordyob03/TripTailor/backend/services/itinerary-service/internal/models"
 )
 
 type CreateItinRequest struct {
@@ -22,12 +24,21 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 			return
 		}
 
+		var itin models.Itinerary
+
+		itin.Name = req.Name
+		itin.City = req.City
+		itin.Country = req.Country
+		itin.Languages = []string{"English", "French"}
+		itin.Tags = []string{"Family", "Vegetarian"}
+		itin.Events = []string{}
+		itin.Username = "jordyob"
+
 		fmt.Printf("Received Itinerary: Name=%s, City=%s, Country=%s\n", req.Name, req.City, req.Country)
 
 		// Respond to the client with the received data
 		c.JSON(http.StatusOK, gin.H{
 			"message": "Itinerary received",
-			"data":    req,
 		})
 
 	}
