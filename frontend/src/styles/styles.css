@@ -71,8 +71,19 @@
     margin: 20px 0;
     font-family: 'Red Hat Display', sans-serif;
     font-size: 18px;
-  } */
-  
+  } 
+
+  .subheading1 {
+    color: #002f6c;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 5px;
+    font-family: 'Red Hat Display', sans-serif;
+    font-size: 14px;
+    text-align: left;
+    font-weight: 500;
+  }
+
   .separatorLine {
     width: 100%;
     border: none;
@@ -241,6 +252,7 @@
   
   .continueButton {
     padding: 12px;
+    margin-top: 20px;
     background-color: #002f6c;
     color: white;
     border: none;

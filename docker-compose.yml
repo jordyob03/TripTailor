@@ -15,6 +15,21 @@ services:
     networks:
       - backend-network
 
+  profile-service:
+    build:
+      context: ./backend/services/profile-service
+      dockerfile: Dockerfile
+    container_name: profile-service-container
+    ports:
+      - "8085:8085"
+    environment:
+      - DATABASE_URL=postgres://postgres:password@db:5432/database
+    depends_on:
+      - db
+    command: ["/wait-for-it.sh", "db:5432", "--strict", "--", "/profile-service-container"]
+    networks:
+      - backend-network
+
   intinerary-service:
     build:
       context: ./backend/services/itinerary-service
