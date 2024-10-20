@@ -240,10 +240,10 @@ func UpdatePostCreationDate(DB *sql.DB, postId int, creationDate time.Time) erro
 	return nil
 }
 
-func AddPostImage(DB *sql.DB, postId int, image string) error {
-	err := AddArrayAttribute(DB, "posts", "postId", postId, "postImages", []string{image})
+func AddPostImage(DB *sql.DB, postId int, imageId int) error {
+	err := AddArrayAttribute(DB, "posts", "postId", postId, "postImages", IntsToStrings([]int{imageId}))
 	if err != nil {
-		log.Printf("Error adding image to post %d: %v\n", postId, err)
+		log.Printf("Error adding images to post %d: %v\n", postId, err)
 		return fmt.Errorf("failed to add image to post: %w", err)
 	}
 
@@ -251,27 +251,13 @@ func AddPostImage(DB *sql.DB, postId int, image string) error {
 	return nil
 }
 
-func RemovePostImage(DB *sql.DB, postId int, image string) error {
-	err := RemoveArrayAttribute(DB, "posts", "postId", postId, "postImages", []string{image})
+func RemovePostImage(DB *sql.DB, postId int, imageId int) error {
+	err := RemoveArrayAttribute(DB, "posts", "postId", postId, "postImages", IntsToStrings([]int{imageId}))
 	if err != nil {
-		log.Printf("Error removing image from post %d: %v\n", postId, err)
+		log.Printf("Error removing images from post %d: %v\n", postId, err)
 		return fmt.Errorf("failed to remove image from post: %w", err)
 	}
 
 	log.Printf("Image removed from post %d successfully.\n", postId)
 	return nil
-}
-
-func GetAllPostImages(DB *sql.DB, postId int) ([]string, error) {
-	query := `SELECT postImages FROM posts WHERE postId = $1;`
-
-	var postImages []string
-	err := DB.QueryRow(query, postId).Scan(pq.Array(&postImages))
-	if err != nil {
-		log.Printf("Error retrieving images for post %d: %v\n", postId, err)
-		return nil, fmt.Errorf("failed to retrieve images for post: %w", err)
-	}
-
-	log.Printf("Images for post %d successfully retrieved.\n", postId)
-	return postImages, nil
 }

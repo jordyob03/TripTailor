@@ -75,18 +75,33 @@ func AddEvent(DB *sql.DB, event Event) (int, error) {
 func RemoveEvent(DB *sql.DB, eventID int) error {
 	var itineraryIds []int
 
+	getImages := `SELECT eventImages FROM events WHERE eventId = $1;`
+	var imageStringIDs []string
+	err := DB.QueryRow(getImages, eventID).Scan(pq.Array(&imageStringIDs))
+	if err != nil {
+		log.Printf("Error retrieving image IDs for event ID %d: %v\n", eventID, err)
+		return fmt.Errorf("failed to retrieve image IDs: %w", err)
+	}
+
+	imageIDs, err := StringsToInts(imageStringIDs)
+	if err != nil {
+		log.Printf("Error converting image IDs to integers: %v\n", err)
+		return fmt.Errorf("failed to convert image IDs: %w", err)
+	}
+
+	for _, imageID := range imageIDs {
+		err := RemoveEventImage(DB, eventID, imageID)
+		if err != nil {
+			log.Printf("Error removing image metadata: %v\n", err)
+			return fmt.Errorf("failed to remove image metadata: %w", err)
+		}
+	}
+
 	getItineraryIdsSQL := `SELECT itineraryIds FROM events WHERE eventId = $1;`
-	err := DB.QueryRow(getItineraryIdsSQL, eventID).Scan(pq.Array(&itineraryIds))
+	err = DB.QueryRow(getItineraryIdsSQL, eventID).Scan(pq.Array(&itineraryIds))
 	if err != nil {
 		log.Printf("Error retrieving itinerary IDs for event ID %d: %v\n", eventID, err)
 		return fmt.Errorf("failed to retrieve itinerary IDs: %w", err)
-	}
-
-	deleteEventSQL := `DELETE FROM events WHERE eventId = $1;`
-	_, err = DB.Exec(deleteEventSQL, eventID)
-	if err != nil {
-		log.Printf("Error deleting event: %v\n", err)
-		return fmt.Errorf("failed to delete event: %w", err)
 	}
 
 	log.Println("Removal of Event from Associated Itinerary IDs:")
@@ -98,7 +113,14 @@ func RemoveEvent(DB *sql.DB, eventID int) error {
 		}
 	}
 
-	log.Printf("Event with ID %d successfully deleted. Itinerary IDs: %v\n", eventID, itineraryIds)
+	deleteEventSQL := `DELETE FROM events WHERE eventId = $1;`
+	_, err = DB.Exec(deleteEventSQL, eventID)
+	if err != nil {
+		log.Printf("Error deleting event: %v\n", err)
+		return fmt.Errorf("failed to delete event: %w", err)
+	}
+
+	log.Printf("Event with ID %d successfully deleted.\n", eventID)
 	return nil
 }
 
@@ -220,18 +242,57 @@ func RemoveEventItinerary(DB *sql.DB, eventID int, itineraryID int) error {
 	return nil
 }
 
-func AddEventImage(DB *sql.DB, eventID int, image string) error {
-	if isValidURL(image) {
-		return AddArrayAttribute(DB, "events", "eventId", eventID, "eventImages", WebImageToByte(image))
-	} else {
-		return UpdateAttribute(DB, "events", "eventId", eventID, "eventImages", ImageToByte(image))
+func AddEventImage(DB *sql.DB, eventID int, imageID int) error {
+	err := AddImageMetaData(DB, imageID, "event")
+	if err != nil {
+		log.Printf("Error adding image metadata: %v\n", err)
+		return fmt.Errorf("failed to add image metadata: %w", err)
 	}
+
+	err = AddArrayAttribute(DB, "events", "eventId", eventID, "eventImages", IntsToStrings([]int{imageID}))
+	if err != nil {
+		log.Printf("Error adding image to event: %v\n", err)
+		return fmt.Errorf("failed to add image to event: %w", err)
+	}
+
+	log.Printf("Image added successfully for ID %d.\n", eventID)
+	return nil
 }
 
-func RemoveEventImage(DB *sql.DB, eventID int, image string) error {
-	if isValidURL(image) {
-		return RemoveArrayAttribute(DB, "events", "eventId", eventID, "eventImages", WebImageToByte(image))
-	} else {
-		return RemoveArrayAttribute(DB, "events", "eventId", eventID, "eventImages", ImageToByte(image))
+func RemoveEventImage(DB *sql.DB, eventID int, imageID int) error {
+	query := `SELECT eventId FROM events WHERE $1 = ANY(eventImages);`
+	rows, err := DB.Query(query, imageID)
+	if err != nil {
+		log.Printf("Error retrieving events with image ID %d: %v\n", imageID, err)
+		return fmt.Errorf("failed to retrieve events with image ID: %w", err)
 	}
+
+	var eventIDs []int
+	for rows.Next() {
+		var eventID int
+		err := rows.Scan(&eventID)
+		if err != nil {
+			log.Printf("Error scanning event ID: %v\n", err)
+			return fmt.Errorf("failed to scan event ID: %w", err)
+		}
+
+		eventIDs = append(eventIDs, eventID)
+	}
+
+	if len(eventIDs) == 1 {
+		err := RemoveImageMetaData(DB, imageID, "event")
+		if err != nil {
+			log.Printf("Error removing image metadata: %v\n", err)
+			return fmt.Errorf("failed to remove image metadata: %w", err)
+		}
+	}
+
+	err = RemoveArrayAttribute(DB, "events", "eventId", eventID, "eventImages", IntsToStrings([]int{imageID}))
+	if err != nil {
+		log.Printf("Error removing image from event: %v\n", err)
+		return fmt.Errorf("failed to remove image from event: %w", err)
+	}
+
+	log.Printf("Image removed successfully for ID %d.\n", eventID)
+	return nil
 }

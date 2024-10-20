@@ -23,8 +23,8 @@ type User struct {
 	Tags         []string  `json:"tags"`
 	Boards       []string  `json:"boards"`
 	Posts        []string  `json:"posts"`
-	ProfileImage []byte    `json:"profileImage"`
-	CoverImage   []byte    `json:"coverImage"`
+	ProfileImage int       `json:"profileImage"`
+	CoverImage   int       `json:"coverImage"`
 }
 
 func CreateUserTable(DB *sql.DB) error {
@@ -41,8 +41,8 @@ func CreateUserTable(DB *sql.DB) error {
 		tags TEXT[],
 		boards INTEGER[],
 		posts INTEGER[],
-		profileImage BYTEA,
-		coverImage BYTEA
+		profileImage INTEGER,
+		coverImage INTEGER
 	);`
 	return CreateTable(DB, createTableSQL)
 }
@@ -321,62 +321,58 @@ func RemoveUserPost(DB *sql.DB, username string, postId int) error {
 	return nil
 }
 
-func UpdateUserProfileImage(DB *sql.DB, username, profileImage string) error {
-	if isValidURL(profileImage) {
-		return UpdateAttribute(DB, "users", "username", username, "profileImage", WebImageToByte(profileImage))
-	} else {
-		return UpdateAttribute(DB, "users", "username", username, "profileImage", ImageToByte(profileImage))
-	}
-}
-
-func UpdateUserCoverImage(DB *sql.DB, username, CoverImage string) error {
-	if isValidURL(CoverImage) {
-		return UpdateAttribute(DB, "users", "username", username, "coverImage", WebImageToByte(CoverImage))
-	} else {
-		return UpdateAttribute(DB, "users", "username", username, "coverImage", ImageToByte(CoverImage))
-	}
-}
-
-func SaveProfileImage(DB *sql.DB, username string) error {
-	query := `SELECT profileImage FROM users WHERE username = $1`
-
-	var profileImage string
-	err := DB.QueryRow(query, username).Scan(&profileImage)
+func UpdateUserProfileImage(DB *sql.DB, username string, imageId int) error {
+	image, err := GetImage(DB, imageId)
 	if err != nil {
-		log.Printf("Error retrieving profile image for user %s: %v\n", username, err)
+		log.Printf("Error retrieving image: %v\n", err)
 		return err
 	}
 
-	if profileImage != "" {
-		err := ByteToImage([]byte(profileImage), fmt.Sprintf("/images/%s-profile.png", username))
-		if err != nil {
-			log.Printf("Error saving profile image for user %s: %v\n", username, err)
-			return err
+	for _, metadata := range image.Metadata {
+		if metadata == "profile" {
+			fmt.Printf("Image %d is already a profile image", imageId)
+			return nil
 		}
 	}
 
-	return nil
-}
-
-func SaveCoverImage(DB *sql.DB, username string) error {
-	query := `SELECT coverImage FROM users WHERE username = $1`
-
-	var coverImage string
-	err := DB.QueryRow(query, username).Scan(&coverImage)
+	err = AddImageMetaData(DB, imageId, "profile")
 	if err != nil {
-		log.Printf("Error retrieving cover image for user %s: %v\n", username, err)
+		log.Printf("Error adding image metadata: %v\n", err)
 		return err
 	}
 
-	if coverImage != "" {
-		err := ByteToImage([]byte(coverImage), fmt.Sprintf("/images/%s-cover.png", username))
-		if err != nil {
-			log.Printf("Error saving profile image for user %s: %v\n", username, err)
-			return err
+	return UpdateAttribute(DB, "users", "username", username, "profileImage", imageId)
+}
+
+func RemoveUserProfileImage(DB *sql.DB, username string) error {
+	return UpdateAttribute(DB, "users", "username", username, "profileImage", '0')
+}
+
+func UpdateUserCoverImage(DB *sql.DB, username string, imageId int) error {
+	image, err := GetImage(DB, imageId)
+	if err != nil {
+		log.Printf("Error retrieving image: %v\n", err)
+		return err
+	}
+
+	for _, metadata := range image.Metadata {
+		if metadata == "cover" {
+			fmt.Printf("Image %d is already a cover image", imageId)
+			return nil
 		}
 	}
 
-	return nil
+	err = AddImageMetaData(DB, imageId, "cover")
+	if err != nil {
+		log.Printf("Error adding image metadata: %v\n", err)
+		return err
+	}
+
+	return UpdateAttribute(DB, "users", "username", username, "coverImage", imageId)
+}
+
+func RemoveUserCoverImage(DB *sql.DB, username string) error {
+	return UpdateAttribute(DB, "users", "username", username, "coverImage", '1')
 }
 
 func UserHandler(DB *sql.DB, w http.ResponseWriter, r *http.Request) {
