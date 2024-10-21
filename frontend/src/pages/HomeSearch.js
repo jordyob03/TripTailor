@@ -16,7 +16,7 @@ function HomeSearch() {
   const tagContainerRef = useRef(null);
 
   const handleTagClick = (tag) => {
-    // Toggle the selection of the tag
+    
     if (selectedTags.includes(tag)) {
       setSelectedTags(selectedTags.filter((t) => t !== tag));
     } else {
@@ -44,14 +44,14 @@ function HomeSearch() {
           title: 'Hiking and Hot Springs',
           description: 'Immerse yourself in the beauty of hot springs surrounded by volcanic views.',
           tags: ['Hiking', 'Hot Springs', 'Outdoors'],
-          image: 'https://via.placeholder.com/300x180', // Placeholder image
+          image: 'https://via.placeholder.com/300x180', 
         },
         {
           location: `${city}, ${country}`,
           title: 'Beautiful Evening at Bob Kerrey Bridge',
           description: 'Enjoy a stunning evening stroll across the Bob Kerrey Bridge.',
           tags: ['Outdoors', 'Sightseeing'],
-          image: 'https://via.placeholder.com/300x180', // Placeholder image
+          image: 'https://via.placeholder.com/300x180', 
         },
       ]);
     }
@@ -85,9 +85,11 @@ function HomeSearch() {
         {menuOpen && (
           <div style={{
             position: 'absolute',
-            top: '50px',
-            right: '0',
-            backgroundColor: 'white',
+            top: '60px', 
+            right: '10px', 
+            transform: 'translateX(-50%)', 
+            backgroundColor: '#00509e', 
+            color: 'white', 
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
             borderRadius: '8px',
             width: '150px',
@@ -101,7 +103,7 @@ function HomeSearch() {
             }}>
               <li style={{ padding: '10px 20px', cursor: 'pointer' }}>Profile</li>
               <li style={{ padding: '10px 20px', cursor: 'pointer' }}>Account Settings</li>
-              <li style={{ padding: '10px 20px', cursor: 'pointer' }}>My Itineraries</li>
+              <li style={{ padding: '10px 20px', cursor: 'pointer' }}>My Dashboard</li>
               <li style={{ padding: '10px 20px', cursor: 'pointer' }}>Home</li>
             </ul>
           </div>

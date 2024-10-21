@@ -7,7 +7,8 @@ import UserSignup from './pages/UserSignup';
 import UserProfile from './pages/InitialUserProfile';
 import UserLogin from './pages/UserLogin';
 import Search from './pages/HomeSearch';
-
+import Dashboard from './pages/UserDashboard';
+import CreateItinerary from './pages/CreateItinerary'; 
 
 function App() {
   return (
@@ -16,6 +17,8 @@ function App() {
         <Route path="/" element={<UserLogin />} />
         <Route path="/sign-up" element={<UserSignup />} /> 
         <Route path="/profile-creation" element={<ProtectedRoute> <UserProfile /> </ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute> <Dashboard /> </ProtectedRoute>} /> 
+        <Route path="/create-itinerary" element={<ProtectedRoute> <CreateItinerary /> </ProtectedRoute>} /> 
       </Routes>
     </Router>
   );
