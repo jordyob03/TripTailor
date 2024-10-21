@@ -3,6 +3,7 @@ import navBarLogo from '../assets/logo-long-transparent.png';
 import Tags from '../config/tags.json';
 import '../styles/styles.css'; 
 import { useNavigate } from 'react-router';
+import NavBar from '../components/Navbar.js';
 
 function CreateItinerary() {
   const categories = Tags.categories;
@@ -151,6 +152,7 @@ function CreateItinerary() {
     
   return (
     <>
+      <NavBar />
       <nav className="navBar">
         <img src={navBarLogo} alt="Trip Tailor Logo" className="navBarLogo" />
         <div className="buttonsContainer">

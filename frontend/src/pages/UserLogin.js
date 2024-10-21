@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import navBarLogo from '../assets/logo-long-transparent.png';
+import NavBar from '../components/Navbar.js';
 import authLogo from '../assets/logo-circle-white.png';
 import '../styles/styles.css';  
 import  authAPI from '../api/authAPI.js';
+
 
 function UserLogin() {
   const [username, setUsername] = useState('');
@@ -46,14 +47,7 @@ function UserLogin() {
 
   return (
     <>
-      {/* navBar */}
-      <nav className="navBar">
-        <img src={navBarLogo} alt="Trip Tailor Logo" className="navBarLogo" />
-        <button className="profileButton">
-          <i className="fas fa-bars" style={{ fontSize: '16px', color: '#00509e', marginRight: '15px' }}></i>
-          <i className="fa-regular fa-user" style={{ fontSize: '24px', color: '#00509e' }}></i>
-        </button>
-      </nav>
+      <NavBar />
 
       {/* Main Container */}
       <div className="centeredContainer">

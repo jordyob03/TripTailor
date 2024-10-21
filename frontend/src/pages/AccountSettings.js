@@ -3,6 +3,7 @@ import navBarLogo from '../assets/logo-long-transparent.png';
 import '../styles/styles.css'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faLock, faBell, faShieldAlt, faGlobe, faBars } from '@fortawesome/free-solid-svg-icons'; // Import all needed icons
+import NavBar from '../components/Navbar.js';
 
 function AccountSettings() {
 
@@ -16,16 +17,7 @@ function AccountSettings() {
 
   return (
     <>
-      {/* navBar */}
-      <nav className="navBar">
-        <img src={navBarLogo} alt="Trip Tailor Logo" className="navBarLogo" />
-
-        {/* Profile Button */}
-        <button className="profileButton">
-          <FontAwesomeIcon icon={faBars} style={{ fontSize: '16px', color: '#00509e', marginRight: '15px' }} />
-          <FontAwesomeIcon icon={faUser} style={{ fontSize: '24px', color: '#00509e' }} />
-        </button>
-      </nav>
+      <NavBar />
 
       {/* Main Container */}
       <div className="centeredContainer">

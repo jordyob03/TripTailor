@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import searchAPI from "../api/searchAPI";
 
+
 function Search() {
     const [country, setCountry] = useState('');
     const [city, setCity] = useState('');
