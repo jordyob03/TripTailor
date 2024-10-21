@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import navBarLogo from '../assets/logo-long-transparent.png';
 import Tags from '../config/tags.json';
-import '../styles/styles.css';  // Import your external CSS
+import '../styles/styles.css';  
 import { useNavigate } from 'react-router';
+import  profileAPI from '../api/profileAPI.js';
 
 function InitialUserProfile() {
   const allTags = Object.values(Tags.categories).flat();
@@ -14,40 +15,73 @@ function InitialUserProfile() {
   const [country, setCountry] = useState('');
   const [languages, setLanguages] = useState([]);
   const [shuffledTags, setShuffledTags] = useState([]);
-
+  const [errorMessage, setErrorMessage] = useState('');
+  const [name, setName] = useState('');
+  const [nameErrorMessage, setNameErrorMessage] = useState('');
+  const navigate = useNavigate()
   const countries = ['USA', 'Canada', 'UK', 'Australia', 'Other'];
   const languageOptions = ['English', 'Spanish', 'French', 'German', 'Chinese'];
-
+  const username = localStorage.getItem('username')
   const shuffleArray = (array) => {
     return [...array].sort(() => Math.random() - 0.5);
   };
-
-  const navigate = useNavigate()
 
   useEffect(() => {
     const shuffled = shuffleArray(allTags);
     setShuffledTags(shuffled);
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (selectedTags.length >= 3) {
-      console.log({ selectedTags, country, languages });
-      setTagErrorMessage(''); // Clear error message if valid
+
+    if (!name) {
+      setNameErrorMessage('Please enter your name.');
+      return;
     } else {
+      setNameErrorMessage('');
+    }
+
+    if (selectedTags.length >= 3) {
+      setTagErrorMessage('');
+    } else {
+      console.log({ selectedTags, country, languages });
       setTagErrorMessage('Please select at least 3 tags.');
     }
+    
     if (country.length >= 1) {
-      console.log({ selectedTags, country, languages });
-      setTagErrorMessage(''); // Clear error message if valid
+      setCountryErrorMessage('');
     } else {
       setCountryErrorMessage('Please select a country.');
     }
+
     if (languages.length >= 1) {
-      console.log({ selectedTags, country, languages });
-      setTagErrorMessage(''); // Clear error message if valid
+      setLangErrorMessage('')
     } else {
       setLangErrorMessage('Please select at least 1 language.');
+    }
+
+    if (name && selectedTags.length >= 3 && country.length >= 1 && languages.length >= 1) {
+      console.log({ name, selectedTags, country, languages });
+    }
+    const profile_data = {
+      languages: languages,
+      country: country, 
+      tags: selectedTags,
+      name: name, 
+      username: username, 
+    }
+
+    try {
+      console.log('Trying to save', profile_data);
+      const response = await profileAPI.post('/create', profile_data);
+      console.log('Profile saved', response.data);
+
+    } catch (error) {
+      if (error.response && error.response.data) {
+        setErrorMessage(error.response.data.error);  
+      } else {
+        setErrorMessage('Saving profile failed');
+      }
     }
   };
 
@@ -65,7 +99,7 @@ function InitialUserProfile() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); 
+    localStorage.clear(); 
     navigate('/'); 
   };
 
@@ -74,27 +108,41 @@ function InitialUserProfile() {
       {/* navBar */}
       <nav className="navBar">
         <img src={navBarLogo} alt="Trip Tailor Logo" className="navBarLogo" />
-
-        {/* Logout Button */}
-        <button className="logoutButton" onClick={handleLogout}>
-          Logout
-        </button>
-
-        {/* Profile Button */}
-        <button className="profileButton">
-          <i className="fas fa-bars" style={{ fontSize: '16px', color: '#00509e', marginRight: '15px' }}></i>
-          <i className="fa-regular fa-user" style={{ fontSize: '24px', color: '#00509e' }}></i>
-        </button>
-
-        
+          <div className="buttonsContainer">
+          {/* Logout Button */}
+          <button className="logoutButton" onClick={handleLogout}>
+            <i className="fas fa-sign-out-alt" style={{ fontSize: '24px', color: '#00509e', marginLeft: '5px', marginRight: '10px' }}></i>
+            Log Out
+          </button>
+          {/* Profile Button */}
+          <button className="profileButton">
+            <i className="fas fa-bars" style={{ fontSize: '16px', color: '#00509e', marginRight: '15px' }}></i>
+            <i className="fa-regular fa-user" style={{ fontSize: '24px', color: '#00509e' }}></i>
+          </button>
+        </div>
       </nav>
 
       {/* Main Container */}
       <div className="centeredContainer">
         <div className="centeredBox">
           <h5 className="heading">Tell us more about you</h5>
-          <h6 className="subheadingIUP">What tags are important to you on your travels?</h6>
 
+          <h6 className="subheadingIUP">What's your name?</h6>
+
+          {/* Error message above name */}
+          {nameErrorMessage && <div className="errorMessage">{nameErrorMessage}</div>}
+
+          {/* Name input */}
+          <input
+            type="text"
+            placeholder="Enter your name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            className="input"
+          />
+
+          <h6 className="subheadingIUP">What tags are important to you on your travels?</h6>
 
           {/* Error message above tags */}
           {tagErrorMessage && <div className="errorMessage">{tagErrorMessage}</div>}
@@ -113,8 +161,8 @@ function InitialUserProfile() {
           </div>
 
           <h6 className="subheadingIUP">Where do you live?</h6>
-                    
-          {/* Error message above tags */}
+
+          {/* Error message above country */}
           {countryErrorMessage && <div className="errorMessage">{countryErrorMessage}</div>}
 
           <select
@@ -132,9 +180,9 @@ function InitialUserProfile() {
 
           <h6 className="subheadingIUP">What languages do you speak?</h6>
 
-          {/* Error message above tags */}
+          {/* Error message above languages */}
           {langErrorMessage && <div className="errorMessage">{langErrorMessage}</div>}
-          
+
           <select
             multiple
             value={languages}
@@ -148,7 +196,7 @@ function InitialUserProfile() {
             ))}
           </select>
 
-          <button type="submit" className="continueButtonIUP" onClick={handleSubmit}>
+          <button type="submit" className="continueButton" onClick={handleSubmit}>
             Continue
           </button>
         </div>
