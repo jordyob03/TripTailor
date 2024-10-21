@@ -6,6 +6,7 @@ import ProtectedRoute from './components/Protectedroute';
 import UserSignup from './pages/UserSignup';
 import UserProfile from './pages/InitialUserProfile';
 import UserLogin from './pages/UserLogin';
+import CreateItinerary from './pages/CreateItinerary';
 
 
 function App() {

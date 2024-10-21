@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import navBarLogo from '../assets/logo-long-transparent.png';
 import Tags from '../config/tags.json';
-import '../styles/styles.css';  // Import your external CSS
+import '../styles/styles.css';  
 import { useNavigate } from 'react-router';
 import  profileAPI from '../api/profileAPI.js';
 
@@ -18,7 +18,7 @@ function InitialUserProfile() {
   const [errorMessage, setErrorMessage] = useState('');
   const [name, setName] = useState('');
   const [nameErrorMessage, setNameErrorMessage] = useState('');
-
+  const navigate = useNavigate()
   const countries = ['USA', 'Canada', 'UK', 'Australia', 'Other'];
   const languageOptions = ['English', 'Spanish', 'French', 'German', 'Chinese'];
   const username = localStorage.getItem('username')
@@ -44,6 +44,7 @@ function InitialUserProfile() {
     if (selectedTags.length >= 3) {
       setTagErrorMessage('');
     } else {
+      console.log({ selectedTags, country, languages });
       setTagErrorMessage('Please select at least 3 tags.');
     }
     
@@ -97,18 +98,28 @@ function InitialUserProfile() {
     setLanguages(selectedOptions); 
   };
 
+  const handleLogout = () => {
+    localStorage.clear(); 
+    navigate('/'); 
+  };
 
   return (
     <>
       {/* navBar */}
       <nav className="navBar">
         <img src={navBarLogo} alt="Trip Tailor Logo" className="navBarLogo" />
-
-        {/* Profile Button */}
-        <button className="profileButton">
-          <i className="fas fa-bars" style={{ fontSize: '16px', color: '#00509e', marginRight: '15px' }}></i>
-          <i className="fa-regular fa-user" style={{ fontSize: '24px', color: '#00509e' }}></i>
-        </button>
+          <div className="buttonsContainer">
+          {/* Logout Button */}
+          <button className="logoutButton" onClick={handleLogout}>
+            <i className="fas fa-sign-out-alt" style={{ fontSize: '24px', color: '#00509e', marginLeft: '5px', marginRight: '10px' }}></i>
+            Log Out
+          </button>
+          {/* Profile Button */}
+          <button className="profileButton">
+            <i className="fas fa-bars" style={{ fontSize: '16px', color: '#00509e', marginRight: '15px' }}></i>
+            <i className="fa-regular fa-user" style={{ fontSize: '24px', color: '#00509e' }}></i>
+          </button>
+        </div>
       </nav>
 
       {/* Main Container */}
@@ -185,7 +196,7 @@ function InitialUserProfile() {
             ))}
           </select>
 
-          <button type="submit" className="continueButtonIUP" onClick={handleSubmit}>
+          <button type="submit" className="continueButton" onClick={handleSubmit}>
             Continue
           </button>
         </div>
