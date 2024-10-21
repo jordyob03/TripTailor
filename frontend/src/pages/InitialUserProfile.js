@@ -18,7 +18,7 @@ function InitialUserProfile() {
   const [errorMessage, setErrorMessage] = useState('');
   const [name, setName] = useState('');
   const [nameErrorMessage, setNameErrorMessage] = useState('');
-
+  const navigate = useNavigate()
   const countries = ['USA', 'Canada', 'UK', 'Australia', 'Other'];
   const languageOptions = ['English', 'Spanish', 'French', 'German', 'Chinese'];
   const username = localStorage.getItem('username')
