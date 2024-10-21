@@ -13,12 +13,12 @@ type Post struct {
 	PostId       int       `json:"postId"`
 	ItineraryId  int       `json:"itineraryId"`
 	Title        string    `json:"title"`
-	ImageLink    string    `json:"imageLink"`
 	Description  string    `json:"description"`
 	CreationDate time.Time `json:"dateOfCreation"`
 	Username     string    `json:"username"`
 	Tags         []string  `json:"tags"`
 	Boards       []string  `json:"boards"`
+	PostImages   []string  `json:"postImages"`
 }
 
 func CreatePostTable(DB *sql.DB) error {
@@ -32,7 +32,8 @@ func CreatePostTable(DB *sql.DB) error {
 		creationDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 		username VARCHAR(255) REFERENCES users(username),
 		tags TEXT[],
-		boards TEXT[]
+		boards TEXT[],
+		postImages TEXT[]
 	);`
 
 	return CreateTable(DB, createTableSQL)
@@ -40,8 +41,8 @@ func CreatePostTable(DB *sql.DB) error {
 
 func AddPost(DB *sql.DB, post Post) (int, error) {
 	insertSQL := `
-	INSERT INTO posts (itineraryId, title, imageLink, description, creationDate, username, tags, boards)
-	VALUES ($1, $2, $3, $4, $5, $6, $7, '$8')
+	INSERT INTO posts (itineraryId, title, description, creationDate, username, tags, boards, postImages)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 	RETURNING postId;
 	`
 
@@ -50,12 +51,12 @@ func AddPost(DB *sql.DB, post Post) (int, error) {
 		insertSQL,
 		post.ItineraryId,
 		post.Title,
-		post.ImageLink,
 		post.Description,
 		post.CreationDate,
 		post.Username,
 		pq.Array(post.Tags),
 		pq.Array(post.Boards),
+		pq.Array(post.PostImages),
 	).Scan(&postId)
 
 	if err != nil {
@@ -126,7 +127,7 @@ func GetPost(DB *sql.DB, postId int) (Post, error) {
 	var post Post
 
 	query := `
-	SELECT postId, itineraryId, title, imageLink, description, creationDate, username, tags, boards
+	SELECT postId, itineraryId, title, description, creationDate, username, tags, boards, postImages
 	FROM posts
 	WHERE postId = $1;
 	`
@@ -135,12 +136,12 @@ func GetPost(DB *sql.DB, postId int) (Post, error) {
 		&post.PostId,
 		&post.ItineraryId,
 		&post.Title,
-		&post.ImageLink,
 		&post.Description,
 		&post.CreationDate,
 		&post.Username,
 		pq.Array(&post.Tags),
 		pq.Array(&post.Boards),
+		pq.Array(&post.PostImages),
 	)
 
 	if err != nil {
@@ -206,17 +207,6 @@ func RemovePostBoard(DB *sql.DB, postId int, board int) error {
 	return nil
 }
 
-func UpdatePostImageLink(DB *sql.DB, postId int, imageLink string) error {
-	err := UpdateAttribute(DB, "posts", "postId", postId, "imageLink", imageLink)
-	if err != nil {
-		log.Printf("Error adding image link to post %d: %v\n", postId, err)
-		return fmt.Errorf("failed to add image link to post: %w", err)
-	}
-
-	log.Printf("Image link added to post %d successfully.\n", postId)
-	return nil
-}
-
 func UpdatePostDescription(DB *sql.DB, postId int, description string) error {
 	err := UpdateAttribute(DB, "posts", "postId", postId, "description", description)
 	if err != nil {
@@ -247,5 +237,60 @@ func UpdatePostCreationDate(DB *sql.DB, postId int, creationDate time.Time) erro
 	}
 
 	log.Printf("Creation date updated for post %d successfully.\n", postId)
+	return nil
+}
+
+func AddPostImage(DB *sql.DB, postId int, imageId int) error {
+	err := AddImageMetaData(DB, imageId, "post")
+	if err != nil {
+		log.Printf("Error adding image metadata: %v\n", err)
+		return fmt.Errorf("failed to add image metadata: %w", err)
+	}
+
+	err = AddArrayAttribute(DB, "posts", "postId", postId, "postImages", IntsToStrings([]int{imageId}))
+	if err != nil {
+		log.Printf("Error adding images to post %d: %v\n", postId, err)
+		return fmt.Errorf("failed to add image to post: %w", err)
+	}
+
+	log.Printf("Image added to post %d successfully.\n", postId)
+	return nil
+}
+
+func RemovePostImage(DB *sql.DB, postId int, imageId int) error {
+	query := `SELECT postId FROM posts WHERE $1 = ANY(postImages);`
+	rows, err := DB.Query(query, imageId)
+	if err != nil {
+		log.Printf("Error retrieving post with image ID %d: %v\n", imageId, err)
+		return fmt.Errorf("failed to retrieve post with image ID: %w", err)
+	}
+
+	var postIDs []int
+	for rows.Next() {
+		var postID int
+		err := rows.Scan(&postID)
+		if err != nil {
+			log.Printf("Error scanning event ID: %v\n", err)
+			return fmt.Errorf("failed to scan event ID: %w", err)
+		}
+
+		postIDs = append(postIDs, postID)
+	}
+
+	if len(postIDs) == 1 {
+		err := RemoveImageMetaData(DB, imageId, "event")
+		if err != nil {
+			log.Printf("Error removing image metadata: %v\n", err)
+			return fmt.Errorf("failed to remove image metadata: %w", err)
+		}
+	}
+
+	err = RemoveArrayAttribute(DB, "posts", "postId", postId, "postImages", IntsToStrings([]int{imageId}))
+	if err != nil {
+		log.Printf("Error removing images from post %d: %v\n", postId, err)
+		return fmt.Errorf("failed to remove image from post: %w", err)
+	}
+
+	log.Printf("Image removed from post %d successfully.\n", postId)
 	return nil
 }
