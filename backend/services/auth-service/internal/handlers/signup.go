@@ -2,11 +2,12 @@ package handlers
 
 import (
 	"database/sql"
+	"net/http"
+	"time"
+
 	db "github.com/jordyob03/TripTailor/backend/services/auth-service/internal/db"
 	models "github.com/jordyob03/TripTailor/backend/services/auth-service/internal/models"
 	utils "github.com/jordyob03/TripTailor/backend/services/auth-service/utils"
-	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -66,9 +67,10 @@ func SignUp(dbConn *sql.DB) gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"message": "User created successfully",
-			"userId":  userId,
-			"token":   token,
+			"message":  "User created successfully",
+			"userId":   userId,
+			"token":    token,
+			"username": user.Username,
 		})
 	}
 }
