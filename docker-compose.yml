@@ -14,6 +14,7 @@ services:
     command: ["/wait-for-it.sh", "db:5432", "--strict", "--", "/auth-service-container"]
     networks:
       - backend-network
+      
   search-service:
     build:
       context: ./backend/services/search-service
@@ -21,6 +22,15 @@ services:
     container_name: search-service-container
     ports:
       - "8084:8084"
+      
+  profile-service:
+    build:
+      context: ./backend/services/profile-service
+      dockerfile: Dockerfile
+    container_name: profile-service-container
+    ports:
+      - "8085:8085"
+
     environment:
       - DATABASE_URL=postgres://postgres:password@db:5432/database
     depends_on:
@@ -28,6 +38,10 @@ services:
     command: ["/wait-for-it.sh", "db:5432", "--strict", "--", "/auth-service-container"]
     networks:
       - backend-network
+    command: ["/wait-for-it.sh", "db:5432", "--strict", "--", "/profile-service-container"]
+    networks:
+      - backend-network
+
   main-service:
     build:
       context: ./backend/services/main-service
