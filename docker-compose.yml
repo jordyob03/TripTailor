@@ -14,7 +14,18 @@ services:
     command: ["/wait-for-it.sh", "db:5432", "--strict", "--", "/auth-service-container"]
     networks:
       - backend-network
-
+      
+  search-service:
+    build:
+      context: ./backend/services/search-service
+      dockerfile: Dockerfile
+    container_name: search-service-container
+    ports:
+      - "8084:8084"
+    command: ["/wait-for-it.sh", "db:5432", "--strict", "--", "/search-service-container"]
+    networks:
+      - backend-network
+      
   profile-service:
     build:
       context: ./backend/services/profile-service
