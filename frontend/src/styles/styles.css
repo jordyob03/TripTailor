@@ -293,6 +293,7 @@
   
   .continueButton {
     padding: 12px;
+    margin-top: 20px;
     background-color: #002f6c;
     color: white;
     border: none;
