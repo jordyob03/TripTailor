@@ -20,7 +20,7 @@ function CreateItinerary() {
 
   const navigate = useNavigate()
 
-  const [events, setEvents] = useState([{ ampm: 'AM', time: '1:00', location: '', description: ''}]);
+  const [events, setEvents] = useState([{ name: '', startTime: '1:00 AM', endTime: '2:00 AM', location: '', description: '', cost: '' }]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -48,10 +48,10 @@ function CreateItinerary() {
     if (events.length >= 24) {
       setEventErrorMessage('Cannot add more than 24 events in a 24-hour period.');
     } else {
-      setEvents([...events, { ampm: 'AM', time: '1:00', location: '', description: ''}]);
+      setEvents([...events, { name: '', startTime: '1:00 AM', endTime: '2:00 AM', location: '', description: '', cost: '' }]);
       setEventErrorMessage('');
     }
-  };
+  };  
 
   const handleTagSelection = (tag) => {
     if (selectedTags.includes(tag)) {
@@ -86,44 +86,58 @@ function CreateItinerary() {
     }
   
     // Events checks
-
     // Check that there is at least one event with complete details
-    const hasValidEvent = filteredEvents.some(
-      (event) => event.description.trim() !== '' && event.location.trim() !== '' && event.time !== '' && event.ampm !== ''
-    );
-  
-    if (hasValidEvent) {
-      setEventErrorMessage('');
-      console.log({ itineraryDetails, itineraryImages, selectedTags, events: filteredEvents, hasValidEvent });
-    } else {
+    const hasValidEvent = filteredEvents.length > 0;
+
+    if (!hasValidEvent) {
       setEventErrorMessage('At least one complete event is required.');
+      console.log({ itineraryDetails, itineraryImages, selectedTags, events: filteredEvents, hasValidEvent });
     }
   
     // Check if there is any event with an incomplete state
-    const hasIncompleteEvent = filteredEvents.some(
-      (event) =>
-        (event.description.trim() === '' && event.location.trim() !== '') ||
-        (event.description.trim() !== '' && event.location.trim() === '')
-    );
+    const hasIncompleteEvent = filteredEvents.some((event) => {
+      const fields = [
+        event.name.trim(),
+        event.startTime,
+        event.endTime,
+        event.location.trim(),
+        event.description.trim(),
+        event.cost
+      ];
 
+      // Count how many fields are filled and how many are empty
+      const filledFields = fields.filter((field) => field !== '' && field !== null && field !== undefined);
+      const emptyFields = fields.filter((field) => field === '' || field === null || field === undefined);
+      
+      // If there are some filled fields and some empty fields, it's considered incomplete
+      return filledFields.length > 0 && emptyFields.length > 0;
+    });
+
+  
     if (hasIncompleteEvent) {
       setEventErrorMessage('Please complete all fields for incomplete events or delete them.');
-      return; 
-    } else {
-      setEventErrorMessage('');
     }
 
+    if (!hasIncompleteEvent && hasValidEvent) {
+      setEventErrorMessage('');
+    }
+  
     return;
   };
+  
 
-    const generateTimeOptions = () => {
-      const times = [];
+  const generateTimeOptions = () => {
+    const times = [];
+    const periods = ['AM', 'PM'];
+    for (let period of periods) {
       for (let hour = 1; hour <= 12; hour++) {
-        times.push(`${hour}:00`);
-        times.push(`${hour}:30`);
+        for (let minute of ['00', '15', '30', '45']) {
+          times.push(`${hour}:${minute} ${period}`);
+        }
       }
-      return times;
-    };
+    }
+    return times;
+  };
 
     const handleLogout = () => {
       localStorage.removeItem('token'); 
@@ -158,7 +172,7 @@ function CreateItinerary() {
           <form onSubmit={handleSubmit} className="form">
             <h2 className="headingCI">Basic Info</h2>
               <div className="inputGroup">
-                <label htmlFor="name" className="subheading">Name</label>
+                <label htmlFor="name" className="subheadingLeft">Name</label>
                 <input
                   type="text"
                   id="name"
@@ -170,7 +184,7 @@ function CreateItinerary() {
                 />
               </div>
             <div className="inputGroup">
-              <label htmlFor="location" className="subheading">Location</label>
+              <label htmlFor="location" className="subheadingLeft">Location</label>
               <input
                 type="text"
                 id="location"
@@ -182,7 +196,7 @@ function CreateItinerary() {
               />
             </div>
             <div className="inputGroup">
-              <label htmlFor="description" className="subheading">Description</label>
+              <label htmlFor="description" className="subheadingLeft">Description</label>
               <textarea
                 id="description"
                 name="description"
@@ -194,7 +208,7 @@ function CreateItinerary() {
               />
             </div>
             <div className="inputGroup">
-              <label htmlFor="estimatedCost" className="subheading">Estimated Cost</label>
+              <label htmlFor="estimatedCost" className="subheadingLeft">Estimated Cost</label>
               <input
                 type="number"
                 id="estimatedCost"
@@ -210,7 +224,7 @@ function CreateItinerary() {
             </div>
             {basicErrorMessage && <div className="errorMessage">{basicErrorMessage}</div>}
             <div className="inputGroup">
-              <label htmlFor="itineraryImages" className="subheading">Upload Itinerary Images</label>
+              <label htmlFor="itineraryImages" className="subheadingLeft">Upload Itinerary Images</label>
               <div className="imageUploadContainer">
                 <div className="imagePreview">
                   {itineraryImages.map((image, index) => (
@@ -230,7 +244,7 @@ function CreateItinerary() {
                       className="inputFile"
                     />
                     <label htmlFor="itineraryImages">
-                      <i class="fa-regular fa-square-plus fa-3x"></i>
+                      <i className="fa-regular fa-square-plus fa-3x"></i>
                     </label>
                   </div>
                 </div>
@@ -241,7 +255,7 @@ function CreateItinerary() {
               <h2 className="headingCI">What tags apply to your itinerary?</h2>
               {Object.keys(categories).map((category) => (
                 <div key={category} className="inputGroup">
-                  <label className="subheading">
+                  <label className="subheadingLeft">
                     {category.replace('_', ' ').toLowerCase().replace(/^\w/, (c) => c.toUpperCase())}
                   </label>
                   <div className="tagsLeft">
@@ -264,50 +278,83 @@ function CreateItinerary() {
             <div className="events">
               {events.map((event, index) => (
                 <div key={index} className="eventBox">
-                  <div className="inputGroup">
-                    <div className="timeLocationContainer" style={{ display: 'flex', gap: '20px' }}>
-                      <div style={{ flex: 1 }}>
-                        <label htmlFor={`time-${index}`} className="subheadingLeft">Time</label>
-                        <div className="timeSelect" style={{ display: 'flex', gap: '10px' }}>
-                          <select
-                            id={`time-${index}`}
-                            name="time"
-                            value={event.time}
-                            onChange={(e) => handleEventChange(index, e)}
-                            className="input"
-                          >
-                            {generateTimeOptions().map((time) => (
-                              <option key={time} value={time}>{time}</option>
-                            ))}
-                          </select>
-                          <select
-                            id={`ampm-${index}`}
-                            name="ampm"
-                            value={event.ampm}
-                            onChange={(e) => handleEventChange(index, e)}
-                            className="input"
-                          >
-                            <option value="AM">AM</option>
-                            <option value="PM">PM</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        <label htmlFor={`location-${index}`} className="subheadingLeft">Location</label>
-                        <input
-                          type="text"
-                          id={`location-${index}`}
-                          name="location"
-                          value={event.location}
-                          onChange={(e) => handleEventChange(index, e)}
-                          className="input"
-                          placeholder="Enter event location"
-                        />
-                      </div>
-                      <button className="removeButton" onClick={() => removeEvent(index)}>x</button>
+                  {/* Top Row: Event Name and Location */}
+                  <div className="inputGroup" style={{ display: 'flex', gap: '20px' }}>
+                    <div style={{ flex: 1 }}>
+                      <label htmlFor={`name-${index}`} className="subheadingLeft">Event Name</label>
+                      <input
+                        type="text"
+                        id={`name-${index}`}
+                        name="name"
+                        value={event.name}
+                        onChange={(e) => handleEventChange(index, e)}
+                        className="input"
+                        placeholder="Enter event name"
+                      />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <label htmlFor={`location-${index}`} className="subheadingLeft">Location</label>
+                      <input
+                        type="text"
+                        id={`location-${index}`}
+                        name="location"
+                        value={event.location}
+                        onChange={(e) => handleEventChange(index, e)}
+                        className="input"
+                        placeholder="Enter event location"
+                      />
+                    </div>
+                    <button className="removeButton" onClick={() => removeEvent(index)}>x</button>
+                  </div>
+                  
+                  {/* Second Row: Start Time, End Time, and cost */}
+                  <div className="inputGroup" style={{ display: 'flex', gap: '20px', marginTop: '10px' }}>
+                    <div style={{ flex: 1 }}>
+                      <label htmlFor={`startTime-${index}`} className="subheadingLeft">Start Time</label>
+                      <select
+                        id={`startTime-${index}`}
+                        name="startTime"
+                        value={event.startTime}
+                        onChange={(e) => handleEventChange(index, e)}
+                        className="input"
+                      >
+                        {generateTimeOptions().map((time) => (
+                          <option key={time} value={time}>{time}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <label htmlFor={`endTime-${index}`} className="subheadingLeft">End Time</label>
+                      <select
+                        id={`endTime-${index}`}
+                        name="endTime"
+                        value={event.endTime}
+                        onChange={(e) => handleEventChange(index, e)}
+                        className="input"
+                      >
+                        {generateTimeOptions().map((time) => (
+                          <option key={time} value={time}>{time}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <label htmlFor={`cost-${index}`} className="subheadingLeft">Cost</label>
+                      <input
+                        type="number"
+                        id={`cost-${index}`}
+                        name="cost"
+                        value={event.cost}
+                        onChange={(e) => handleEventChange(index, e)}
+                        className="input"
+                        placeholder="Enter event cost"
+                        min="0"
+                        step="0.01"
+                      />
                     </div>
                   </div>
-                  <div className="inputGroup">
+
+                  {/* Description Field (optional) */}
+                  <div className="inputGroup" style={{ marginTop: '10px' }}>
                     <label htmlFor={`description-${index}`} className="subheadingLeft">Description (100 character max.)</label>
                     <textarea
                       id={`description-${index}`}
@@ -326,6 +373,7 @@ function CreateItinerary() {
                 <span>+</span> Add Event
               </button>
             </div>
+
             <div style={{ height: '15px' }}></div>
             <button type="submit" className="continueButton">
               Submit Itinerary
