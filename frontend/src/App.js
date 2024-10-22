@@ -35,10 +35,9 @@ function App() {
         image: 'https://via.placeholder.com/300x180',
       },
     ];
-
     setSearchParams({ country, city });
     setSearchResults(results);
-    setCountryErrorMessage(''); // Clear previous errors when search is successful
+    setCountryErrorMessage('');
     setCityErrorMessage('');
   };
 

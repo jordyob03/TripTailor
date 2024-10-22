@@ -94,19 +94,6 @@
     max-width: 650px;
   }
 
-  .dividerBox {
-    background-color: white;
-    padding: 30px;
-    border-radius: 20px;
-    text-align: center;
-    z-index: 1;
-    margin: 1vh auto 40px auto;
-    width: 100%; 
-    max-width: 650px;
-    box-sizing: border-box;
-    
-  }
-  
   .heading {
     color: #002f6c;
     margin-top: 5px;

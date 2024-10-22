@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import Tags from '../config/tags.json';
 import '../styles/styles.css'; 
 import { useNavigate } from 'react-router';
@@ -104,12 +104,8 @@ function CreateItinerary() {
         event.cost
       ];
 
-      // Count how many fields are filled and how many are empty
-      const filledFields = fields.filter((field) => field !== '' && field !== null && field !== undefined);
-      const emptyFields = fields.filter((field) => field === '' || field === null || field === undefined);
-      
-      // If there are some filled fields and some empty fields, it's considered incomplete
-      return filledFields.length > 0 && emptyFields.length > 0;
+      if (name && location && description && estimatedCost && selectedTags.length >= 3 && hasValidEvent)
+      {navigate('/my-travels');}
     });
 
   
@@ -124,7 +120,6 @@ function CreateItinerary() {
     return;
   };
   
-
   const generateTimeOptions = () => {
     const times = [];
     const periods = ['AM', 'PM'];
@@ -137,11 +132,6 @@ function CreateItinerary() {
     }
     return times;
   };
-
-    const handleLogout = () => {
-      localStorage.removeItem('token'); 
-      navigate('/'); 
-    };
 
     const removeEvent = (index) => {
       const updatedEvents = events.filter((_, i) => i !== index);

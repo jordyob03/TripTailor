@@ -13,19 +13,6 @@ function MyTravels() {
     setSelectedTab(tab);
   };
 
-  const handleCreateItinerary = () => {
-    navigate('/create-itinerary');
-  };
-
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
-
-  const handleLogout = () => {
-    localStorage.clear(); 
-    navigate('/'); 
-  };
-
   return (
     <div>
       {/* Dropdown Menu */}

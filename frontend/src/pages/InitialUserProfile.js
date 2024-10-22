@@ -87,7 +87,6 @@ function InitialUserProfile() {
     }
   };
   
-
   const handleTagSelection = (tag) => {
     if (selectedTags.includes(tag)) {
       setSelectedTags(selectedTags.filter((t) => t !== tag));
@@ -99,11 +98,6 @@ function InitialUserProfile() {
   const handleLanguageSelection = (e) => {
     const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
     setLanguages(selectedOptions); 
-  };
-
-  const handleLogout = () => {
-    localStorage.clear(); 
-    navigate('/'); 
   };
 
   return (

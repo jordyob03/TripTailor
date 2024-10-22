@@ -35,27 +35,6 @@ function SearchResults({ searchResults = [], searchParams = {}, isSearchPressed 
 
   return (
     <div className="searchResultsContainer">
-      {/* Tag Filters */}
-      <div className="tagFiltersContainer">
-        <button onClick={scrollTagsLeft} className="arrowButton">{'<'}</button>
-        <div ref={tagContainerRef} className="tagContainer">
-          {allTags.map((tag) => (
-            <div
-              key={tag}
-              onClick={() => handleTagClick(tag)}
-              className="tagItem"
-            >
-              <div className="tagIcon">
-                {iconMap[tag] && <FontAwesomeIcon icon={iconMap[tag]} />}
-              </div>
-              <div className="tagLabel">
-                {tag}
-              </div>
-            </div>
-          ))}
-        </div>
-        <button onClick={scrollTagsRight} className="arrowButton">{'>'}</button>
-      </div>
 
       {searchParams.city && searchParams.country && (
         <h2 className="searchResultsHeader">
