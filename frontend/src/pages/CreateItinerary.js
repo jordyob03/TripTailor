@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import navBarLogo from '../assets/logo-long-transparent.png';
+import React, { useState} from 'react';
 import Tags from '../config/tags.json';
 import '../styles/styles.css'; 
 import { useNavigate } from 'react-router';
@@ -106,14 +105,8 @@ function CreateItinerary() {
         event.cost
       ];
 
-      // Count how many fields are filled and how many are empty
-      const filledFields = fields.filter((field) => field !== '' && field !== null && field !== undefined);
-      const emptyFields = fields.filter((field) => field === '' || field === null || field === undefined);
-
-
-      
-      // If there are some filled fields and some empty fields, it's considered incomplete
-      return filledFields.length > 0 && emptyFields.length > 0;
+      if (name && location && description && estimatedCost && selectedTags.length >= 3 && hasValidEvent)
+      {navigate('/my-travels');}
     });
 
   
@@ -146,7 +139,6 @@ function CreateItinerary() {
     return;
   };
   
-
   const generateTimeOptions = () => {
     const times = [];
     const periods = ['AM', 'PM'];
@@ -160,11 +152,6 @@ function CreateItinerary() {
     return times;
   };
 
-    const handleLogout = () => {
-      localStorage.removeItem('token'); 
-      navigate('/'); 
-    };
-
     const removeEvent = (index) => {
       const updatedEvents = events.filter((_, i) => i !== index);
       setEvents(updatedEvents);
@@ -172,21 +159,6 @@ function CreateItinerary() {
     
   return (
     <>
-      <nav className="navBar">
-        <img src={navBarLogo} alt="Trip Tailor Logo" className="navBarLogo" />
-        <div className="buttonsContainer">
-          {/* Logout Button */}
-          <button className="logoutButton" onClick={handleLogout}>
-            <i className="fas fa-sign-out-alt" style={{ fontSize: '24px', color: '#00509e', marginLeft: '5px', marginRight: '10px' }}></i>
-            Log Out
-          </button>
-          {/* Profile Button */}
-          <button className="profileButton">
-            <i className="fas fa-bars" style={{ fontSize: '16px', color: '#00509e', marginRight: '15px' }}></i>
-            <i className="fa-regular fa-user" style={{ fontSize: '24px', color: '#00509e' }}></i>
-          </button>
-        </div>
-      </nav>
       <div className="centeredContainer">
         <div className="leftBox">
           <h2 className="heading">Create Itinerary</h2>

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import navBarLogo from '../assets/logo-long-transparent.png';
 import authLogo from '../assets/logo-circle-white.png';
 import '../styles/styles.css'; 
 import authAPI from '../api/authAPI.js';
@@ -109,17 +108,6 @@ function UserSignup() {
 
   return (
     <>
-      {/* navBar */}
-      <nav className="navBar">
-        <img src={navBarLogo} alt="Trip Tailor Logo" className="navBarLogo" />
-
-        {/* Profile Button */}
-        <button className="profileButton">
-          <i className="fas fa-bars" style={{ fontSize: '16px', color: '#00509e', marginRight: '15px' }}></i>
-          <i className="fa-regular fa-user" style={{ fontSize: '24px', color: '#00509e' }}></i>
-        </button>
-      </nav>
-
       {/* Main Container */}
       <div className="centeredContainer">
         <div className="centeredBox">
@@ -166,7 +154,7 @@ function UserSignup() {
 
             <hr className="separatorLine" />
 
-            <h6 className="subheading1">Date of Birth</h6>
+            <h6 className="subheading">Date of Birth</h6>
 
             {/* Date of Birth Input */}
             <input
