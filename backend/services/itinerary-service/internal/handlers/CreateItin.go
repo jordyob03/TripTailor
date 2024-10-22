@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	DBmodels "github.com/jordyob03/TripTailor/backend/services/itinerary-service/internal/db"
 	models "github.com/jordyob03/TripTailor/backend/services/itinerary-service/internal/models"
 )
 
@@ -36,13 +37,36 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 		itin.Events = []string{}
 		itin.Username = "jordyob"
 
+		//Try adding Itin to the database where itinID
+		//is the ID of the newly created itinerary
+		itinID, err := DBmodels.AddItinerary(dbConn, itin)
+		if err != nil {
+			fmt.Printf("Error adding itinnerary to the database %v\n", err)
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error":   "Failed to create itinerary",
+				"details": err.Error(),
+			})
+			return
+		}
+
+		//ENsure that the ItinID is returned from the database
+		if itinID == 0 {
+			fmt.Printf("Failed to retreve itinerary ID")
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error":  "Failed to create itinerary",
+				"detail": "Invalid itinerary ID returned",
+			})
+			return
+		}
+
 		//Needs to be added to db here
 
 		fmt.Printf("Received Itinerary: Name=%s, City=%s, Country=%s\n", req.Name, req.City, req.Country)
 
 		// Respond to the client with the received data
 		c.JSON(http.StatusOK, gin.H{
-			"message": "Itinerary received",
+			"message":     "Itinerary received",
+			"ItineraryID": itinID,
 		})
 
 	}
