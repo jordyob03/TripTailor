@@ -33,13 +33,16 @@ func CreateAllTables(DB *sql.DB) error {
 	if err := CreateEventTable(DB); err != nil {
 		return err
 	}
+	if err := CreateImageTable(DB); err != nil {
+		return err
+	}
 
 	return nil
 }
 
 func DeleteAllTables(DB *sql.DB) error {
 	dropTablesSQL := `
-	DROP TABLE IF EXISTS users, boards, posts, itineraries, events CASCADE;`
+	DROP TABLE IF EXISTS users, boards, posts, itineraries, events, images CASCADE;`
 
 	_, err := DB.Exec(dropTablesSQL)
 	if err != nil {
