@@ -6,7 +6,7 @@ function Itinerary() {
   const [Name, setName] = useState('');
   const [City, setCity] = useState('');
   const [Country, setCountry] = useState('');
-  const [Languages, setLaguages] = useState([]);
+  const [Languages, setLanguages] = useState([]);
   const [Tags, setTags] = useState([]);
   const [Events, setEvents] = useState([]);
 
@@ -16,21 +16,35 @@ function Itinerary() {
     e.preventDefault();
 
 
+      console.log('Form data:', {
+        Name: Name,
+        City: City,
+        Country: Country,
+        Languages: Languages,
+        Tags: Tags,
+        Events: Events,
+      });
 
       const Data = {
         Name: Name,
         City: City, 
-        Country: Country
-      }
+        Country: Country,
+        Languages: Languages.split(','),  // Ensure arrays are sent correctly
+        Tags: Tags.split(','),
+        Events: Events.split(','),
+      };
 
       try {
+        console.log('Sending request to API...');
         const response = await itineraryAPI.post('/itin-creation', Data);
-        const { token } = response.data;  
+        const { token } = response.data;
+        console.log(response)
+        console.log('we made it')  
         localStorage.setItem('token', token);  
         console.log('Location created:', response.data);
 
       } catch (error) {
-
+          console.error('Error creating itinerary:', error);
       }
 
   };
@@ -40,7 +54,8 @@ function Itinerary() {
     <>
         <div>
 
-          <form onSubmit={handleSubmit} className="form">
+          <form onSubmit={(e) => { handleSubmit(e) }} className="form">
+
               <input
                 type="text"
                 placeholder="Name"
@@ -62,6 +77,30 @@ function Itinerary() {
                 placeholder="Country"
                 value={Country}
                 onChange={(e) => setCountry(e.target.value)}
+                required
+                className="input"
+              />
+              <input
+                type="text"
+                placeholder="Languages"
+                value={Languages}
+                onChange={(e) => setLanguages(e.target.value)}
+                required
+                className="input"
+              />
+              <input
+                type="text"
+                placeholder="Tags"
+                value={Tags}
+                onChange={(e) => setTags(e.target.value)}
+                required
+                className="input"
+              />
+              <input
+                type="text"
+                placeholder="Events"
+                value={Events}
+                onChange={(e) => setEvents(e.target.value)}
                 required
                 className="input"
               />

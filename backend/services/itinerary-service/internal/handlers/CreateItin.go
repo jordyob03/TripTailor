@@ -4,7 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-
+	"time"
+	//"github.com/lib/pq"
 	"github.com/gin-gonic/gin"
 
 	DBmodels "github.com/jordyob03/TripTailor/backend/services/itinerary-service/internal/db"
@@ -15,6 +16,9 @@ type CreateItinRequest struct {
 	Name    string `json:"Name" binding:"required"`
 	City    string `json:"City" binding:"required"`
 	Country string `json:"Country" binding:"required"`
+	Languages []string `json:"Languages" binding:"required"`
+	Tags []string `json:"Tags" binding:"required"`
+	Events []string `json:"Events" binding:"required"`
 }
 
 func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
@@ -26,16 +30,15 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 		}
 
 		var itin models.Itinerary
-
-		// test itin
-
 		itin.Name = req.Name
 		itin.City = req.City
 		itin.Country = req.Country
-		itin.Languages = []string{"English", "French"}
-		itin.Tags = []string{"Family", "Vegetarian"}
-		itin.Events = []string{}
-		itin.Username = "jordyob"
+		itin.Languages = req.Languages // Use data from the request
+		itin.Tags = req.Tags           // Use data from the request
+		itin.Events = req.Events       // Use data from the request
+		itin.Username = "jordyob"      // This could come from an authenticated session or token
+		itin.CreationDate = time.Now()
+		itin.LastUpdate = time.Now()
 
 		//Try adding Itin to the database where itinID
 		//is the ID of the newly created itinerary

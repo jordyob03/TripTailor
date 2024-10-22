@@ -18,7 +18,7 @@ function App() {
         <Route path="/" element={<UserLogin />} />
         <Route path="/sign-up" element={<UserSignup />} /> 
         <Route path="/profile-creation" element={<ProtectedRoute> <UserProfile /> </ProtectedRoute>} />
-        <Route path="/itin-creation" element={<Itinerary />} />
+        <Route path="/itin-creation" element={<CreateItinerary />} />
         <Route path="/search" element={<ProtectedRoute> <Search /> </ProtectedRoute>} />
       </Routes>
     </Router>
