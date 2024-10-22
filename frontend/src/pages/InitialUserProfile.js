@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import navBarLogo from '../assets/logo-long-transparent.png';
 import Tags from '../config/tags.json';
 import '../styles/styles.css';  
 import { useNavigate } from 'react-router';
@@ -33,14 +32,14 @@ function InitialUserProfile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!name) {
       setNameErrorMessage('Please enter your name.');
       return;
     } else {
       setNameErrorMessage('');
     }
-
+  
     if (selectedTags.length >= 3) {
       setTagErrorMessage('');
     } else {
@@ -53,37 +52,41 @@ function InitialUserProfile() {
     } else {
       setCountryErrorMessage('Please select a country.');
     }
-
+  
     if (languages.length >= 1) {
       setLangErrorMessage('')
     } else {
       setLangErrorMessage('Please select at least 1 language.');
     }
-
+  
     if (name && selectedTags.length >= 3 && country.length >= 1 && languages.length >= 1) {
       console.log({ name, selectedTags, country, languages });
-    }
-    const profile_data = {
-      languages: languages,
-      country: country, 
-      tags: selectedTags,
-      name: name, 
-      username: username, 
-    }
-
-    try {
-      console.log('Trying to save', profile_data);
-      const response = await profileAPI.post('/create', profile_data);
-      console.log('Profile saved', response.data);
-
-    } catch (error) {
-      if (error.response && error.response.data) {
-        setErrorMessage(error.response.data.error);  
-      } else {
-        setErrorMessage('Saving profile failed');
+  
+      const profile_data = {
+        languages: languages,
+        country: country, 
+        tags: selectedTags,
+        name: name, 
+        username: username, 
+      }
+  
+      try {
+        console.log('Trying to save', profile_data);
+        const response = await profileAPI.post('/create', profile_data);
+        console.log('Profile saved', response.data);
+  
+        navigate('/search-results');
+  
+      } catch (error) {
+        if (error.response && error.response.data) {
+          setErrorMessage(error.response.data.error);  
+        } else {
+          setErrorMessage('Saving profile failed');
+        }
       }
     }
   };
+  
 
   const handleTagSelection = (tag) => {
     if (selectedTags.includes(tag)) {
@@ -105,23 +108,6 @@ function InitialUserProfile() {
 
   return (
     <>
-      {/* navBar */}
-      <nav className="navBar">
-        <img src={navBarLogo} alt="Trip Tailor Logo" className="navBarLogo" />
-          <div className="buttonsContainer">
-          {/* Logout Button */}
-          <button className="logoutButton" onClick={handleLogout}>
-            <i className="fas fa-sign-out-alt" style={{ fontSize: '24px', color: '#00509e', marginLeft: '5px', marginRight: '10px' }}></i>
-            Log Out
-          </button>
-          {/* Profile Button */}
-          <button className="profileButton">
-            <i className="fas fa-bars" style={{ fontSize: '16px', color: '#00509e', marginRight: '15px' }}></i>
-            <i className="fa-regular fa-user" style={{ fontSize: '24px', color: '#00509e' }}></i>
-          </button>
-        </div>
-      </nav>
-
       {/* Main Container */}
       <div className="centeredContainer">
         <div className="centeredBox">
