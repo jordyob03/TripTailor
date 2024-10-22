@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -37,8 +36,6 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 		itin.Username = "jordyob"
 
 		//Needs to be added to db here
-
-		fmt.Printf("Received Itinerary: Name=%s, City=%s, Country=%s\n", req.Name, req.City, req.Country)
 
 		// Respond to the client with the received data
 		c.JSON(http.StatusOK, gin.H{
