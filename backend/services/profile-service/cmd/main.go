@@ -3,11 +3,9 @@ package main
 import (
 	"database/sql"
 	"log"
-	"net/http"
 	"time"
 
-	api "github.com/jordyob03/TripTailor/backend/services/auth-service/api"
-	middleware "github.com/jordyob03/TripTailor/backend/services/auth-service/internal/middleware"
+	api "github.com/jordyob03/TripTailor/backend/services/profile-service/api"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -32,15 +30,7 @@ func main() {
 	}
 	defer dbConn.Close()
 
-	api.RegisterRoutes(r, dbConn)
+	api.SetupRoutes(r, dbConn)
 
-	protected := r.Group("/protected")
-	protected.Use(middleware.AuthMiddleware())
-	{
-		protected.GET("/profile", func(c *gin.Context) {
-			c.JSON(http.StatusOK, gin.H{"message": "This is a protected route"})
-		})
-	}
-
-	r.Run(":8081")
+	r.Run(":8085")
 }

@@ -37,6 +37,17 @@
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
   }
   
+  .logoutButton {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: white;
+    border: 1px solid #dfdfdf;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+  }
   .centeredContainer {
     display: flex;
     justify-content: center;
@@ -44,6 +55,14 @@
     min-height: calc(100vh - 60px);
     width: 100vw;
     background-color: white;
+  }
+
+  .buttonsContainer {
+    display: flex;
+    flex-direction: row; 
+    align-items: center;
+    gap: 10px; 
+    background-color: white; 
   }
   
   .centeredBox {
@@ -57,6 +76,31 @@
     width: auto;
     max-width: 650px;
   }
+
+  .leftBox {
+    background-color: white;
+    padding: 50px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    z-index: 1;
+    margin: 15vh auto 40px auto;
+    width: auto;
+    max-width: 650px;
+  }
+
+  .dividerBox {
+    background-color: white;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    z-index: 1;
+    margin: 1vh auto 40px auto;
+    width: 100%; 
+    max-width: 650px;
+    box-sizing: border-box;
+    
+  }
   
   .heading {
     color: #002f6c;
@@ -66,12 +110,28 @@
     font-size: 28px;
   }
   
+  .headingCI {
+    color: #002f6c;
+    margin-top: 20px;
+    margin-bottom: 0px;
+    font-family: 'Red Hat Display', sans-serif;
+    font-size: 20px;
+  }
+  
   .subheading {
+    color: #002f6c;
+    margin: 10px 0;
+    font-family: 'Red Hat Display', sans-serif;
+    font-size: 18px;
+  } 
+
+  .subheadingLeft {
     color: #002f6c;
     margin: 20px 0;
     font-family: 'Red Hat Display', sans-serif;
     font-size: 18px;
-  } */
+    justify-content: left;
+  } 
   
   .separatorLine {
     width: 100%;
@@ -92,22 +152,6 @@
     border: 1px solid #ccc;
     font-size: 16px;
     font-family: 'Red Hat Display', sans-serif;
-  }
-  
-  .continueButtonIUP {
-    padding: 12px;
-    background-color: #002f6c;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-family: 'Red Hat Display', sans-serif;
-  }
-  
-  .continueButtonIUP:hover {
-    background-color: #00509e;
   }
   
   .signUpButton {
@@ -212,6 +256,14 @@
     justify-content: center;
     margin-bottom: 40px;
   }
+
+  .tagsLeft {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: left;
+    margin-bottom: 40px;
+  }
   
   .tag {
     padding: 8px 16px;
@@ -241,6 +293,7 @@
   
   .continueButton {
     padding: 12px;
+    margin-top: 20px;
     background-color: #002f6c;
     color: white;
     border: none;
@@ -254,3 +307,88 @@
   .continueButton.hovered {
     background-color: #00509e;
   }
+
+  .inputGroup {
+    margin-bottom: 0px;
+    width: 100%;
+  }
+  
+  .inputGroup label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #002f6c;
+  }
+  
+  .inputGroup .input {
+    width: 97%;
+    display: block;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    transition: border-color 0.3s ease;
+  }
+  
+  .inputGroup .input:focus {
+    border-color: #00509e;
+  }
+  
+  .timeSelect {
+    display: flex;
+    gap: 10px;
+    width: 70%;
+  }
+  
+.eventBox {
+  position: relative;
+  background-color: #e0e7f1;
+  padding: 0px 30px; 
+  padding-bottom: 20px; 
+  border-radius: 12px;
+  margin-bottom: 20px; 
+  border: 1px solid #d3d9e3; 
+}
+
+.imagePreview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.imageContainer {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.previewImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.removeButton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: none; 
+  border: none; 
+  color: white; 
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer; 
+}
+
+.inputFile {
+  display: none; 
+}
+
+.addImageButton label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
