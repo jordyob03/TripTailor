@@ -9,9 +9,11 @@ import (
 )
 
 type CreateItinRequest struct {
-	Name        string `json:"Name" binding:"required"`
-	City        string `json:"City" binding:"required"`
-	Description string `json:"Description"`
+	Name        string   `json:"name" binding:"required"`
+	Location    string   `json:"location" binding:"required"`
+	Description string   `json:"description" binding:"required"`
+	Cost        string   `json:"cost" binding:"required"`
+	Tags        []string `json:"tags" binding:"required"`
 }
 
 func CreateItin(dbConn *sql.DB) gin.HandlerFunc {

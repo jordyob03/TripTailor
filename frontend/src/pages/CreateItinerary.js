@@ -127,8 +127,10 @@ function CreateItinerary() {
 
     const Data = {
       Name: itineraryDetails.name,
-      City: itineraryDetails.location,
+      Location: itineraryDetails.location,
       Description: itineraryDetails.description,
+      Cost: itineraryDetails.cost,
+      Tags: selectedTags,
     }
 
     console.log(Data);
