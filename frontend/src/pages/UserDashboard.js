@@ -15,18 +15,6 @@ function MyTravels() {
 
   return (
     <div>
-      {/* Dropdown Menu */}
-      {menuOpen && (
-        <div className="dropdownMenu">
-          <ul>
-            <li onClick={() => navigate('/profile-creation')}>Profile</li>
-            <li onClick={() => navigate('/account')}>Account Settings</li>
-            <li onClick={() => navigate('/dashboard')}>My Itineraries</li>
-            <li onClick={() => navigate('/')}>Home</li>
-          </ul>
-        </div>
-      )}
-
       <div className="pageContainer">
       {/* Main Heading */}
       <div className="heading">
