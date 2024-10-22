@@ -131,10 +131,10 @@ function CreateItinerary() {
       Description: itineraryDetails.description,
     }
 
+    console.log(Data);
+
     try {
       const response = await itineraryAPI.post('/itin-creation', Data);
-      const { token } = response.data;  
-      localStorage.setItem('token', token);  
       console.log('Location created:', response.data);
 
     } catch (error) {
