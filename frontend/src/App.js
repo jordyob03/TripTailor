@@ -17,24 +17,7 @@ function App() {
   const [countryErrorMessage, setCountryErrorMessage] = useState('');
   const [cityErrorMessage, setCityErrorMessage] = useState('');
 
-  const handleSearch = (country, city) => {
-    // Mock search results for MVP
-    const results = [
-      {
-        location: `${city}, ${country}`,
-        title: 'Hiking and Hot Springs',
-        description: 'Immerse yourself in the beauty of hot springs surrounded by volcanic views.',
-        tags: ['Backpacker', 'Long Walks', 'Hiking'],
-        image: 'https://via.placeholder.com/300x180',
-      },
-      {
-        location: `${city}, ${country}`,
-        title: 'Beautiful Evening at Bob Kerrey Bridge',
-        description: 'Enjoy a stunning evening stroll across the Bob Kerrey Bridge.',
-        tags: ['Short Walks', 'Historical Sites'],
-        image: 'https://via.placeholder.com/300x180',
-      },
-    ];
+  const handleSearch = (results, country, city) => {
     setSearchParams({ country, city });
     setSearchResults(results);
     setCountryErrorMessage('');
@@ -52,7 +35,7 @@ function App() {
         <Route path="/my-travels" element={<ProtectedRoute><MyTravels /></ProtectedRoute>} />
         <Route path="/account-settings" element={<ProtectedRoute><AccountSettings /></ProtectedRoute>} />
         <Route path="/home-page" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-        <Route path="/search-results" element={<SearchResults searchResults={searchResults} searchParams={searchParams} />} />
+        <Route path="/search-results" element={<SearchResults searchResults={searchResults} searchParams={searchParams} isSearchPressed={true} />} />
       </Routes>
     </Router>
   );

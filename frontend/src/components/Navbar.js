@@ -64,10 +64,19 @@ function NavBar({ onSearch }) {
           params: searchData,
         });
         console.log('API response:', response);
+
+
+        const formattedResults = response.data.map(itinerary => ({
+          location: `${itinerary.city}, ${itinerary.country}`,
+          title: itinerary.name,
+          description: `Itinerary by ${itinerary.username}. Tags: ${itinerary.tags.map(tag => tag.replace(/[{}]/g, '')).join(', ')}`,
+          tags: itinerary.tags.map(tag => tag.replace(/[{}]/g, '')),
+          image: 'https://via.placeholder.com/300x180', 
+        }));
   
         // Call the onSearch function passed as a prop, if available
         if (onSearch) {
-          onSearch(country, city);
+          onSearch(formattedResults, country, city);
         }
   
         navigate('/search-results');
