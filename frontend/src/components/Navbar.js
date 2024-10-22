@@ -142,10 +142,9 @@ function NavBar({ onSearch }) {
       {menuOpen && (
         <div className="dropdownMenu">
           <ul>
-            <li onClick={() => navigate('/profile-creation')}>Profile</li>
-            <li onClick={() => navigate('/account')}>Account Settings</li>
-            <li onClick={() => navigate('/dashboard')}>My Itineraries</li>
-            <li onClick={() => navigate('/')}>Home</li>
+            <li onClick={() => navigate('/account-settings')}>Account Settings</li>
+            <li onClick={() => navigate('/my-travels')}>My Travels</li>
+            <li onClick={() => navigate('/home-page')}>Home</li>
           </ul>
         </div>
       )}

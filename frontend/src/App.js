@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import NavBar from './components/Navbar';
-import Account from './pages/AccountSettings';
+import AccountSettings from './pages/AccountSettings';
 import ProtectedRoute from './components/Protectedroute';
 import UserSignup from './pages/UserSignup';
 import SearchResults from './pages/SearchResults';
 import UserProfile from './pages/InitialUserProfile';
 import UserLogin from './pages/UserLogin';
-import Dashboard from './pages/UserDashboard';
+import HomePage from './pages/Homepage';
+import MyTravels from './pages/UserDashboard';
 import CreateItinerary from './pages/CreateItinerary'; 
 
 function App() {
@@ -17,7 +18,7 @@ function App() {
   const [cityErrorMessage, setCityErrorMessage] = useState('');
 
   const handleSearch = (country, city) => {
-    // Mock search results for demonstration
+    // Mock search results for MVP
     const results = [
       {
         location: `${city}, ${country}`,
@@ -49,6 +50,9 @@ function App() {
         <Route path="/sign-up" element={<UserSignup />} />
         <Route path="/profile-creation" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
         <Route path="/create-itinerary" element={<ProtectedRoute><CreateItinerary /></ProtectedRoute>} />
+        <Route path="/my-travels" element={<ProtectedRoute><MyTravels /></ProtectedRoute>} />
+        <Route path="/account-settings" element={<ProtectedRoute><AccountSettings /></ProtectedRoute>} />
+        <Route path="/home-page" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
         <Route path="/search-results" element={<SearchResults searchResults={searchResults} searchParams={searchParams} />} />
       </Routes>
     </Router>
