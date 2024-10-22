@@ -75,7 +75,7 @@ function InitialUserProfile() {
         const response = await profileAPI.post('/create', profile_data);
         console.log('Profile saved', response.data);
   
-        navigate('/search-results');
+        navigate('/home-page');
   
       } catch (error) {
         if (error.response && error.response.data) {

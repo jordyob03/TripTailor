@@ -1,10 +1,12 @@
-import React, { useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import '../styles/styles.css';
 import Tags from '../config/tags.json';
 import iconMap from '../config/iconMap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-function HomePage({ selectedTags, onTagClick, tagErrorMessage }) {
+function HomePage() {
+  const [selectedTags, setSelectedTags] = useState([]); // Manage selected tags state
+  const [tagErrorMessage, setTagErrorMessage] = useState(''); // Manage error message state
   const tagContainerRef = useRef(null);
   const allTags = Object.values(Tags.categories).flat();
 
@@ -20,6 +22,16 @@ function HomePage({ selectedTags, onTagClick, tagErrorMessage }) {
     }
   };
 
+  const handleTagClick = (tag) => {
+    // Toggle the selection of the tag
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter((t) => t !== tag));
+    } else {
+      setSelectedTags([...selectedTags, tag]);
+    }
+    setTagErrorMessage(''); // Clear error message when a tag is clicked
+  };
+
   return (
     <div className="tagFiltersContainer">
       <button onClick={scrollTagsLeft} className="arrowButton">{'<'}</button>
@@ -27,7 +39,7 @@ function HomePage({ selectedTags, onTagClick, tagErrorMessage }) {
         {allTags.map((tag) => (
           <div
             key={tag}
-            onClick={() => onTagClick(tag)}
+            onClick={() => handleTagClick(tag)}
             className={`tagItem ${selectedTags.includes(tag) ? 'selected' : ''}`}
           >
             <div className="tagIcon">
