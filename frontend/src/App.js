@@ -8,6 +8,7 @@ import UserSignup from './pages/UserSignup';
 import UserProfile from './pages/InitialUserProfile';
 import UserLogin from './pages/UserLogin';
 import CreateItinerary from './pages/CreateItinerary';
+import Itinerary from './pages/ItinCreation';
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path="/sign-up" element={<UserSignup />} /> 
         <Route path="/profile-creation" element={<ProtectedRoute> <UserProfile /> </ProtectedRoute>} />
         <Route path="/search" element={<ProtectedRoute> <Search /> </ProtectedRoute>} />
+        <Route path="/itincreation" element={<CreateItinerary />} /> 
       </Routes>
     </Router>
   );

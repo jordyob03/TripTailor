@@ -45,7 +45,7 @@ function UserLogin() {
   };
 
   const handleItinClick = () => {
-    navigate('/itin-creation');
+    navigate('/itincreation');
   };
 
 

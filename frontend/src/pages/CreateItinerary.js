@@ -3,6 +3,7 @@ import navBarLogo from '../assets/logo-long-transparent.png';
 import Tags from '../config/tags.json';
 import '../styles/styles.css'; 
 import { useNavigate } from 'react-router';
+import itineraryAPI from '../api/itineraryAPI.js';
 
 function CreateItinerary() {
   const categories = Tags.categories;
@@ -61,7 +62,7 @@ function CreateItinerary() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
   
     // Filter out events that have no description and no location
@@ -108,6 +109,8 @@ function CreateItinerary() {
       // Count how many fields are filled and how many are empty
       const filledFields = fields.filter((field) => field !== '' && field !== null && field !== undefined);
       const emptyFields = fields.filter((field) => field === '' || field === null || field === undefined);
+
+
       
       // If there are some filled fields and some empty fields, it's considered incomplete
       return filledFields.length > 0 && emptyFields.length > 0;
@@ -121,7 +124,23 @@ function CreateItinerary() {
     if (!hasIncompleteEvent && hasValidEvent) {
       setEventErrorMessage('');
     }
-  
+
+    const Data = {
+      Name: itineraryDetails.name,
+      City: itineraryDetails.location,
+      Description: itineraryDetails.description,
+    }
+
+    try {
+      const response = await itineraryAPI.post('/itin-creation', Data);
+      const { token } = response.data;  
+      localStorage.setItem('token', token);  
+      console.log('Location created:', response.data);
+
+    } catch (error) {
+
+    }
+
     return;
   };
   

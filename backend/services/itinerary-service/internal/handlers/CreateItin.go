@@ -2,17 +2,16 @@ package handlers
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-
-	models "github.com/jordyob03/TripTailor/backend/services/itinerary-service/internal/models"
 )
 
 type CreateItinRequest struct {
-	Name    string `json:"Name" binding:"required"`
-	City    string `json:"City" binding:"required"`
-	Country string `json:"Country" binding:"required"`
+	Name        string `json:"Name" binding:"required"`
+	City        string `json:"City" binding:"required"`
+	Description string `json:"Description"`
 }
 
 func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
@@ -23,17 +22,18 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 			return
 		}
 
-		var itin models.Itinerary
+		//var itin models.Itinerary
 
 		// test itin
 
-		itin.Name = req.Name
-		itin.City = req.City
-		itin.Country = req.Country
-		itin.Languages = []string{"English", "French"}
-		itin.Tags = []string{"Family", "Vegetarian"}
-		itin.Events = []string{}
-		itin.Username = "jordyob"
+		fmt.Printf("Received Itinerary: %+v\n", req)
+
+		// itin.Name = req.Name
+		// itin.City = req.City
+		// itin.Country = req.City
+		// itin.Tags = req.Tags
+		// itin.Events = []string{}
+		// itin.Username = "jordyob"
 
 		//Needs to be added to db here
 

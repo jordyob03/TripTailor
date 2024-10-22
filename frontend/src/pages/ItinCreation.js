@@ -22,6 +22,7 @@ function Itinerary() {
         City: City, 
         Country: Country
       }
+      console.log(Data);
 
       try {
         const response = await itineraryAPI.post('/itin-creation', Data);
