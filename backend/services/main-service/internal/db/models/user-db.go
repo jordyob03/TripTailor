@@ -225,6 +225,15 @@ func GetAllUsers(DB *sql.DB) ([]User, error) {
 	return users, nil
 }
 
+func UpdateName(dbConn *sql.DB, username string, name string) error {
+	query := `UPDATE users SET name = $1 WHERE username = $2`
+	_, err := dbConn.Exec(query, name, username)
+	if err != nil {
+		return fmt.Errorf("error updating country for user %s: %v", username, err)
+	}
+	return nil
+}
+
 func UpdateUserEmail(DB *sql.DB, username, email string) error {
 	return UpdateAttribute(DB, "users", "username", username, "email", email)
 }
