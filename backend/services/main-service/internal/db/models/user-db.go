@@ -12,17 +12,19 @@ import (
 )
 
 type User struct {
-	UserId      int       `json:"userId"`
-	Username    string    `json:"username"`
-	Email       string    `json:"email"`
-	Password    string    `json:"password"`
-	DateOfBirth time.Time `json:"dateOfBirth"`
-	Name        string    `json:"name"`
-	Country     string    `json:"country"`
-	Languages   []string  `json:"languages"`
-	Tags        []string  `json:"tags"`
-	Boards      []string  `json:"boards"`
-	Posts       []string  `json:"posts"`
+	UserId       int       `json:"userId"`
+	Username     string    `json:"username"`
+	Email        string    `json:"email"`
+	Password     string    `json:"password"`
+	DateOfBirth  time.Time `json:"dateOfBirth"`
+	Name         string    `json:"name"`
+	Country      string    `json:"country"`
+	Languages    []string  `json:"languages"`
+	Tags         []string  `json:"tags"`
+	Boards       []string  `json:"boards"`
+	Posts        []string  `json:"posts"`
+	ProfileImage int       `json:"profileImage"`
+	CoverImage   int       `json:"coverImage"`
 }
 
 func CreateUserTable(DB *sql.DB) error {
@@ -38,15 +40,17 @@ func CreateUserTable(DB *sql.DB) error {
 		languages TEXT[],
 		tags TEXT[],
 		boards INTEGER[],
-		posts INTEGER[]
+		posts INTEGER[],
+		profileImage INTEGER,
+		coverImage INTEGER
 	);`
 	return CreateTable(DB, createTableSQL)
 }
 
 func AddUser(DB *sql.DB, user User) (int, error) {
 	insertUserSQL := `
-	INSERT INTO users (username, email, password, dateOfBirth, name, country, languages, tags, boards, posts)
-	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+	INSERT INTO users (username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, profileImage, coverImage)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
 	RETURNING userId;`
 
 	var userId int
@@ -54,7 +58,8 @@ func AddUser(DB *sql.DB, user User) (int, error) {
 		insertUserSQL, user.Username, user.Email, user.Password,
 		user.DateOfBirth, user.Name, user.Country,
 		pq.Array(user.Languages), pq.Array(user.Tags),
-		pq.Array(user.Boards), pq.Array(user.Posts)).Scan(&userId)
+		pq.Array(user.Boards), pq.Array(user.Posts),
+		user.ProfileImage, user.CoverImage).Scan(&userId)
 	if err != nil {
 		fmt.Println("Error adding user:", err)
 		return 0, err
@@ -121,7 +126,7 @@ func RemoveUser(DB *sql.DB, username string) error {
 
 func GetUser(DB *sql.DB, username string) (User, error) {
 	query := `
-    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts
+    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, profileImage, coverImage
     FROM users 
     WHERE username = $1`
 
@@ -134,6 +139,8 @@ func GetUser(DB *sql.DB, username string) (User, error) {
 		pq.Array(&user.Tags),
 		pq.Array(&user.Boards),
 		pq.Array(&user.Posts),
+		&user.ProfileImage,
+		&user.CoverImage,
 	)
 
 	if err == sql.ErrNoRows {
@@ -164,7 +171,7 @@ func GetUser(DB *sql.DB, username string) (User, error) {
 
 func GetAllUsers(DB *sql.DB) ([]User, error) {
 	query := `
-    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts
+    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, profileImage, coverImage
     FROM users`
 
 	rows, err := DB.Query(query)
@@ -184,6 +191,8 @@ func GetAllUsers(DB *sql.DB) ([]User, error) {
 			pq.Array(&user.Tags),
 			pq.Array(&user.Boards),
 			pq.Array(&user.Posts),
+			&user.ProfileImage,
+			&user.CoverImage,
 		); err != nil {
 			log.Printf("Error scanning user: %v\n", err)
 			return nil, err
@@ -310,6 +319,60 @@ func RemoveUserPost(DB *sql.DB, username string, postId int) error {
 	}
 
 	return nil
+}
+
+func UpdateUserProfileImage(DB *sql.DB, username string, imageId int) error {
+	image, err := GetImage(DB, imageId)
+	if err != nil {
+		log.Printf("Error retrieving image: %v\n", err)
+		return err
+	}
+
+	for _, metadata := range image.Metadata {
+		if metadata == "profile" {
+			fmt.Printf("Image %d is already a profile image", imageId)
+			return nil
+		}
+	}
+
+	err = AddImageMetaData(DB, imageId, "profile")
+	if err != nil {
+		log.Printf("Error adding image metadata: %v\n", err)
+		return err
+	}
+
+	return UpdateAttribute(DB, "users", "username", username, "profileImage", imageId)
+}
+
+func RemoveUserProfileImage(DB *sql.DB, username string) error {
+	return UpdateAttribute(DB, "users", "username", username, "profileImage", '0')
+}
+
+func UpdateUserCoverImage(DB *sql.DB, username string, imageId int) error {
+	image, err := GetImage(DB, imageId)
+	if err != nil {
+		log.Printf("Error retrieving image: %v\n", err)
+		return err
+	}
+
+	for _, metadata := range image.Metadata {
+		if metadata == "cover" {
+			fmt.Printf("Image %d is already a cover image", imageId)
+			return nil
+		}
+	}
+
+	err = AddImageMetaData(DB, imageId, "cover")
+	if err != nil {
+		log.Printf("Error adding image metadata: %v\n", err)
+		return err
+	}
+
+	return UpdateAttribute(DB, "users", "username", username, "coverImage", imageId)
+}
+
+func RemoveUserCoverImage(DB *sql.DB, username string) error {
+	return UpdateAttribute(DB, "users", "username", username, "coverImage", '1')
 }
 
 func UserHandler(DB *sql.DB, w http.ResponseWriter, r *http.Request) {
