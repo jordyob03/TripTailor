@@ -176,23 +176,18 @@ func RemovePostTag(DB *sql.DB, postId int, tag string) error {
 }
 
 func AddPostBoard(DB *sql.DB, postId int, board int, recursive bool) error {
-	if !recursive {
-		return nil
-	}
-
 	err := AddArrayAttribute(DB, "posts", "postId", postId, "boards", IntsToStrings([]int{board}))
 	if err != nil {
 		log.Printf("Error adding board to post %d: %v\n", postId, err)
 		return fmt.Errorf("failed to add board to post: %w", err)
 	}
 
-	err = AddBoardPost(DB, board, postId, false)
-	if err != nil {
-		log.Printf("Error adding post %d to board %d: %v\n", postId, board, err)
-		return fmt.Errorf("failed to add post to board: %w", err)
+	log.Printf("Board added to post %d successfully.\n", postId)
+
+	if recursive {
+		return AddBoardPost(DB, board, postId, false)
 	}
 
-	log.Printf("Board added to post %d successfully.\n", postId)
 	return nil
 }
 

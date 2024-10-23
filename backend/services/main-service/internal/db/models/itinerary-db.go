@@ -243,23 +243,18 @@ func RemoveItineraryTag(DB *sql.DB, itineraryId int, tag string) error {
 }
 
 func AddItineraryEvent(DB *sql.DB, itineraryId int, eventId int, recursive bool) error {
-	if !recursive {
-		return nil
-	}
-
 	err := AddArrayAttribute(DB, "itineraries", "itineraryId", itineraryId, "events", IntsToStrings([]int{eventId}))
 	if err != nil {
 		log.Printf("Error adding itinerary event: %v\n", err)
 		return fmt.Errorf("failed to add itinerary event: %w", err)
 	}
 
-	err = AddEventItinerary(DB, eventId, itineraryId, false)
-	if err != nil {
-		log.Printf("Error adding event to itinerary: %v\n", err)
-		return fmt.Errorf("failed to add event to itinerary: %w", err)
+	log.Printf("Itinerary event added successfully for ID %d.\n", itineraryId)
+
+	if recursive {
+		return AddEventItinerary(DB, eventId, itineraryId, false)
 	}
 
-	log.Printf("Itinerary event added successfully for ID %d.\n", itineraryId)
 	return nil
 }
 

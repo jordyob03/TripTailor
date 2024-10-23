@@ -211,23 +211,18 @@ func UpdateEventEndDate(DB *sql.DB, eventID int, endDate time.Time) error {
 }
 
 func AddEventItinerary(DB *sql.DB, eventID int, itineraryID int, recursive bool) error {
-	if !recursive {
-		return nil
-	}
-
 	err := AddArrayAttribute(DB, "events", "eventId", eventID, "itineraryIds", IntsToStrings([]int{itineraryID}))
 	if err != nil {
 		log.Printf("Error adding itinerary to event: %v\n", err)
 		return fmt.Errorf("failed to add itinerary to event: %w", err)
 	}
 
-	err = AddItineraryEvent(DB, itineraryID, eventID, false)
-	if err != nil {
-		log.Printf("Error adding event to itinerary: %v\n", err)
-		return fmt.Errorf("failed to add event to itinerary: %w", err)
+	log.Printf("Itinerary added successfully for ID %d.\n", eventID)
+
+	if recursive {
+		return AddItineraryEvent(DB, itineraryID, eventID, false)
 	}
 
-	log.Printf("Itinerary added successfully for ID %d.\n", eventID)
 	return nil
 }
 

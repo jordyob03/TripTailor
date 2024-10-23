@@ -140,20 +140,16 @@ func UpdateBoardCreationDate(DB *sql.DB, boardId int, creationDate time.Time) er
 }
 
 func AddBoardPost(DB *sql.DB, boardId int, postId int, recursive bool) error {
-	if !recursive {
-		return nil
-	}
-
 	err := AddArrayAttribute(DB, "boards", "boardId", boardId, "posts", IntsToStrings([]int{postId}))
 	if err != nil {
 		log.Printf("Error adding post for board %d: %v\n", boardId, err)
 		return err
 	}
 
-	err = AddPostBoard(DB, postId, boardId, false)
-	if err != nil {
-		log.Printf("Error adding board to post %d: %v\n", postId, err)
-		return err
+	log.Printf("Post %d added to board %d successfully.\n", postId, boardId)
+
+	if recursive {
+		return AddPostBoard(DB, postId, boardId, false)
 	}
 
 	return nil
