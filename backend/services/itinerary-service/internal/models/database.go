@@ -1,4 +1,4 @@
-package DBmodels
+package models
 
 import (
 	"database/sql"
@@ -14,6 +14,29 @@ func InitDB(DB *sql.DB, connStr string) error {
 		return err
 	}
 	fmt.Println("Successfully connected to the database!")
+	return nil
+}
+
+func CreateAllTables(DB *sql.DB) error {
+	if err := CreateUserTable(DB); err != nil {
+		return err
+	}
+	if err := CreateBoardTable(DB); err != nil {
+		return err
+	}
+	if err := CreatePostTable(DB); err != nil {
+		return err
+	}
+	if err := CreateItineraryTable(DB); err != nil {
+		return err
+	}
+	if err := CreateEventTable(DB); err != nil {
+		return err
+	}
+	if err := CreateImageTable(DB); err != nil {
+		return err
+	}
+
 	return nil
 }
 

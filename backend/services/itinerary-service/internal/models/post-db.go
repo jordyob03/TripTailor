@@ -1,4 +1,4 @@
-package DBmodels
+package models
 
 import (
 	"database/sql"
@@ -6,7 +6,6 @@ import (
 	"log"
 	"time"
 
-	models "github.com/jordyob03/TripTailor/backend/services/itinerary-service/internal/models"
 	"github.com/lib/pq"
 )
 
@@ -94,14 +93,14 @@ func RemovePost(DB *sql.DB, postId int) error {
 	}
 
 	for _, board := range boardIds {
-		err = models.RemoveBoardPost(DB, board, postId)
+		err = RemoveBoardPost(DB, board, postId)
 		if err != nil {
 			log.Printf("Error removing post %d from board %d: %v\n", postId, board, err)
 			return err
 		}
 	}
 
-	models.RemoveUserPost(DB, username, postId)
+	RemoveUserPost(DB, username, postId)
 
 	deleteSQL := `
 	DELETE FROM posts
@@ -186,7 +185,7 @@ func AddPostBoard(DB *sql.DB, postId int, board int, recursive bool) error {
 	log.Printf("Board added to post %d successfully.\n", postId)
 
 	if recursive {
-		return models.AddBoardPost(DB, board, postId, false)
+		return AddBoardPost(DB, board, postId, false)
 	}
 
 	return nil
