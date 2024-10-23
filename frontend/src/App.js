@@ -36,6 +36,7 @@ function App() {
         <Route path="/account-settings" element={<ProtectedRoute><AccountSettings /></ProtectedRoute>} />
         <Route path="/home-page" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
         <Route path="/search-results" element={<SearchResults searchResults={searchResults} searchParams={searchParams} isSearchPressed={true} />} />
+        <Route path="/itincreation" element={<CreateItinerary />} /> 
       </Routes>
     </Router>
   );

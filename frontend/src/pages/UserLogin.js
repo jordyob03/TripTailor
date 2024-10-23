@@ -43,6 +43,11 @@ function UserLogin() {
     navigate('/sign-up');
   };
 
+  const handleItinClick = () => {
+    navigate('/itincreation');
+  };
+
+
   return (
     <>
       {/* Main Container */}
