@@ -6,9 +6,22 @@ import (
 	"log"
 	"time"
 
-	models "github.com/jordyob03/TripTailor/backend/services/itinerary-service/internal/models"
 	"github.com/lib/pq"
 )
+
+type Itinerary struct {
+	ItineraryId  int       `json:"itineraryId"`
+	Name         string    `json:"name"`
+	City         string    `json:"city"`
+	Country      string    `json:"country"`
+	Languages    []string  `json:"languages"`
+	Tags         []string  `json:"tags"`
+	Events       []string  `json:"events"`
+	PostId       int       `json:"postId"`
+	Username     string    `json:"username"`
+	CreationDate time.Time `json:"creationDate"`
+	LastUpdate   time.Time `json:"lastUpdate"`
+}
 
 func CreateItineraryTable(DB *sql.DB) error {
 	createTableSQL := `
@@ -29,7 +42,7 @@ func CreateItineraryTable(DB *sql.DB) error {
 	return CreateTable(DB, createTableSQL)
 }
 
-func AddItinerary(DB *sql.DB, itinerary models.Itinerary) (int, error) {
+func AddItinerary(DB *sql.DB, itinerary Itinerary) (int, error) {
 	insertItinerarySQL := `
 	INSERT INTO itineraries (name, city, country, languages, tags, events, postId, username, creationDate, lastUpdate)
 	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING itineraryId;`
@@ -89,11 +102,11 @@ func RemoveItinerary(DB *sql.DB, itineraryID int) error {
 		}
 	}
 
-	// err = RemovePost(DB, postID)
-	// if err != nil {
-	// 	log.Printf("Error removing post with ID %d: %v\n", postID, err)
-	// 	return fmt.Errorf("failed to remove associated post: %w", err)
-	// }
+	err = RemovePost(DB, postID)
+	if err != nil {
+		log.Printf("Error removing post with ID %d: %v\n", postID, err)
+		return fmt.Errorf("failed to remove associated post: %w", err)
+	}
 
 	removeItinerarySQL := `DELETE FROM itineraries WHERE itineraryId = $1;`
 	_, err = DB.Exec(removeItinerarySQL, itineraryID)
@@ -106,13 +119,13 @@ func RemoveItinerary(DB *sql.DB, itineraryID int) error {
 	return nil
 }
 
-func GetItinerary(DB *sql.DB, itineraryID int) (models.Itinerary, error) {
+func GetItinerary(DB *sql.DB, itineraryID int) (Itinerary, error) {
 	getItinerarySQL := `
 	SELECT itineraryId, name, city, country, languages, tags, events, postId, username, creationDate, lastUpdate
 	FROM itineraries
 	WHERE itineraryId = $1;`
 
-	var itinerary models.Itinerary
+	var itinerary Itinerary
 
 	err := DB.QueryRow(getItinerarySQL, itineraryID).Scan(
 		&itinerary.ItineraryId,
@@ -129,11 +142,11 @@ func GetItinerary(DB *sql.DB, itineraryID int) (models.Itinerary, error) {
 	)
 	if err == sql.ErrNoRows {
 		log.Printf("No itinerary found with ID %d\n", itineraryID)
-		return models.Itinerary{}, fmt.Errorf("no itinerary found with ID: %w", err)
+		return Itinerary{}, fmt.Errorf("no itinerary found with ID: %w", err)
 	} else if err != nil {
 		log.Printf("Error getting itinerary: %v\n", err)
 		log.Println(err)
-		return models.Itinerary{}, fmt.Errorf("failed to get itinerary: %w", err)
+		return Itinerary{}, fmt.Errorf("failed to get itinerary: %w", err)
 	}
 
 	if itinerary.Languages == nil {
@@ -230,23 +243,18 @@ func RemoveItineraryTag(DB *sql.DB, itineraryId int, tag string) error {
 }
 
 func AddItineraryEvent(DB *sql.DB, itineraryId int, eventId int, recursive bool) error {
-	if !recursive {
-		return nil
-	}
-
 	err := AddArrayAttribute(DB, "itineraries", "itineraryId", itineraryId, "events", IntsToStrings([]int{eventId}))
 	if err != nil {
 		log.Printf("Error adding itinerary event: %v\n", err)
 		return fmt.Errorf("failed to add itinerary event: %w", err)
 	}
 
-	err = AddEventItinerary(DB, eventId, itineraryId, false)
-	if err != nil {
-		log.Printf("Error adding event to itinerary: %v\n", err)
-		return fmt.Errorf("failed to add event to itinerary: %w", err)
+	log.Printf("Itinerary event added successfully for ID %d.\n", itineraryId)
+
+	if recursive {
+		return AddEventItinerary(DB, eventId, itineraryId, false)
 	}
 
-	log.Printf("Itinerary event added successfully for ID %d.\n", itineraryId)
 	return nil
 }
 
