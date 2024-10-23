@@ -2,6 +2,7 @@ import React, { useState} from 'react';
 import Tags from '../config/tags.json';
 import '../styles/styles.css'; 
 import { useNavigate } from 'react-router';
+import itineraryAPI from '../api/itineraryAPI.js';
 
 function CreateItinerary() {
   const categories = Tags.categories;
@@ -60,7 +61,7 @@ function CreateItinerary() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
   
     // Filter out events that have no description and no location
@@ -116,7 +117,28 @@ function CreateItinerary() {
     if (!hasIncompleteEvent && hasValidEvent) {
       setEventErrorMessage('');
     }
-  
+
+    const Data = {
+      Name: itineraryDetails.name,
+      Username: localStorage.getItem('username'),
+      Location: itineraryDetails.location,
+      Description: itineraryDetails.description,
+      Cost: itineraryDetails.estimatedCost,
+      Tags: selectedTags,
+      Events: events,
+      
+    }
+
+    console.log(Data);
+
+    try {
+      const response = await itineraryAPI.post('/itin-creation', Data);
+      console.log('Location created:', response.data);
+
+    } catch (error) {
+
+    }
+
     return;
   };
   
