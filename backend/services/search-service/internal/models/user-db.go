@@ -2,10 +2,8 @@ package models
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 	"time"
 
 	"github.com/lib/pq"
@@ -373,106 +371,4 @@ func UpdateUserCoverImage(DB *sql.DB, username string, imageId int) error {
 
 func RemoveUserCoverImage(DB *sql.DB, username string) error {
 	return UpdateAttribute(DB, "users", "username", username, "coverImage", '1')
-}
-
-func UserHandler(DB *sql.DB, w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	switch r.Method {
-	case "GET":
-		username := r.URL.Query().Get("username")
-
-		if username != "" {
-			user, err := GetUser(DB, username)
-			if err != nil {
-				http.Error(w, "User not found", http.StatusNotFound)
-				log.Printf("Error retrieving user: %v\n", err)
-				return
-			}
-			json.NewEncoder(w).Encode(user)
-		} else {
-			users, err := GetAllUsers(DB)
-			if err != nil {
-				http.Error(w, "Error retrieving users", http.StatusInternalServerError)
-				log.Printf("Error retrieving users: %v\n", err)
-				return
-			}
-			json.NewEncoder(w).Encode(users)
-		}
-
-	case "POST":
-		var user User
-		if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-			http.Error(w, "Invalid request payload", http.StatusBadRequest)
-			fmt.Println(err)
-			return
-		}
-		userId, err := AddUser(DB, user)
-		if err != nil {
-			http.Error(w, "Error adding user", http.StatusInternalServerError)
-			fmt.Println(err)
-			return
-		}
-		w.WriteHeader(http.StatusCreated)
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]int{"userId": userId})
-
-	case "PUT":
-		username := r.URL.Query().Get("username")
-		if username == "" {
-			http.Error(w, "Username is required", http.StatusBadRequest)
-			return
-		}
-
-		var user User
-		if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-			http.Error(w, "Invalid request payload", http.StatusBadRequest)
-			log.Printf("Error decoding request body: %v\n", err)
-			return
-		}
-
-		data := make(map[string]interface{})
-		if user.Username != "" {
-			data["username"] = user.Username
-		}
-		if user.Password != "" {
-			data["password"] = user.Password
-		}
-		if !user.DateOfBirth.IsZero() {
-			data["dateOfBirth"] = user.DateOfBirth
-		}
-		if user.Name != "" {
-			data["name"] = user.Name
-		}
-		if user.Country != "" {
-			data["country"] = user.Country
-		}
-
-		w.WriteHeader(http.StatusOK)
-		return
-
-	case "DELETE":
-		username := r.URL.Query().Get("username")
-		if username == "" {
-			http.Error(w, "Username is required", http.StatusBadRequest)
-			return
-		}
-
-		if err := RemoveUser(DB, username); err != nil {
-			http.Error(w, "Error deleting user", http.StatusInternalServerError)
-			log.Printf("Error deleting user: %v\n", err)
-			return
-		}
-
-		w.WriteHeader(http.StatusOK)
-
-	default:
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-	}
-}
-
-func UserHandlerWrapper(DB *sql.DB) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		UserHandler(DB, w, r)
-	}
 }
