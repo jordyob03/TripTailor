@@ -120,10 +120,13 @@ function CreateItinerary() {
 
     const Data = {
       Name: itineraryDetails.name,
+      User: localStorage.getItem('username'),
       Location: itineraryDetails.location,
       Description: itineraryDetails.description,
-      Cost: itineraryDetails.cost,
+      Cost: itineraryDetails.estimatedCost,
       Tags: selectedTags,
+      Events: events,
+      
     }
 
     console.log(Data);

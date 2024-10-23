@@ -6,14 +6,27 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	db "github.com/jordyob03/TripTailor/backend/services/itinerary-service/internal/db"
+	models "github.com/jordyob03/TripTailor/backend/services/itinerary-service/internal/models"
 )
+
+type Event struct {
+	Name        string `json:"name"`
+	StartTime   string `json:"startTime"`
+	EndTime     string `json:"endTime"`
+	Location    string `json:"location"`
+	Description string `json:"description"`
+	Cost        string `json:"cost"`
+}
 
 type CreateItinRequest struct {
 	Name        string   `json:"name" binding:"required"`
+	User        string   `json:"username"`
 	Location    string   `json:"location" binding:"required"`
 	Description string   `json:"description" binding:"required"`
 	Cost        string   `json:"cost" binding:"required"`
 	Tags        []string `json:"tags" binding:"required"`
+	Events      []Event  `json:"events"`
 }
 
 func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
@@ -27,17 +40,21 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 		//var itin models.Itinerary
 
 		// test itin
+		var itin models.Itinerary
 
 		fmt.Printf("Received Itinerary: %+v\n", req)
 
-		// itin.Name = req.Name
-		// itin.City = req.City
-		// itin.Country = req.City
-		// itin.Tags = req.Tags
+		itin.Name = req.Name
+		itin.City = req.Location
+		itin.Country = req.Location
+		itin.Tags = req.Tags
+		itin.Username = req.User
 		// itin.Events = []string{}
 		// itin.Username = "jordyob"
 
 		//Needs to be added to db here
+
+		db.AddItinerary(dbConn, itin)
 
 		// Respond to the client with the received data
 		c.JSON(http.StatusOK, gin.H{
