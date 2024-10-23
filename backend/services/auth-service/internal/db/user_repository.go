@@ -3,9 +3,9 @@ package DBAuth
 import (
 	"database/sql"
 	"fmt"
-	models "github.com/jordyob03/TripTailor/backend/services/auth-service/internal/models"
 	"log"
 
+	"github.com/jordyob03/TripTailor/backend/services/auth-service/internal/models"
 	"github.com/lib/pq"
 )
 
@@ -22,15 +22,17 @@ func CreateUserTable(DB *sql.DB) error {
 		languages TEXT[],
 		tags TEXT[],
 		boards INTEGER[],
-		posts INTEGER[]
+		posts INTEGER[],
+		profileImage INTEGER,
+		coverImage INTEGER
 	);`
 	return CreateTable(DB, createTableSQL)
 }
 
 func AddUser(DB *sql.DB, user models.User) (int, error) {
 	insertUserSQL := `
-	INSERT INTO users (username, email, password, dateOfBirth, name, country, languages, tags, boards, posts)
-	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+	INSERT INTO users (username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, profileImage, coverImage)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
 	RETURNING userId;`
 
 	var userId int
@@ -38,7 +40,8 @@ func AddUser(DB *sql.DB, user models.User) (int, error) {
 		insertUserSQL, user.Username, user.Email, user.Password,
 		user.DateOfBirth, user.Name, user.Country,
 		pq.Array(user.Languages), pq.Array(user.Tags),
-		pq.Array(user.Boards), pq.Array(user.Posts)).Scan(&userId)
+		pq.Array(user.Boards), pq.Array(user.Posts),
+		user.ProfileImage, user.CoverImage).Scan(&userId)
 	if err != nil {
 		fmt.Println("Error adding user:", err)
 		return 0, err
@@ -49,7 +52,7 @@ func AddUser(DB *sql.DB, user models.User) (int, error) {
 
 func GetUser(DB *sql.DB, username string) (models.User, error) {
 	query := `
-    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts
+    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, profileImage, coverImage
     FROM users 
     WHERE username = $1`
 
@@ -62,6 +65,8 @@ func GetUser(DB *sql.DB, username string) (models.User, error) {
 		pq.Array(&user.Tags),
 		pq.Array(&user.Boards),
 		pq.Array(&user.Posts),
+		&user.ProfileImage,
+		&user.CoverImage,
 	)
 
 	if err == sql.ErrNoRows {
@@ -92,7 +97,7 @@ func GetUser(DB *sql.DB, username string) (models.User, error) {
 
 func GetAllUsers(DB *sql.DB) ([]models.User, error) {
 	query := `
-    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts
+    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, profileImage, coverImage
     FROM users`
 
 	rows, err := DB.Query(query)
@@ -112,6 +117,8 @@ func GetAllUsers(DB *sql.DB) ([]models.User, error) {
 			pq.Array(&user.Tags),
 			pq.Array(&user.Boards),
 			pq.Array(&user.Posts),
+			&user.ProfileImage,
+			&user.CoverImage,
 		); err != nil {
 			log.Printf("Error scanning user: %v\n", err)
 			return nil, err
