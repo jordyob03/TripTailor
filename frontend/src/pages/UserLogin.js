@@ -92,10 +92,6 @@ function UserLogin() {
           >
             Don't have an account? Sign up
           </button>
-          <button
-          type="button"
-          onClick={handleItinClick}
-          >Create Itinerary</button>
         </div>
       </div>
     </>

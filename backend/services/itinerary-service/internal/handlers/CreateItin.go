@@ -37,9 +37,6 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 			return
 		}
 
-		//var itin models.Itinerary
-
-		// test itin
 		var itin models.Itinerary
 
 		fmt.Printf("Received Itinerary: %+v\n", req)
@@ -49,16 +46,17 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 		itin.Country = req.Location
 		itin.Tags = req.Tags
 		itin.Username = req.User
-		// itin.Events = []string{}
-		// itin.Username = "jordyob"
 
-		//Needs to be added to db here
-
-		db.AddItinerary(dbConn, itin)
+		itinId, err := db.AddItinerary(dbConn, itin)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create itinerary"})
+			return
+		}
 
 		// Respond to the client with the received data
 		c.JSON(http.StatusOK, gin.H{
 			"message": "Itinerary received",
+			"itinId":  itinId,
 		})
 
 	}

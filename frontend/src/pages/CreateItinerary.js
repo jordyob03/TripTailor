@@ -120,7 +120,7 @@ function CreateItinerary() {
 
     const Data = {
       Name: itineraryDetails.name,
-      User: localStorage.getItem('username'),
+      Username: localStorage.getItem('username'),
       Location: itineraryDetails.location,
       Description: itineraryDetails.description,
       Cost: itineraryDetails.estimatedCost,
