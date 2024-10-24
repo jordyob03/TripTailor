@@ -7,6 +7,21 @@ import (
 	"github.com/jordyob03/TripTailor/backend/services/search-service/internal/models" // Import the models package
 )
 
+type Itinerary struct {
+	ItineraryId int      `json:"itineraryId"`
+	Name        string   `json:"name"`
+	City        string   `json:"city"`
+	Country     string   `json:"country"`
+	Title       string   `json:"title"`
+	Description string   `json:"description"`
+	Price       float64  `json:"price"`
+	Languages   []string `json:"languages"`
+	Tags        []string `json:"tags"`
+	Events      []string `json:"events"`
+	PostId      int      `json:"postId"`
+	Username    string   `json:"username"`
+}
+
 // QueryItinerariesByLocation queries the database for itineraries based on country and city
 func QueryItinerariesByLocation(db *sql.DB, country, city string) ([]models.Itinerary, error) {
 	rows, err := db.Query(`
