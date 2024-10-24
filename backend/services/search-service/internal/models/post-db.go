@@ -12,13 +12,12 @@ import (
 type Post struct {
 	PostId       int       `json:"postId"`
 	ItineraryId  int       `json:"itineraryId"`
-	Title        string    `json:"title"`
-	Description  string    `json:"description"`
 	CreationDate time.Time `json:"dateOfCreation"`
 	Username     string    `json:"username"`
 	Tags         []string  `json:"tags"`
 	Boards       []string  `json:"boards"`
-	PostImages   []string  `json:"postImages"`
+	Likes        int       `json:"likes"`
+	Comments     []string  `json:"comments"`
 }
 
 func CreatePostTable(DB *sql.DB) error {
@@ -26,14 +25,12 @@ func CreatePostTable(DB *sql.DB) error {
 	CREATE TABLE IF NOT EXISTS posts (
 		postId SERIAL PRIMARY KEY,
 		itineraryId INT,
-		title TEXT NOT NULL,
-		imageLink TEXT,
-		description TEXT,
 		creationDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 		username VARCHAR(255) REFERENCES users(username),
 		tags TEXT[],
 		boards TEXT[],
-		postImages TEXT[]
+		likes INT DEFAULT 0,
+		comments TEXT[]
 	);`
 
 	return CreateTable(DB, createTableSQL)
@@ -43,7 +40,7 @@ func GetPost(DB *sql.DB, postId int) (Post, error) {
 	var post Post
 
 	query := `
-	SELECT postId, itineraryId, title, description, creationDate, username, tags, boards, postImages
+	SELECT postId, itineraryId, creationDate, username, tags, boards, likes, comments
 	FROM posts
 	WHERE postId = $1;
 	`
@@ -51,13 +48,12 @@ func GetPost(DB *sql.DB, postId int) (Post, error) {
 	err := DB.QueryRow(query, postId).Scan(
 		&post.PostId,
 		&post.ItineraryId,
-		&post.Title,
-		&post.Description,
 		&post.CreationDate,
 		&post.Username,
 		pq.Array(&post.Tags),
 		pq.Array(&post.Boards),
-		pq.Array(&post.PostImages),
+		&post.Likes,
+		pq.Array(&post.Comments),
 	)
 
 	if err != nil {

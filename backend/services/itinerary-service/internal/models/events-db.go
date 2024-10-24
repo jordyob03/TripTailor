@@ -12,11 +12,11 @@ import (
 type Event struct {
 	EventId     int       `json:"eventId"`
 	Name        string    `json:"name"`
-	Price       int       `json:"price"`
-	Location    string    `json:"location"`
+	Cost        float64   `json:"cost"`
+	Address     string    `json:"address"`
 	Description string    `json:"description"`
-	StartDate   time.Time `json:"startDate"`
-	EndDate     time.Time `json:"endDate"`
+	StartTime   time.Time `json:"startTime"`
+	EndTime     time.Time `json:"endTime"`
 	ItineraryId int       `json:"itineraryId"`
 	EventImages []string  `json:"eventImages"`
 }
@@ -26,11 +26,11 @@ func CreateEventTable(DB *sql.DB) error {
 	CREATE TABLE IF NOT EXISTS events (
 		eventId SERIAL PRIMARY KEY,
 		name TEXT NOT NULL,
-		price INT NOT NULL,
-		location TEXT NOT NULL,
+		cost INT NOT NULL,
+		address TEXT NOT NULL,
 		description TEXT,
-		startDate TIMESTAMPTZ NOT NULL,
-		endDate TIMESTAMPTZ NOT NULL,
+		startTime TIMESTAMPTZ NOT NULL,
+		endTime TIMESTAMPTZ NOT NULL,
 		itineraryId INTEGER,
 		eventImages TEXT[]
 	);`
@@ -40,14 +40,14 @@ func CreateEventTable(DB *sql.DB) error {
 
 func AddEvent(DB *sql.DB, event Event) (int, error) {
 	insertEventSQL := `
-	INSERT INTO events (name, price, location, description, startDate, endDate, itineraryId, eventImages)
+	INSERT INTO events (name, cost, address, description, startTime, endTime, itineraryId, eventImages)
 	VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING eventId;`
 
 	var eventID int
 	err := DB.QueryRow(
-		insertEventSQL, event.Name, event.Price,
-		event.Location, event.Description,
-		event.StartDate, event.EndDate,
+		insertEventSQL, event.Name, event.Cost,
+		event.Address, event.Description,
+		event.StartTime, event.EndTime,
 		event.ItineraryId, pq.Array(event.EventImages)).Scan(&eventID)
 	if err != nil {
 		log.Printf("Error adding event: %v\n", err)
@@ -110,9 +110,9 @@ func GetEvent(DB *sql.DB, eventID int) (Event, error) {
 
 	var event Event
 	err := DB.QueryRow(query, eventID).Scan(
-		&event.EventId, &event.Name, &event.Price,
-		&event.Location, &event.Description,
-		&event.StartDate, &event.EndDate,
+		&event.EventId, &event.Name, &event.Cost,
+		&event.Address, &event.Description,
+		&event.StartTime, &event.EndTime,
 		&event.ItineraryId, pq.Array(&event.EventImages),
 	)
 
@@ -136,25 +136,25 @@ func UpdateEventName(DB *sql.DB, eventID int, name string) error {
 	return nil
 }
 
-func UpdateEventPrice(DB *sql.DB, eventID int, price int) error {
-	err := UpdateAttribute(DB, "events", "eventId", eventID, "price", price)
+func UpdateEventPrice(DB *sql.DB, eventID int, cost int) error {
+	err := UpdateAttribute(DB, "events", "eventId", eventID, "cost", cost)
 	if err != nil {
-		log.Printf("Error updating event price: %v\n", err)
-		return fmt.Errorf("failed to update event price: %w", err)
+		log.Printf("Error updating event cost: %v\n", err)
+		return fmt.Errorf("failed to update event cost: %w", err)
 	}
 
-	log.Printf("Event price updated successfully for ID %d.\n", eventID)
+	log.Printf("Event cost updated successfully for ID %d.\n", eventID)
 	return nil
 }
 
-func UpdateEventLocation(DB *sql.DB, eventID int, location string) error {
-	err := UpdateAttribute(DB, "events", "eventId", eventID, "location", location)
+func UpdateEventLocation(DB *sql.DB, eventID int, address string) error {
+	err := UpdateAttribute(DB, "events", "eventId", eventID, "address", address)
 	if err != nil {
-		log.Printf("Error updating event location: %v\n", err)
-		return fmt.Errorf("failed to update event location: %w", err)
+		log.Printf("Error updating event address: %v\n", err)
+		return fmt.Errorf("failed to update event address: %w", err)
 	}
 
-	log.Printf("Event location updated successfully for ID %d.\n", eventID)
+	log.Printf("Event address updated successfully for ID %d.\n", eventID)
 	return nil
 }
 
@@ -169,8 +169,8 @@ func UpdateEventDescription(DB *sql.DB, eventID int, description string) error {
 	return nil
 }
 
-func UpdateEventStartDate(DB *sql.DB, eventID int, startDate time.Time) error {
-	err := UpdateAttribute(DB, "events", "eventId", eventID, "startDate", startDate)
+func UpdateEventStartDate(DB *sql.DB, eventID int, startTime time.Time) error {
+	err := UpdateAttribute(DB, "events", "eventId", eventID, "startTime", startTime)
 	if err != nil {
 		log.Printf("Error updating event start date: %v\n", err)
 		return fmt.Errorf("failed to update event start date: %w", err)
@@ -180,8 +180,8 @@ func UpdateEventStartDate(DB *sql.DB, eventID int, startDate time.Time) error {
 	return nil
 }
 
-func UpdateEventEndDate(DB *sql.DB, eventID int, endDate time.Time) error {
-	err := UpdateAttribute(DB, "events", "eventId", eventID, "endDate", endDate)
+func UpdateEventEndDate(DB *sql.DB, eventID int, endTime time.Time) error {
+	err := UpdateAttribute(DB, "events", "eventId", eventID, "endTime", endTime)
 	if err != nil {
 		log.Printf("Error updating event end date: %v\n", err)
 		return fmt.Errorf("failed to update event end date: %w", err)

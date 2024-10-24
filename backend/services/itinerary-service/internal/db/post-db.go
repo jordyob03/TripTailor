@@ -6,20 +6,18 @@ import (
 	"log"
 	"time"
 
-	models "github.com/jordyob03/TripTailor/backend/services/itinerary-service/internal/models"
 	"github.com/lib/pq"
 )
 
 type Post struct {
 	PostId       int       `json:"postId"`
 	ItineraryId  int       `json:"itineraryId"`
-	Title        string    `json:"title"`
-	Description  string    `json:"description"`
 	CreationDate time.Time `json:"dateOfCreation"`
 	Username     string    `json:"username"`
 	Tags         []string  `json:"tags"`
 	Boards       []string  `json:"boards"`
-	PostImages   []string  `json:"postImages"`
+	Likes        int       `json:"likes"`
+	Comments     []string  `json:"comments"`
 }
 
 func CreatePostTable(DB *sql.DB) error {
@@ -27,14 +25,12 @@ func CreatePostTable(DB *sql.DB) error {
 	CREATE TABLE IF NOT EXISTS posts (
 		postId SERIAL PRIMARY KEY,
 		itineraryId INT,
-		title TEXT NOT NULL,
-		imageLink TEXT,
-		description TEXT,
 		creationDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 		username VARCHAR(255) REFERENCES users(username),
 		tags TEXT[],
 		boards TEXT[],
-		postImages TEXT[]
+		likes INT DEFAULT 0,
+		comments TEXT[]
 	);`
 
 	return CreateTable(DB, createTableSQL)
@@ -42,8 +38,8 @@ func CreatePostTable(DB *sql.DB) error {
 
 func AddPost(DB *sql.DB, post Post) (int, error) {
 	insertSQL := `
-	INSERT INTO posts (itineraryId, title, description, creationDate, username, tags, boards, postImages)
-	VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+	INSERT INTO posts (itineraryId, creationDate, username, tags, boards, likes, comments)
+	VALUES ($1, $2, $3, $4, $5, $6, $7)
 	RETURNING postId;
 	`
 
@@ -51,13 +47,12 @@ func AddPost(DB *sql.DB, post Post) (int, error) {
 	err := DB.QueryRow(
 		insertSQL,
 		post.ItineraryId,
-		post.Title,
-		post.Description,
 		post.CreationDate,
 		post.Username,
 		pq.Array(post.Tags),
 		pq.Array(post.Boards),
-		pq.Array(post.PostImages),
+		post.Likes,
+		pq.Array(post.Comments),
 	).Scan(&postId)
 
 	if err != nil {
@@ -71,14 +66,15 @@ func AddPost(DB *sql.DB, post Post) (int, error) {
 
 func RemovePost(DB *sql.DB, postId int) error {
 	getBoardsSQL := `
-	SELECT username, boards
+	SELECT username, boards, itineraryId
 	FROM posts
 	WHERE postId = $1;
 	`
 
 	var username string
 	var boardStringIds []string
-	err := DB.QueryRow(getBoardsSQL, postId).Scan(&username, pq.Array(&boardStringIds))
+	var itineraryId int
+	err := DB.QueryRow(getBoardsSQL, postId).Scan(&username, pq.Array(&boardStringIds), &itineraryId)
 	if err == sql.ErrNoRows {
 		log.Printf("No boards found with postID %d.\n", postId)
 		return nil
@@ -94,14 +90,20 @@ func RemovePost(DB *sql.DB, postId int) error {
 	}
 
 	for _, board := range boardIds {
-		err = models.RemoveBoardPost(DB, board, postId)
+		err = RemoveBoardPost(DB, board, postId)
 		if err != nil {
 			log.Printf("Error removing post %d from board %d: %v\n", postId, board, err)
 			return err
 		}
 	}
 
-	models.RemoveUserPost(DB, username, postId)
+	err = RemoveItinerary(DB, itineraryId)
+	if err != nil {
+		log.Printf("Error removing itinerary %d: %v\n", itineraryId, err)
+		return err
+	}
+
+	RemoveUserPost(DB, username, postId)
 
 	deleteSQL := `
 	DELETE FROM posts
@@ -128,7 +130,7 @@ func GetPost(DB *sql.DB, postId int) (Post, error) {
 	var post Post
 
 	query := `
-	SELECT postId, itineraryId, title, description, creationDate, username, tags, boards, postImages
+	SELECT postId, itineraryId, creationDate, username, tags, boards, likes, comments
 	FROM posts
 	WHERE postId = $1;
 	`
@@ -136,13 +138,12 @@ func GetPost(DB *sql.DB, postId int) (Post, error) {
 	err := DB.QueryRow(query, postId).Scan(
 		&post.PostId,
 		&post.ItineraryId,
-		&post.Title,
-		&post.Description,
 		&post.CreationDate,
 		&post.Username,
 		pq.Array(&post.Tags),
 		pq.Array(&post.Boards),
-		pq.Array(&post.PostImages),
+		&post.Likes,
+		pq.Array(&post.Comments),
 	)
 
 	if err != nil {
@@ -155,138 +156,33 @@ func GetPost(DB *sql.DB, postId int) (Post, error) {
 }
 
 func AddPostTag(DB *sql.DB, postId int, tag string) error {
-	err := AddArrayAttribute(DB, "posts", "postId", postId, "tags", []string{tag})
-	if err != nil {
-		log.Printf("Error adding tag to post %d: %v\n", postId, err)
-		return fmt.Errorf("failed to add tag to post: %w", err)
-	}
-
-	log.Printf("Tag added to post %d successfully.\n", postId)
-	return nil
+	return AddArrayAttribute(DB, "posts", "postId", postId, "tags", []string{tag})
 }
 
 func RemovePostTag(DB *sql.DB, postId int, tag string) error {
-	err := RemoveArrayAttribute(DB, "posts", "postId", postId, "tags", []string{tag})
-	if err != nil {
-		log.Printf("Error removing tag from post %d: %v\n", postId, err)
-		return fmt.Errorf("failed to remove tag from post: %w", err)
-	}
-
-	log.Printf("Tag removed from post %d successfully.\n", postId)
-	return nil
+	return RemoveArrayAttribute(DB, "posts", "postId", postId, "tags", []string{tag})
 }
 
 func AddPostBoard(DB *sql.DB, postId int, board int, recursive bool) error {
-	err := AddArrayAttribute(DB, "posts", "postId", postId, "boards", IntsToStrings([]int{board}))
-	if err != nil {
-		log.Printf("Error adding board to post %d: %v\n", postId, err)
-		return fmt.Errorf("failed to add board to post: %w", err)
-	}
-
-	log.Printf("Board added to post %d successfully.\n", postId)
-
-	if recursive {
-		return models.AddBoardPost(DB, board, postId, false)
-	}
-
-	return nil
+	return AddArrayAttribute(DB, "posts", "postId", postId, "boards", IntsToStrings([]int{board}))
 }
 
 func RemovePostBoard(DB *sql.DB, postId int, board int) error {
-	err := RemoveArrayAttribute(DB, "posts", "postId", postId, "boards", IntsToStrings([]int{board}))
-	if err != nil {
-		log.Printf("Error removing board from post %d: %v\n", postId, err)
-		return fmt.Errorf("failed to remove board from post: %w", err)
-	}
-
-	log.Printf("Board removed from post %d successfully.\n", postId)
-	return nil
-}
-
-func UpdatePostDescription(DB *sql.DB, postId int, description string) error {
-	err := UpdateAttribute(DB, "posts", "postId", postId, "description", description)
-	if err != nil {
-		log.Printf("Error updating description for post %d: %v\n", postId, err)
-		return fmt.Errorf("failed to update description for post: %w", err)
-	}
-
-	log.Printf("Description updated for post %d successfully.\n", postId)
-	return nil
-}
-
-func UpdatePostTitle(DB *sql.DB, postId int, title string) error {
-	err := UpdateAttribute(DB, "posts", "postId", postId, "title", title)
-	if err != nil {
-		log.Printf("Error updating title for post %d: %v\n", postId, err)
-		return fmt.Errorf("failed to update title for post: %w", err)
-	}
-
-	log.Printf("Title updated for post %d successfully.\n", postId)
-	return nil
+	return RemoveArrayAttribute(DB, "posts", "postId", postId, "boards", IntsToStrings([]int{board}))
 }
 
 func UpdatePostCreationDate(DB *sql.DB, postId int, creationDate time.Time) error {
-	err := UpdateAttribute(DB, "posts", "postId", postId, "creationDate", creationDate)
-	if err != nil {
-		log.Printf("Error updating creation date for post %d: %v\n", postId, err)
-		return fmt.Errorf("failed to update creation date for post: %w", err)
-	}
-
-	log.Printf("Creation date updated for post %d successfully.\n", postId)
-	return nil
+	return UpdateAttribute(DB, "posts", "postId", postId, "creationDate", creationDate)
 }
 
-func AddPostImage(DB *sql.DB, postId int, imageId int) error {
-	err := AddImageMetaData(DB, imageId, "post")
-	if err != nil {
-		log.Printf("Error adding image metadata: %v\n", err)
-		return fmt.Errorf("failed to add image metadata: %w", err)
-	}
-
-	err = AddArrayAttribute(DB, "posts", "postId", postId, "postImages", IntsToStrings([]int{imageId}))
-	if err != nil {
-		log.Printf("Error adding images to post %d: %v\n", postId, err)
-		return fmt.Errorf("failed to add image to post: %w", err)
-	}
-
-	log.Printf("Image added to post %d successfully.\n", postId)
-	return nil
+func UpdatePostLikes(DB *sql.DB, postId int, likes int) error {
+	return UpdateAttribute(DB, "posts", "postId", postId, "likes", likes)
 }
 
-func RemovePostImage(DB *sql.DB, postId int, imageId int) error {
-	query := `SELECT postId FROM posts WHERE $1 = ANY(postImages);`
-	rows, err := DB.Query(query, imageId)
-	if err != nil {
-		log.Printf("Error retrieving post with image ID %d: %v\n", imageId, err)
-		return fmt.Errorf("failed to retrieve post with image ID: %w", err)
-	}
+func AddPostComment(DB *sql.DB, postId int, commentId int) error {
+	return AddArrayAttribute(DB, "posts", "postId", postId, "comments", IntsToStrings([]int{commentId}))
+}
 
-	var postIDs []int
-	for rows.Next() {
-		var postID int
-		err := rows.Scan(&postID)
-		if err != nil {
-			log.Printf("Error scanning event ID: %v\n", err)
-			return fmt.Errorf("failed to scan event ID: %w", err)
-		}
-
-		postIDs = append(postIDs, postID)
-	}
-
-	if len(postIDs) == 1 {
-		err := RemoveImageMetaData(DB, imageId, "event")
-		if err != nil {
-			log.Printf("Error removing image metadata: %v\n", err)
-			return fmt.Errorf("failed to remove image metadata: %w", err)
-		}
-	}
-
-	err = RemoveArrayAttribute(DB, "posts", "postId", postId, "postImages", IntsToStrings([]int{imageId}))
-	if err != nil {
-		log.Printf("Error removing images from post %d: %v\n", postId, err)
-		return fmt.Errorf("failed to remove image from post: %w", err)
-	}
-
-	log.Printf("Image removed from post %d successfully.\n", postId)
-	return nil
+func RemovePostComment(DB *sql.DB, postId int, commentId int) error {
+	return RemoveArrayAttribute(DB, "posts", "postId", postId, "comments", IntsToStrings([]int{commentId}))
 }

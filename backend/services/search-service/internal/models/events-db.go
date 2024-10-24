@@ -12,11 +12,11 @@ import (
 type Event struct {
 	EventId     int       `json:"eventId"`
 	Name        string    `json:"name"`
-	Price       int       `json:"price"`
-	Location    string    `json:"location"`
+	Cost        float64   `json:"cost"`
+	Address     string    `json:"address"`
 	Description string    `json:"description"`
-	StartDate   time.Time `json:"startDate"`
-	EndDate     time.Time `json:"endDate"`
+	StartTime   time.Time `json:"startTime"`
+	EndTime     time.Time `json:"endTime"`
 	ItineraryId int       `json:"itineraryId"`
 	EventImages []string  `json:"eventImages"`
 }
@@ -26,11 +26,11 @@ func CreateEventTable(DB *sql.DB) error {
 	CREATE TABLE IF NOT EXISTS events (
 		eventId SERIAL PRIMARY KEY,
 		name TEXT NOT NULL,
-		price INT NOT NULL,
-		location TEXT NOT NULL,
+		cost INT NOT NULL,
+		address TEXT NOT NULL,
 		description TEXT,
-		startDate TIMESTAMPTZ NOT NULL,
-		endDate TIMESTAMPTZ NOT NULL,
+		startTime TIMESTAMPTZ NOT NULL,
+		endTime TIMESTAMPTZ NOT NULL,
 		itineraryId INTEGER,
 		eventImages TEXT[]
 	);`
@@ -43,9 +43,9 @@ func GetEvent(DB *sql.DB, eventID int) (Event, error) {
 
 	var event Event
 	err := DB.QueryRow(query, eventID).Scan(
-		&event.EventId, &event.Name, &event.Price,
-		&event.Location, &event.Description,
-		&event.StartDate, &event.EndDate,
+		&event.EventId, &event.Name, &event.Cost,
+		&event.Address, &event.Description,
+		&event.StartTime, &event.EndTime,
 		&event.ItineraryId, pq.Array(&event.EventImages),
 	)
 
