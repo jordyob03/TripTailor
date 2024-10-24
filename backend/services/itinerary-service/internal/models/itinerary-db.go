@@ -37,7 +37,7 @@ func CreateItineraryTable(DB *sql.DB) error {
 		tags TEXT[],
 		events TEXT[],
 		postId INT NOT NULL,
-		username VARCHAR(255) REFERENCES users(username),
+		username VARCHAR(255) REFERENCES users(username)
 	);`
 
 	return CreateTable(DB, createTableSQL)

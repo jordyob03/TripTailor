@@ -4,23 +4,23 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/lib/pq"
 )
 
 type Itinerary struct {
-	ItineraryId  int       `json:"itineraryId"`
-	Name         string    `json:"name"`
-	City         string    `json:"city"`
-	Country      string    `json:"country"`
-	Languages    []string  `json:"languages"`
-	Tags         []string  `json:"tags"`
-	Events       []string  `json:"events"`
-	PostId       int       `json:"postId"`
-	Username     string    `json:"username"`
-	CreationDate time.Time `json:"creationDate"`
-	LastUpdate   time.Time `json:"lastUpdate"`
+	ItineraryId int      `json:"itineraryId"`
+	Name        string   `json:"name"`
+	City        string   `json:"city"`
+	Country     string   `json:"country"`
+	Title       string   `json:"title"`
+	Description string   `json:"description"`
+	Price       float64  `json:"price"`
+	Languages   []string `json:"languages"`
+	Tags        []string `json:"tags"`
+	Events      []string `json:"events"`
+	PostId      int      `json:"postId"`
+	Username    string   `json:"username"`
 }
 
 func CreateItineraryTable(DB *sql.DB) error {
@@ -30,13 +30,14 @@ func CreateItineraryTable(DB *sql.DB) error {
 		name TEXT NOT NULL,
 		city TEXT NOT NULL,
 		country TEXT NOT NULL,
+		title TEXT,
+		description TEXT,
+		price FLOAT,
 		languages TEXT[],
 		tags TEXT[],
 		events TEXT[],
 		postId INT NOT NULL,
-		username VARCHAR(255) REFERENCES users(username),
-		creationDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-		lastUpdate TIMESTAMPTZ NOT NULL DEFAULT NOW()
+		username VARCHAR(255) REFERENCES users(username)
 	);`
 
 	return CreateTable(DB, createTableSQL)
@@ -44,7 +45,7 @@ func CreateItineraryTable(DB *sql.DB) error {
 
 func GetItinerary(DB *sql.DB, itineraryID int) (Itinerary, error) {
 	getItinerarySQL := `
-	SELECT itineraryId, name, city, country, languages, tags, events, postId, username, creationDate, lastUpdate
+	SELECT itineraries (name, city, country, title, description, price, languages, tags, events, postId, username)
 	FROM itineraries
 	WHERE itineraryId = $1;`
 
@@ -55,13 +56,14 @@ func GetItinerary(DB *sql.DB, itineraryID int) (Itinerary, error) {
 		&itinerary.Name,
 		&itinerary.City,
 		&itinerary.Country,
+		&itinerary.Title,
+		&itinerary.Description,
+		&itinerary.Price,
 		pq.Array(&itinerary.Languages),
 		pq.Array(&itinerary.Tags),
 		pq.Array(&itinerary.Events),
 		&itinerary.PostId,
 		&itinerary.Username,
-		&itinerary.CreationDate,
-		&itinerary.LastUpdate,
 	)
 	if err == sql.ErrNoRows {
 		log.Printf("No itinerary found with ID %d\n", itineraryID)
