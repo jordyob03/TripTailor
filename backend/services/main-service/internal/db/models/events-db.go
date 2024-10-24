@@ -10,15 +10,15 @@ import (
 )
 
 type Event struct {
-	EventId      int       `json:"eventId"`
-	Name         string    `json:"name"`
-	Price        int       `json:"price"`
-	Location     string    `json:"location"`
-	Description  string    `json:"description"`
-	StartDate    time.Time `json:"startDate"`
-	EndDate      time.Time `json:"endDate"`
-	ItineraryIds []string  `json:"itineraryIds"`
-	EventImages  []string  `json:"eventImages"`
+	EventId     int       `json:"eventId"`
+	Name        string    `json:"name"`
+	Price       int       `json:"price"`
+	Location    string    `json:"location"`
+	Description string    `json:"description"`
+	StartDate   time.Time `json:"startDate"`
+	EndDate     time.Time `json:"endDate"`
+	ItineraryId int       `json:"itineraryId"`
+	EventImages []string  `json:"eventImages"`
 }
 
 func CreateEventTable(DB *sql.DB) error {
@@ -31,7 +31,7 @@ func CreateEventTable(DB *sql.DB) error {
 		description TEXT,
 		startDate TIMESTAMPTZ NOT NULL,
 		endDate TIMESTAMPTZ NOT NULL,
-		itineraryIds INTEGER[],
+		itineraryId INTEGER,
 		eventImages TEXT[]
 	);`
 
@@ -40,7 +40,7 @@ func CreateEventTable(DB *sql.DB) error {
 
 func AddEvent(DB *sql.DB, event Event) (int, error) {
 	insertEventSQL := `
-	INSERT INTO events (name, price, location, description, startDate, endDate, itineraryIds, eventImages)
+	INSERT INTO events (name, price, location, description, startDate, endDate, itineraryId, eventImages)
 	VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING eventId;`
 
 	var eventID int
@@ -48,24 +48,16 @@ func AddEvent(DB *sql.DB, event Event) (int, error) {
 		insertEventSQL, event.Name, event.Price,
 		event.Location, event.Description,
 		event.StartDate, event.EndDate,
-		pq.Array(event.ItineraryIds), pq.Array(event.EventImages)).Scan(&eventID)
+		event.ItineraryId, pq.Array(event.EventImages)).Scan(&eventID)
 	if err != nil {
 		log.Printf("Error adding event: %v\n", err)
 		return 0, fmt.Errorf("failed to add event: %w", err)
 	}
 
-	ItineraryIds, err := StringsToInts(event.ItineraryIds)
+	err = AddItineraryEvent(DB, event.ItineraryId, eventID)
 	if err != nil {
-		log.Printf("Error converting itinerary IDs to integers: %v\n", err)
-		return 0, fmt.Errorf("failed to convert itinerary IDs: %w", err)
-	}
-
-	for _, itineraryID := range ItineraryIds {
-		err := AddItineraryEvent(DB, itineraryID, eventID, false)
-		if err != nil {
-			log.Printf("Error adding event to itinerary ID %d: %v\n", itineraryID, err)
-			return 0, fmt.Errorf("failed to add event to itinerary: %w", err)
-		}
+		log.Printf("Error adding event to itinerary: %v\n", err)
+		return 0, fmt.Errorf("failed to add event to itinerary: %w", err)
 	}
 
 	log.Printf("Event added successfully with ID: %d\n", eventID)
@@ -73,7 +65,6 @@ func AddEvent(DB *sql.DB, event Event) (int, error) {
 }
 
 func RemoveEvent(DB *sql.DB, eventID int) error {
-	var itineraryIds []int
 
 	getImages := `SELECT eventImages FROM events WHERE eventId = $1;`
 	var imageStringIDs []string
@@ -97,20 +88,10 @@ func RemoveEvent(DB *sql.DB, eventID int) error {
 		}
 	}
 
-	getItineraryIdsSQL := `SELECT itineraryIds FROM events WHERE eventId = $1;`
-	err = DB.QueryRow(getItineraryIdsSQL, eventID).Scan(pq.Array(&itineraryIds))
+	err = RemoveItineraryEvent(DB, eventID, eventID)
 	if err != nil {
 		log.Printf("Error retrieving itinerary IDs for event ID %d: %v\n", eventID, err)
 		return fmt.Errorf("failed to retrieve itinerary IDs: %w", err)
-	}
-
-	log.Println("Removal of Event from Associated Itinerary IDs:")
-	for _, itineraryID := range itineraryIds {
-		err := RemoveItineraryEvent(DB, itineraryID, eventID)
-		if err != nil {
-			log.Printf("Error removing event from itinerary ID %d: %v\n", itineraryID, err)
-			return fmt.Errorf("failed to remove event from itinerary: %w", err)
-		}
 	}
 
 	deleteEventSQL := `DELETE FROM events WHERE eventId = $1;`
@@ -132,7 +113,7 @@ func GetEvent(DB *sql.DB, eventID int) (Event, error) {
 		&event.EventId, &event.Name, &event.Price,
 		&event.Location, &event.Description,
 		&event.StartDate, &event.EndDate,
-		pq.Array(&event.ItineraryIds), pq.Array(&event.EventImages),
+		&event.ItineraryId, pq.Array(&event.EventImages),
 	)
 
 	if err != nil {
@@ -207,33 +188,6 @@ func UpdateEventEndDate(DB *sql.DB, eventID int, endDate time.Time) error {
 	}
 
 	log.Printf("Event end date updated successfully for ID %d.\n", eventID)
-	return nil
-}
-
-func AddEventItinerary(DB *sql.DB, eventID int, itineraryID int, recursive bool) error {
-	err := AddArrayAttribute(DB, "events", "eventId", eventID, "itineraryIds", IntsToStrings([]int{itineraryID}))
-	if err != nil {
-		log.Printf("Error adding itinerary to event: %v\n", err)
-		return fmt.Errorf("failed to add itinerary to event: %w", err)
-	}
-
-	log.Printf("Itinerary added successfully for ID %d.\n", eventID)
-
-	if recursive {
-		return AddItineraryEvent(DB, itineraryID, eventID, false)
-	}
-
-	return nil
-}
-
-func RemoveEventItinerary(DB *sql.DB, eventID int, itineraryID int) error {
-	err := RemoveArrayAttribute(DB, "events", "eventId", eventID, "itineraryIds", IntsToStrings([]int{itineraryID}))
-	if err != nil {
-		log.Printf("Error removing itinerary from event: %v\n", err)
-		return fmt.Errorf("failed to remove itinerary from event: %w", err)
-	}
-
-	log.Printf("Itinerary removed successfully for ID %d.\n", eventID)
 	return nil
 }
 

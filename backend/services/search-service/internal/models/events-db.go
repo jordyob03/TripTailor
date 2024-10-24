@@ -10,15 +10,15 @@ import (
 )
 
 type Event struct {
-	EventId      int       `json:"eventId"`
-	Name         string    `json:"name"`
-	Price        int       `json:"price"`
-	Location     string    `json:"location"`
-	Description  string    `json:"description"`
-	StartDate    time.Time `json:"startDate"`
-	EndDate      time.Time `json:"endDate"`
-	ItineraryIds []string  `json:"itineraryIds"`
-	EventImages  []string  `json:"eventImages"`
+	EventId     int       `json:"eventId"`
+	Name        string    `json:"name"`
+	Price       int       `json:"price"`
+	Location    string    `json:"location"`
+	Description string    `json:"description"`
+	StartDate   time.Time `json:"startDate"`
+	EndDate     time.Time `json:"endDate"`
+	ItineraryId int       `json:"itineraryId"`
+	EventImages []string  `json:"eventImages"`
 }
 
 func CreateEventTable(DB *sql.DB) error {
@@ -31,7 +31,7 @@ func CreateEventTable(DB *sql.DB) error {
 		description TEXT,
 		startDate TIMESTAMPTZ NOT NULL,
 		endDate TIMESTAMPTZ NOT NULL,
-		itineraryIds INTEGER[],
+		itineraryId INTEGER,
 		eventImages TEXT[]
 	);`
 
@@ -46,7 +46,7 @@ func GetEvent(DB *sql.DB, eventID int) (Event, error) {
 		&event.EventId, &event.Name, &event.Price,
 		&event.Location, &event.Description,
 		&event.StartDate, &event.EndDate,
-		pq.Array(&event.ItineraryIds), pq.Array(&event.EventImages),
+		&event.ItineraryId, pq.Array(&event.EventImages),
 	)
 
 	if err != nil {
