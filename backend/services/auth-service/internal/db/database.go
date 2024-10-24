@@ -19,7 +19,7 @@ func InitDB(DB *sql.DB, connStr string) error {
 
 func DeleteAllTables(DB *sql.DB) error {
 	dropTablesSQL := `
-	DROP TABLE IF EXISTS users, boards, posts, itineraries, events, images CASCADE;`
+	DROP TABLE IF EXISTS users, boards, posts, itineraries, events, images, comments CASCADE;`
 
 	_, err := DB.Exec(dropTablesSQL)
 	if err != nil {

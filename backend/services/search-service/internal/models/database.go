@@ -36,13 +36,15 @@ func CreateAllTables(DB *sql.DB) error {
 	if err := CreateImageTable(DB); err != nil {
 		return err
 	}
-
+	if err := CreateCommentTable(DB); err != nil {
+		return err
+	}
 	return nil
 }
 
 func DeleteAllTables(DB *sql.DB) error {
 	dropTablesSQL := `
-	DROP TABLE IF EXISTS users, boards, posts, itineraries, events, images CASCADE;`
+	DROP TABLE IF EXISTS users, boards, posts, itineraries, events, images, comments CASCADE;`
 
 	_, err := DB.Exec(dropTablesSQL)
 	if err != nil {
@@ -51,7 +53,6 @@ func DeleteAllTables(DB *sql.DB) error {
 
 	return nil
 }
-
 func CloseDB(DB *sql.DB) {
 	if DB != nil {
 		DB.Close()
