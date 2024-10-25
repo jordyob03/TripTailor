@@ -14,7 +14,6 @@ type Post struct {
 	ItineraryId  int       `json:"itineraryId"`
 	CreationDate time.Time `json:"dateOfCreation"`
 	Username     string    `json:"username"`
-	Tags         []string  `json:"tags"`
 	Boards       []string  `json:"boards"`
 	Likes        int       `json:"likes"`
 	Comments     []string  `json:"comments"`
@@ -27,7 +26,6 @@ func CreatePostTable(DB *sql.DB) error {
 		itineraryId INT,
 		creationDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 		username VARCHAR(255) REFERENCES users(username),
-		tags TEXT[],
 		boards TEXT[],
 		likes INT DEFAULT 0,
 		comments TEXT[]
@@ -40,7 +38,7 @@ func GetPost(DB *sql.DB, postId int) (Post, error) {
 	var post Post
 
 	query := `
-	SELECT postId, itineraryId, creationDate, username, tags, boards, likes, comments
+	SELECT postId, itineraryId, creationDate, username, boards, likes, comments
 	FROM posts
 	WHERE postId = $1;
 	`
@@ -50,7 +48,6 @@ func GetPost(DB *sql.DB, postId int) (Post, error) {
 		&post.ItineraryId,
 		&post.CreationDate,
 		&post.Username,
-		pq.Array(&post.Tags),
 		pq.Array(&post.Boards),
 		&post.Likes,
 		pq.Array(&post.Comments),

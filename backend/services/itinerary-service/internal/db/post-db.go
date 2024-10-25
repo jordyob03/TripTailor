@@ -14,7 +14,6 @@ type Post struct {
 	ItineraryId  int       `json:"itineraryId"`
 	CreationDate time.Time `json:"dateOfCreation"`
 	Username     string    `json:"username"`
-	Tags         []string  `json:"tags"`
 	Boards       []string  `json:"boards"`
 	Likes        int       `json:"likes"`
 	Comments     []string  `json:"comments"`
@@ -27,7 +26,6 @@ func CreatePostTable(DB *sql.DB) error {
 		itineraryId INT,
 		creationDate TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 		username VARCHAR(255) REFERENCES users(username),
-		tags TEXT[],
 		boards TEXT[],
 		likes INT DEFAULT 0,
 		comments TEXT[]
@@ -38,8 +36,8 @@ func CreatePostTable(DB *sql.DB) error {
 
 func AddPost(DB *sql.DB, post Post) (int, error) {
 	insertSQL := `
-	INSERT INTO posts (itineraryId, creationDate, username, tags, boards, likes, comments)
-	VALUES ($1, $2, $3, $4, $5, $6, $7)
+	INSERT INTO posts (itineraryId, creationDate, username, boards, likes, comments)
+	VALUES ($1, $2, $3, $4, $5, $6)
 	RETURNING postId;
 	`
 
@@ -49,7 +47,6 @@ func AddPost(DB *sql.DB, post Post) (int, error) {
 		post.ItineraryId,
 		post.CreationDate,
 		post.Username,
-		pq.Array(post.Tags),
 		pq.Array(post.Boards),
 		post.Likes,
 		pq.Array(post.Comments),
@@ -130,7 +127,7 @@ func GetPost(DB *sql.DB, postId int) (Post, error) {
 	var post Post
 
 	query := `
-	SELECT postId, itineraryId, creationDate, username, tags, boards, likes, comments
+	SELECT postId, itineraryId, creationDate, username, boards, likes, comments
 	FROM posts
 	WHERE postId = $1;
 	`
@@ -140,7 +137,6 @@ func GetPost(DB *sql.DB, postId int) (Post, error) {
 		&post.ItineraryId,
 		&post.CreationDate,
 		&post.Username,
-		pq.Array(&post.Tags),
 		pq.Array(&post.Boards),
 		&post.Likes,
 		pq.Array(&post.Comments),
@@ -153,14 +149,6 @@ func GetPost(DB *sql.DB, postId int) (Post, error) {
 
 	log.Printf("Post with ID %d successfully retrieved.\n", postId)
 	return post, nil
-}
-
-func AddPostTag(DB *sql.DB, postId int, tag string) error {
-	return AddArrayAttribute(DB, "posts", "postId", postId, "tags", []string{tag})
-}
-
-func RemovePostTag(DB *sql.DB, postId int, tag string) error {
-	return RemoveArrayAttribute(DB, "posts", "postId", postId, "tags", []string{tag})
 }
 
 func AddPostBoard(DB *sql.DB, postId int, board int, recursive bool) error {
