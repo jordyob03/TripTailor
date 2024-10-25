@@ -3,27 +3,34 @@ package handlers
 import (
 	"database/sql"
 	"net/http"
+	"strconv"
 
 	db "github.com/jordyob03/TripTailor/backend/services/search-service/internal/db" // Import from internal/db
 
 	"github.com/gin-gonic/gin"
 )
 
-// SearchItineraries handles the search request
-func SearchItineraries(database *sql.DB) gin.HandlerFunc {
+// SearchItineraries handles search requests with optional filters
+func SearchItineraries(dbConn *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Extract query parameters
-		country := c.Query("country")
-		city := c.Query("city")
-
-		// Validate query parameters
-		if country == "" || city == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Missing query parameters"})
-			return
+		params := map[string]interface{}{
+			"country":   c.Query("country"),
+			"city":      c.Query("city"),
+			"tags":      c.QueryArray("tags"),
+			"languages": c.QueryArray("languages"),
+			"username":  c.Query("username"),
 		}
 
-		// Query the database for itineraries using the db package
-		itineraries, err := db.QueryItinerariesByLocation(database, country, city)
+		// Handle max cost (convert to integer if provided)
+		if maxCost := c.Query("max_cost"); maxCost != "" {
+			if cost, err := strconv.Atoi(maxCost); err == nil {
+				params["max_cost"] = cost
+			}
+		}
+
+		// Call the dynamic query function
+		itineraries, err := db.QueryItineraries(dbConn, params)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return

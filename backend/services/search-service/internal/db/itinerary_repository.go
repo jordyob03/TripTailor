@@ -2,49 +2,69 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"github.com/jordyob03/TripTailor/backend/services/search-service/internal/models" // Import the models package
+	"github.com/lib/pq"
 	"strings"
 )
 
-// QueryItinerariesByLocation queries the database for itineraries based on country and city
-func QueryItinerariesByLocation(db *sql.DB, country, city string) ([]models.Itinerary, error) {
-	rows, err := db.Query(`
-		SELECT itineraryid, name, city, country, languages, tags, events, postid, username, creationdate, lastupdate
+// QueryItineraries builds a dynamic query based on the provided parameters
+func QueryItineraries(db *sql.DB, params map[string]interface{}) ([]models.Itinerary, error) {
+	baseQuery := `
+		SELECT itineraryid, name, city, country, languages, tags, events, postid, username, creationdate, lastupdate, cost
 		FROM itineraries
-		WHERE country = $1 AND city = $2`, country, city)
+		WHERE 1=1
+	`
+	// Query parts to build dynamically
+	var conditions []string
+	var args []interface{}
+	argCounter := 1
+
+	// Dynamically build conditions based on provided parameters
+	for key, value := range params {
+		switch key {
+		case "country", "city", "username":
+			if value != "" {
+				conditions = append(conditions, fmt.Sprintf("%s = $%d", key, argCounter))
+				args = append(args, value)
+				argCounter++
+			}
+		case "max_cost":
+			conditions = append(conditions, fmt.Sprintf("cost <= $%d", argCounter))
+			args = append(args, value)
+			argCounter++
+		case "tags", "languages":
+			if len(value.([]string)) > 0 {
+				conditions = append(conditions, fmt.Sprintf("%s && $%d", key, argCounter)) // PostgreSQL array intersection
+				args = append(args, pq.Array(value))
+				argCounter++
+			}
+		}
+	}
+
+	// Join conditions to build the final query
+	query := baseQuery + strings.Join(conditions, " AND ")
+
+	// Execute the query
+	rows, err := db.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
+	// Process the results
 	itineraries := []models.Itinerary{}
 	for rows.Next() {
 		var itinerary models.Itinerary
-		var languages, tags, events string
-
-		// Scan each row into the itinerary struct
 		if err := rows.Scan(
 			&itinerary.ItineraryId, &itinerary.Name, &itinerary.City, &itinerary.Country,
-			&languages, &tags, &events, &itinerary.PostId, &itinerary.Username,
-			&itinerary.CreationDate, &itinerary.LastUpdate,
+			pq.Array(&itinerary.Languages), pq.Array(&itinerary.Tags), pq.Array(&itinerary.Events),
+			&itinerary.PostId, &itinerary.Username, &itinerary.CreationDate, &itinerary.LastUpdate,
+			&itinerary.Cost,
 		); err != nil {
 			return nil, err
 		}
-
-		// Convert comma-separated strings to slices
-		itinerary.Languages = splitTags(languages)
-		itinerary.Tags = splitTags(tags)
-		itinerary.Events = splitTags(events)
-
 		itineraries = append(itineraries, itinerary)
 	}
 	return itineraries, nil
-}
-
-// Helper function to split comma-separated values into a slice of strings
-func splitTags(input string) []string {
-	if input == "" {
-		return []string{}
-	}
-	return strings.Split(input, ",")
 }

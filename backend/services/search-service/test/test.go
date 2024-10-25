@@ -8,8 +8,9 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jordyob03/TripTailor/backend/services/search-service/internal/db"
+	db "github.com/jordyob03/TripTailor/backend/services/search-service/internal/db"
 	"github.com/jordyob03/TripTailor/backend/services/search-service/internal/handlers"
+	//models"github.com/jordyob03/TripTailor/backend/services/search-service/internal/models"
 	"github.com/stretchr/testify/assert"
 )
 
