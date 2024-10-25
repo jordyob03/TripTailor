@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jordyob03/TripTailor/backend/services/search-service/internal/db"
+	db "github.com/jordyob03/TripTailor/backend/services/search-service/internal/db"
 	"github.com/jordyob03/TripTailor/backend/services/search-service/internal/handlers"
 	"github.com/stretchr/testify/assert"
 )
@@ -19,8 +19,8 @@ func TestSearchItineraries(t *testing.T) {
 	mockDB := &sql.DB{}
 
 	expectedItineraries := []db.Itinerary{
-		{ID: 1, Country: "France", City: "Paris", Name: "Eiffel Tower Tour"},
-		{ID: 2, Country: "France", City: "Paris", Name: "Louvre Museum Visit"},
+		{ItineraryId: 1, Country: "France", City: "Paris", Name: "Eiffel Tower Tour"},
+		{ItineraryId: 2, Country: "France", City: "Paris", Name: "Louvre Museum Visit"},
 	}
 
 	db.QueryItinerariesByLocation = func(dbConn *sql.DB, country, city string) ([]db.Itinerary, error) {

@@ -45,7 +45,7 @@ services:
     build:
       context: ./backend/services/itinerary-service
       dockerfile: Dockerfile
-    container_name: ininerary-service-container
+    container_name: itinerary-service-container
     ports:
       - "8083:8083"
     environment:

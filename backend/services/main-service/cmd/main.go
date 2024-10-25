@@ -61,24 +61,6 @@ func main() {
 		fmt.Printf("User %d created successfully!\n", userid)
 	}
 
-	post := db.Post{
-		PostId:       0,
-		ItineraryId:  0,
-		Title:        "My First Post",
-		Description:  "This is my first post on TripTailor!",
-		CreationDate: time.Now(),
-		Username:     "wmksherwani",
-		Tags:         []string{"Travel", "Adventure"},
-		Boards:       []string{},
-		PostImages:   []string{},
-	}
-
-	if postid, err := db.AddPost(DB, post); err != nil {
-		log.Fatal("Error creating post:", err)
-	} else {
-		fmt.Printf("Post %d created successfully!\n", postid)
-	}
-
 	image1 := db.Image{
 		ImageData: db.WebImageToByte("https://wallpapercave.com/wp/wp8484597.jpg"),
 	}
@@ -101,12 +83,24 @@ func main() {
 		fmt.Printf("Image %d added successfully!", id)
 	}
 
-	if err := db.AddPostImage(DB, post.PostId, 1); err != nil {
-		log.Fatal("Error adding post image:", err)
+	event := db.Event{
+		EventId:     0,
+		Name:        "Trip to the Beach",
+		Cost:        100.00,
+		Address:     "1234 Beach St.",
+		Description: "Enjoy a day at the beach with friends and family!",
+		StartTime:   time.Now(),
+		EndTime:     time.Now(),
+		ItineraryId: 0,
+		EventImages: []string{},
 	}
 
-	if err := db.AddPostImage(DB, post.PostId, 1); err != nil {
-		log.Fatal("Error adding post image:", err)
+	if err := db.AddEventImage(DB, event.EventId, 1); err != nil {
+		log.Fatal("Error adding event image:", err)
+	}
+
+	if err := db.AddEventImage(DB, event.EventId, 2); err != nil {
+		log.Fatal("Error adding event image:", err)
 	}
 
 	http.HandleFunc("/images/", db.ImageHandler(DB))

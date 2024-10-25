@@ -1,4 +1,4 @@
-package DBmodels
+package models
 
 import (
 	"database/sql"
@@ -53,7 +53,6 @@ func DeleteAllTables(DB *sql.DB) error {
 
 	return nil
 }
-
 func CloseDB(DB *sql.DB) {
 	if DB != nil {
 		DB.Close()
