@@ -1,29 +1,31 @@
-package DBmodels
+package models
 
 import (
 	"database/sql"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/lib/pq"
 )
 
 type User struct {
-	UserId      int      `json:"userId"`
-	Username    string   `json:"username"`
-	Email       string   `json:"email"`
-	Password    string   `json:"password"`
-	DateOfBirth string   `json:"dateOfBirth"` // Changed to string to avoid unnecessary parsing here
-	Name        string   `json:"name"`
-	Country     string   `json:"country"`
-	Languages   []string `json:"languages"`
-	Tags        []string `json:"tags"`
-	Boards      []string `json:"boards"`
-	Posts       []string `json:"posts"`
+	UserId       int       `json:"userId"`
+	Username     string    `json:"username"`
+	Email        string    `json:"email"`
+	Password     string    `json:"password"`
+	DateOfBirth  time.Time `json:"dateOfBirth"`
+	Name         string    `json:"name"`
+	Country      string    `json:"country"`
+	Languages    []string  `json:"languages"`
+	Tags         []string  `json:"tags"`
+	Boards       []string  `json:"boards"`
+	Posts        []string  `json:"posts"`
+	ProfileImage int       `json:"profileImage"`
+	CoverImage   int       `json:"coverImage"`
 }
 
-// CreateUserTable creates the user table if it doesn't exist
-func CreateUserTable(dbConn *sql.DB) error {
+func CreateUserTable(DB *sql.DB) error {
 	createTableSQL := `
 	CREATE TABLE IF NOT EXISTS users (
 		userId SERIAL PRIMARY KEY,
@@ -36,25 +38,26 @@ func CreateUserTable(dbConn *sql.DB) error {
 		languages TEXT[],
 		tags TEXT[],
 		boards INTEGER[],
-		posts INTEGER[]
+		posts INTEGER[],
+		profileImage INTEGER,
+		coverImage INTEGER
 	);`
-	_, err := dbConn.Exec(createTableSQL)
-	return err
+	return CreateTable(DB, createTableSQL)
 }
 
-// AddUser adds a new user to the database
-func AddUser(dbConn *sql.DB, user User) (int, error) {
+func AddUser(DB *sql.DB, user User) (int, error) {
 	insertUserSQL := `
-	INSERT INTO users (username, email, password, dateOfBirth, name, country, languages, tags, boards, posts)
-	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+	INSERT INTO users (username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, profileImage, coverImage)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
 	RETURNING userId;`
 
 	var userId int
-	err := dbConn.QueryRow(
+	err := DB.QueryRow(
 		insertUserSQL, user.Username, user.Email, user.Password,
 		user.DateOfBirth, user.Name, user.Country,
 		pq.Array(user.Languages), pq.Array(user.Tags),
-		pq.Array(user.Boards), pq.Array(user.Posts)).Scan(&userId)
+		pq.Array(user.Boards), pq.Array(user.Posts),
+		user.ProfileImage, user.CoverImage).Scan(&userId)
 	if err != nil {
 		fmt.Println("Error adding user:", err)
 		return 0, err
@@ -63,20 +66,79 @@ func AddUser(dbConn *sql.DB, user User) (int, error) {
 	return userId, nil
 }
 
-// GetUser retrieves a user by username from the database
-func GetUser(dbConn *sql.DB, username string) (User, error) {
+func RemoveUser(DB *sql.DB, username string) error {
+
+	getPostsAndBoardsSQL := `
+	SELECT title, boards 
+	FROM posts 
+	WHERE username = (SELECT email FROM users WHERE username = $1);
+	`
+
+	var Stringposts []string
+	var Stringboards []string
+
+	err := DB.QueryRow(getPostsAndBoardsSQL, username).Scan(pq.Array(&Stringposts), pq.Array(&Stringboards))
+	if err != nil {
+		log.Printf("Error retrieving posts and boards for user ID %s: %v\n", username, err)
+		return err
+	}
+
+	posts, err := StringsToInts(Stringposts)
+	if err != nil {
+		log.Printf("Error converting post IDs to integers: %v\n", err)
+		return err
+	}
+
+	boards, err := StringsToInts(Stringboards)
+	if err != nil {
+		log.Printf("Error converting board IDs to integers: %v\n", err)
+		return err
+	}
+
+	for _, post := range posts {
+		err := RemovePost(DB, post)
+		if err != nil {
+			log.Printf("Error removing post %d: %v\n", post, err)
+			return err
+		}
+	}
+
+	for _, board := range boards {
+		err := RemoveBoard(DB, board)
+		if err != nil {
+			log.Printf("Error removing board %d: %v\n", board, err)
+			return err
+		}
+	}
+
+	deleteUserSQL := `DELETE FROM users WHERE username = $1;`
+
+	_, err = DB.Exec(deleteUserSQL, username)
+	if err != nil {
+		log.Printf("Error removing user: %v\n", err)
+		return err
+	}
+
+	return nil
+}
+
+func GetUser(DB *sql.DB, username string) (User, error) {
 	query := `
-    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts
+    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, profileImage, coverImage
     FROM users 
     WHERE username = $1`
 
 	var user User
-	row := dbConn.QueryRow(query, username)
+	row := DB.QueryRow(query, username)
 	err := row.Scan(
 		&user.UserId, &user.Username, &user.Email,
 		&user.Password, &user.DateOfBirth, &user.Name, &user.Country,
-		pq.Array(&user.Languages), pq.Array(&user.Tags),
-		pq.Array(&user.Boards), pq.Array(&user.Posts),
+		pq.Array(&user.Languages),
+		pq.Array(&user.Tags),
+		pq.Array(&user.Boards),
+		pq.Array(&user.Posts),
+		&user.ProfileImage,
+		&user.CoverImage,
 	)
 
 	if err == sql.ErrNoRows {
@@ -86,16 +148,18 @@ func GetUser(dbConn *sql.DB, username string) (User, error) {
 		return User{}, err
 	}
 
-	// Ensure slices are not nil
 	if user.Languages == nil {
 		user.Languages = []string{}
 	}
+
 	if user.Tags == nil {
 		user.Tags = []string{}
 	}
+
 	if user.Boards == nil {
 		user.Boards = []string{}
 	}
+
 	if user.Posts == nil {
 		user.Posts = []string{}
 	}
@@ -103,68 +167,212 @@ func GetUser(dbConn *sql.DB, username string) (User, error) {
 	return user, nil
 }
 
-// UpdateUserCountry updates a user's country in the database
-func UpdateUserCountry(dbConn *sql.DB, username string, country string) error {
-	query := `UPDATE users SET country = $1 WHERE username = $2`
-	_, err := dbConn.Exec(query, country, username)
+func GetAllUsers(DB *sql.DB) ([]User, error) {
+	query := `
+    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, profileImage, coverImage
+    FROM users`
+
+	rows, err := DB.Query(query)
 	if err != nil {
-		return fmt.Errorf("error updating country for user %s: %v", username, err)
+		log.Printf("Error querying users: %v\n", err)
+		return nil, err
 	}
-	return nil
+	defer rows.Close()
+
+	var users []User
+	for rows.Next() {
+		var user User
+		if err := rows.Scan(
+			&user.UserId, &user.Username, &user.Email,
+			&user.Password, &user.DateOfBirth, &user.Name, &user.Country,
+			pq.Array(&user.Languages),
+			pq.Array(&user.Tags),
+			pq.Array(&user.Boards),
+			pq.Array(&user.Posts),
+			&user.ProfileImage,
+			&user.CoverImage,
+		); err != nil {
+			log.Printf("Error scanning user: %v\n", err)
+			return nil, err
+		}
+
+		if user.Languages == nil {
+			user.Languages = []string{}
+		}
+
+		if user.Tags == nil {
+			user.Tags = []string{}
+		}
+
+		if user.Boards == nil {
+			user.Boards = []string{}
+		}
+
+		if user.Posts == nil {
+			user.Posts = []string{}
+		}
+
+		users = append(users, user)
+	}
+
+	if err := rows.Err(); err != nil {
+		log.Printf("Error iterating over users: %v\n", err)
+		return nil, err
+	}
+
+	return users, nil
 }
 
 func UpdateName(dbConn *sql.DB, username string, name string) error {
-	query := `UPDATE users SET name = $1 WHERE username = $2`
-	_, err := dbConn.Exec(query, name, username)
-	if err != nil {
-		return fmt.Errorf("error updating country for user %s: %v", username, err)
-	}
-	return nil
+	return UpdateAttribute(dbConn, "users", "username", username, "name", name)
 }
 
-// AddUserLanguage adds languages to a user
-func AddUserLanguage(dbConn *sql.DB, username string, languages []string) error {
-	query := `UPDATE users SET languages = $1::text[] WHERE username = $2`
-	_, err := dbConn.Exec(query, pq.Array(languages), username)
-	if err != nil {
-		return fmt.Errorf("error updating languages for user %s: %v", username, err)
-	}
-	return nil
+func UpdateUserEmail(DB *sql.DB, username, email string) error {
+	return UpdateAttribute(DB, "users", "username", username, "email", email)
 }
 
-// AddUserTag adds tags to a user
-func AddUserTag(dbConn *sql.DB, username string, tags []string) error {
-	query := `UPDATE users SET tags = $1::text[] WHERE username = $2`
-	_, err := dbConn.Exec(query, pq.Array(tags), username)
-	if err != nil {
-		return fmt.Errorf("error adding tags for user %s: %v", username, err)
-	}
-	return nil
+func UpdateUserPassword(DB *sql.DB, username, password string) error {
+	return UpdateAttribute(DB, "users", "username", username, "password", password)
 }
 
-// RemoveUser removes a user and their related data (boards, posts) from the database
-func RemoveUser(dbConn *sql.DB, username string) error {
-	getPostsAndBoardsSQL := `
-	SELECT posts, boards 
-	FROM users 
-	WHERE username = $1;
-	`
+func UpdateUserDateOfBirth(DB *sql.DB, username string, dateOfBirth time.Time) error {
+	return UpdateAttribute(DB, "users", "username", username, "dateOfBirth", dateOfBirth)
+}
 
-	var posts, boards []string
+func UpdateUserCountry(DB *sql.DB, username, country string) error {
+	return UpdateAttribute(DB, "users", "username", username, "country", country)
+}
 
-	err := dbConn.QueryRow(getPostsAndBoardsSQL, username).Scan(pq.Array(&posts), pq.Array(&boards))
+func AddUserLanguage(DB *sql.DB, username string, languages []string) error {
+	err := AddArrayAttribute(DB, "users", "username", username, "languages", languages)
 	if err != nil {
-		log.Printf("Error retrieving posts and boards for user %s: %v\n", username, err)
-		return err
-	}
-
-	deleteUserSQL := `DELETE FROM users WHERE username = $1;`
-
-	_, err = dbConn.Exec(deleteUserSQL, username)
-	if err != nil {
-		log.Printf("Error removing user: %v\n", err)
+		log.Printf("Error adding languages for user %s: %v\n", username, err)
 		return err
 	}
 
 	return nil
+}
+
+func RemoveUserLanguage(DB *sql.DB, username string, languages []string) error {
+	err := RemoveArrayAttribute(DB, "users", "username", username, "languages", languages)
+	if err != nil {
+		log.Printf("Error removing languages for user %s: %v\n", username, err)
+		return err
+	}
+
+	return nil
+}
+
+func AddUserTag(DB *sql.DB, username string, tags []string) error {
+	err := AddArrayAttribute(DB, "users", "username", username, "tags", tags)
+	if err != nil {
+		log.Printf("Error adding tags for user %s: %v\n", username, err)
+		return err
+	}
+
+	return nil
+}
+
+func RemoveUserTag(DB *sql.DB, username string, tags []string) error {
+	err := RemoveArrayAttribute(DB, "users", "username", username, "tags", tags)
+	if err != nil {
+		log.Printf("Error removing tags for user %s: %v\n", username, err)
+		return err
+	}
+
+	return nil
+}
+
+func AddUserBoard(DB *sql.DB, username string, boardId int) error {
+	err := AddArrayAttribute(DB, "users", "username", username, "boards", IntsToStrings([]int{boardId}))
+	if err != nil {
+		log.Printf("Error adding board for user %s: %v\n", username, err)
+		return err
+	}
+
+	return nil
+}
+
+func RemoveUserBoard(DB *sql.DB, username string, boardId int) error {
+	err := RemoveArrayAttribute(DB, "users", "username", username, "boards", IntsToStrings([]int{boardId}))
+	if err != nil {
+		log.Printf("Error removing board for user %s: %v\n", username, err)
+		return err
+	}
+
+	return nil
+}
+
+func AddUserPost(DB *sql.DB, username string, postId int) error {
+	err := AddArrayAttribute(DB, "users", "username", username, "posts", IntsToStrings([]int{postId}))
+	if err != nil {
+		log.Printf("Error adding post for user %s: %v\n", username, err)
+		return err
+	}
+
+	return nil
+}
+
+func RemoveUserPost(DB *sql.DB, username string, postId int) error {
+	err := RemoveArrayAttribute(DB, "users", "username", username, "posts", IntsToStrings([]int{postId}))
+	if err != nil {
+		log.Printf("Error removing post for user %s: %v\n", username, err)
+		return err
+	}
+
+	return nil
+}
+
+func UpdateUserProfileImage(DB *sql.DB, username string, imageId int) error {
+	image, err := GetImage(DB, imageId)
+	if err != nil {
+		log.Printf("Error retrieving image: %v\n", err)
+		return err
+	}
+
+	for _, metadata := range image.Metadata {
+		if metadata == "profile" {
+			fmt.Printf("Image %d is already a profile image", imageId)
+			return nil
+		}
+	}
+
+	err = AddImageMetaData(DB, imageId, "profile")
+	if err != nil {
+		log.Printf("Error adding image metadata: %v\n", err)
+		return err
+	}
+
+	return UpdateAttribute(DB, "users", "username", username, "profileImage", imageId)
+}
+
+func RemoveUserProfileImage(DB *sql.DB, username string) error {
+	return UpdateAttribute(DB, "users", "username", username, "profileImage", '0')
+}
+
+func UpdateUserCoverImage(DB *sql.DB, username string, imageId int) error {
+	image, err := GetImage(DB, imageId)
+	if err != nil {
+		log.Printf("Error retrieving image: %v\n", err)
+		return err
+	}
+
+	for _, metadata := range image.Metadata {
+		if metadata == "cover" {
+			fmt.Printf("Image %d is already a cover image", imageId)
+			return nil
+		}
+	}
+
+	err = AddImageMetaData(DB, imageId, "cover")
+	if err != nil {
+		log.Printf("Error adding image metadata: %v\n", err)
+		return err
+	}
+
+	return UpdateAttribute(DB, "users", "username", username, "coverImage", imageId)
+}
+
+func RemoveUserCoverImage(DB *sql.DB, username string) error {
+	return UpdateAttribute(DB, "users", "username", username, "coverImage", '1')
 }

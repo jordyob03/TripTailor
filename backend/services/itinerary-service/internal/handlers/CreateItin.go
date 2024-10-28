@@ -6,27 +6,21 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	db "github.com/jordyob03/TripTailor/backend/services/itinerary-service/internal/db"
 	models "github.com/jordyob03/TripTailor/backend/services/itinerary-service/internal/models"
 )
 
-type Event struct {
-	Name        string `json:"name"`
-	StartTime   string `json:"startTime"`
-	EndTime     string `json:"endTime"`
-	Location    string `json:"location"`
-	Description string `json:"description"`
-	Cost        string `json:"cost"`
-}
-
 type CreateItinRequest struct {
-	Name        string   `json:"name" binding:"required"`
-	User        string   `json:"username"`
-	Location    string   `json:"location" binding:"required"`
-	Description string   `json:"description" binding:"required"`
-	Cost        string   `json:"cost" binding:"required"`
-	Tags        []string `json:"tags" binding:"required"`
-	Events      []Event  `json:"events"`
+	Name        string   `json:"name"`
+	City        string   `json:"city"`
+	Country     string   `json:"country"`
+	Title       string   `json:"title"`
+	Description string   `json:"description"`
+	Price       float64  `json:"price"`
+	Languages   []string `json:"languages"`
+	Tags        []string `json:"tags"`
+	Events      []string `json:"events"`
+	PostId      int      `json:"postId"`
+	Username    string   `json:"username"`
 }
 
 func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
@@ -37,17 +31,23 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 			return
 		}
 
-		var itin models.Itinerary
-
 		fmt.Printf("Received Itinerary: %+v\n", req)
 
-		itin.Name = req.Name
-		itin.City = req.Location
-		itin.Country = req.Location
-		itin.Tags = req.Tags
-		itin.Username = req.User
+		itin := models.Itinerary{
+			Name:        req.Name,
+			City:        req.City,
+			Country:     req.Country,
+			Title:       req.Title,
+			Description: req.Description,
+			Price:       req.Price,
+			Languages:   req.Languages,
+			Tags:        req.Tags,
+			Events:      req.Events,
+			PostId:      req.PostId,
+			Username:    req.Username,
+		}
 
-		itinId, err := db.AddItinerary(dbConn, itin)
+		itinId, err := models.AddItinerary(dbConn, itin)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create itinerary"})
 			return
