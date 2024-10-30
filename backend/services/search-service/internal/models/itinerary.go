@@ -5,7 +5,7 @@ import (
 )
 
 type Itinerary struct {
-	ItineraryId  int       `json:"itineraryId" db:"itineraryid"`
+	ItineraryId  int       `json:"itineraryId"`
 	Name         string    `json:"name"`
 	City         string    `json:"city"`
 	Country      string    `json:"country"`
@@ -16,6 +16,7 @@ type Itinerary struct {
 	Username     string    `json:"username"`
 	CreationDate time.Time `json:"creationDate"`
 	LastUpdate   time.Time `json:"lastUpdate"`
+	//Cost         float32   `json:"Cost"`
 }
 
 // Add methods for Itinerary here

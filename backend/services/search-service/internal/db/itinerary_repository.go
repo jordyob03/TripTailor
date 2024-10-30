@@ -3,68 +3,78 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"strings"
+
 	"github.com/jordyob03/TripTailor/backend/services/search-service/internal/models" // Import the models package
 	"github.com/lib/pq"
-	"strings"
 )
 
-// QueryItineraries builds a dynamic query based on the provided parameters
+// QueryItineraries builds a dynamic SQL query based on provided parameters
 func QueryItineraries(db *sql.DB, params map[string]interface{}) ([]models.Itinerary, error) {
 	baseQuery := `
-		SELECT itineraryid, name, city, country, languages, tags, events, postid, username, creationdate, lastupdate, cost
+		SELECT itineraryid, name, city, country, languages, tags, events, postid, username, creationdate, lastupdate
 		FROM itineraries
 		WHERE 1=1
 	`
-	// Query parts to build dynamically
+
 	var conditions []string
 	var args []interface{}
 	argCounter := 1
 
-	// Dynamically build conditions based on provided parameters
+	// Build the query conditions dynamically
 	for key, value := range params {
 		switch key {
-		case "country", "city", "username":
-			if value != "" {
-				conditions = append(conditions, fmt.Sprintf("%s = $%d", key, argCounter))
-				args = append(args, value)
-				argCounter++
-			}
-		case "max_cost":
-			conditions = append(conditions, fmt.Sprintf("cost <= $%d", argCounter))
+		case "username", "country", "city":
+			// Properly format conditions without extra quotes
+			conditions = append(conditions, fmt.Sprintf("%s = $%d", key, argCounter))
 			args = append(args, value)
 			argCounter++
 		case "tags", "languages":
-			if len(value.([]string)) > 0 {
-				conditions = append(conditions, fmt.Sprintf("%s && $%d", key, argCounter)) // PostgreSQL array intersection
-				args = append(args, pq.Array(value))
+			val, ok := value.([]string)
+			if ok && len(val) > 0 {
+				conditions = append(conditions, fmt.Sprintf("%s && $%d", key, argCounter))
+				args = append(args, pq.Array(val))
 				argCounter++
 			}
 		}
 	}
 
-	// Join conditions to build the final query
-	query := baseQuery + strings.Join(conditions, " AND ")
+	// Safely join the conditions with proper spacing
+	if len(conditions) > 0 {
+		baseQuery += " AND " + strings.Join(conditions, " AND ")
+	}
+
+	// Print the query and parameters for debugging
+	fmt.Println("Final Query:", baseQuery)
+	fmt.Println("Query Args:", args)
+
+	// Prepare the query to catch any syntax issues
+	stmt, err := db.Prepare(baseQuery)
+	if err != nil {
+		return nil, fmt.Errorf("failed to prepare statement: %w", err)
+	}
+	defer stmt.Close()
 
 	// Execute the query
-	rows, err := db.Query(query, args...)
+	rows, err := stmt.Query(args...)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to execute query: %w", err)
 	}
 	defer rows.Close()
 
-	// Process the results
-	itineraries := []models.Itinerary{}
+	// Process the query results
+	var itineraries []models.Itinerary
 	for rows.Next() {
 		var itinerary models.Itinerary
 		if err := rows.Scan(
 			&itinerary.ItineraryId, &itinerary.Name, &itinerary.City, &itinerary.Country,
 			pq.Array(&itinerary.Languages), pq.Array(&itinerary.Tags), pq.Array(&itinerary.Events),
 			&itinerary.PostId, &itinerary.Username, &itinerary.CreationDate, &itinerary.LastUpdate,
-			&itinerary.Cost,
 		); err != nil {
 			return nil, err
 		}
 		itineraries = append(itineraries, itinerary)
 	}
+
 	return itineraries, nil
 }
