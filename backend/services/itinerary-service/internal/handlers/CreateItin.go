@@ -53,6 +53,19 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 			return
 		}
 
+		for _, eventName := range req.Events {
+			event := models.Event{
+				Name: eventName.Name,
+				Cost: eventName.Cost,
+			}
+
+			_, err := models.AddEvent(dbConn, event)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create event"})
+				return
+			}
+		}
+
 		// Respond to the client with the received data
 		c.JSON(http.StatusOK, gin.H{
 			"message": "Itinerary received",
