@@ -3,6 +3,7 @@ import Tags from '../config/tags.json';
 import '../styles/styles.css'; 
 import { useNavigate } from 'react-router';
 import itineraryAPI from '../api/itineraryAPI.js';
+import { convertBytesToImage, convertFileToBytes } from '../utils/imageHandler.js';
 
 function CreateItinerary() {
   const categories = Tags.categories;
@@ -34,10 +35,18 @@ function CreateItinerary() {
     setEvents(updatedEvents);
   };
 
-  const handleMultipleFileChange = (e) => {
+  const handleMultipleFileChange = async (e) => {
     const files = Array.from(e.target.files);
-    setItineraryImages([...itineraryImages, ...files]);
-  };
+    
+    const convertedImages = await Promise.all(files.map(async (file) => {
+        const previewUrl = URL.createObjectURL(file);  
+        const imageBytes = await convertFileToBytes(file); 
+        return { file, previewUrl, imageBytes }; 
+    }));
+
+    setItineraryImages([...itineraryImages, ...convertedImages]);
+};
+
 
   const removeImage = (index) => {
     const updatedImages = itineraryImages.filter((_, i) => i !== index);
@@ -121,11 +130,13 @@ function CreateItinerary() {
     const Data = {
       Name: itineraryDetails.name,
       Username: localStorage.getItem('username'),
-      Location: itineraryDetails.location,
+      City:itineraryDetails.location, 
+      Country: itineraryDetails.location,
       Description: itineraryDetails.description,
-      Cost: itineraryDetails.estimatedCost,
+      Price: itineraryDetails.estimatedCost,
       Tags: selectedTags,
       Events: events,
+      Images: itineraryImages.map(img => img.imageBytes),
       
     }
 
@@ -225,8 +236,8 @@ function CreateItinerary() {
                 <div className="imagePreview">
                   {itineraryImages.map((image, index) => (
                     <div key={index} className="imageContainer">
-                      <img src={URL.createObjectURL(image)} alt={`Itinerary Preview ${index + 1}`} className="previewImage" />
-                      <button className="removeButton" onClick={() => removeImage(index)}>x</button>
+                        <img src={image.previewUrl} alt={`Itinerary Preview ${index + 1}`} className="previewImage" />
+                        <button className="removeButton" onClick={() => removeImage(index)}>x</button>
                     </div>
                   ))}
                   <div className="addImageButton">
