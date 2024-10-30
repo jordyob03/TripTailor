@@ -28,7 +28,7 @@ function App() {
     <Router>
       <NavBar onSearch={handleSearch} />
       <Routes>
-        <Route path="/" element={<UserLogin />} />
+        <Route path="/" element={<CreateItinerary />} />
         <Route path="/sign-up" element={<UserSignup />} />
         <Route path="/profile-creation" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
         <Route path="/create-itinerary" element={<ProtectedRoute><CreateItinerary /></ProtectedRoute>} />
