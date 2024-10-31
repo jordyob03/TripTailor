@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"time"
 
@@ -33,7 +34,7 @@ func CreateBoardTable(DB *sql.DB) error {
 	return CreateTable(DB, createTableSQL)
 }
 
-func AddBoard(DB *sql.DB, board Board) error {
+func AddBoard(DB *sql.DB, board Board) (int, error) {
 	insertBoardSQL := `
     INSERT INTO boards (name, description, username, posts, tags) 
     VALUES ($1, $2, $3, $4, $5) RETURNING boardId;`
@@ -44,14 +45,13 @@ func AddBoard(DB *sql.DB, board Board) error {
 		board.Username, pq.Array(board.Posts),
 		pq.Array(board.Tags)).Scan(&boardID)
 	if err != nil {
-		log.Printf("Error adding board: %v\n", err)
-		return err
+		return 0, fmt.Errorf("error adding board: %v", err)
 	}
 
 	AddUserBoard(DB, board.Username, boardID)
 
 	log.Printf("Board added successfully with ID: %d\n", boardID)
-	return nil
+	return boardID, AddUserBoard(DB, board.Username, boardID)
 }
 
 func RemoveBoard(DB *sql.DB, boardId int) error {
