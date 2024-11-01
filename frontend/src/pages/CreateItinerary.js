@@ -185,7 +185,7 @@ function CreateItinerary() {
                 type="text"
                 id="city"
                 name="city"
-                value={itineraryDetails.country}
+                value={itineraryDetails.city}
                 onChange={handleInputChange}
                 className="input"
                 placeholder="Enter city"
