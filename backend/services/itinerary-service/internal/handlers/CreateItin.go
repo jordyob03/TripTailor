@@ -81,6 +81,14 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 			}
 		}
 
+		// Update price (this won't work until the data types are fixed)
+
+		// err = models.UpdateItineraryPrice(dbConn, itinId)
+		// if err != nil {
+		// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed update price"})
+		// 	return
+		// }
+
 		post := models.Post{
 			ItineraryId:  itinId,
 			CreationDate: time.Now(),
@@ -90,7 +98,7 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 		// Create post
 		postId, err := models.AddPost(dbConn, post)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create itinerary"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create post"})
 			return
 		}
 
