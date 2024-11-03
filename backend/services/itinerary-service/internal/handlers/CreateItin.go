@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	models "github.com/jordyob03/TripTailor/backend/services/itinerary-service/internal/models"
@@ -80,10 +81,24 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 			}
 		}
 
+		post := models.Post{
+			ItineraryId:  itinId,
+			CreationDate: time.Now(),
+			Username:     req.Username,
+		}
+
+		// Create post
+		postId, err := models.AddPost(dbConn, post)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create itinerary"})
+			return
+		}
+
 		// Respond to the client with the received data
 		c.JSON(http.StatusOK, gin.H{
 			"message": "Itinerary received",
 			"itinId":  itinId,
+			"postId":  postId,
 		})
 
 	}
