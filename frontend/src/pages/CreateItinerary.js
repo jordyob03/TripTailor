@@ -46,7 +46,6 @@ function CreateItinerary() {
 
   const addEvent = () => {
 
-    console.log(events)
     if (events.length >= 24) {
       setEventErrorMessage('Cannot add more than 24 events in a 24-hour period.');
     } else {
@@ -70,7 +69,6 @@ function CreateItinerary() {
       (event) => event.description.trim() !== '' || event.location.trim() !== ''
     );
 
-    console.log(filteredEvents)
   
     // Basic info check
     const { name, city, country, description} = itineraryDetails;
@@ -131,8 +129,6 @@ function CreateItinerary() {
       Tags: selectedTags,
       Events: filteredEvents,
     }
-
-    console.log(Data);
 
     try {
       const response = await itineraryAPI.post('/itin-creation', Data);
