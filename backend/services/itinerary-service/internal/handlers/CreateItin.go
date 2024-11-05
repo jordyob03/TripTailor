@@ -75,7 +75,7 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 				return
 			}
 
-			eventCost, err := strconv.ParseInt(event.Cost, 10, 0)
+			eventCost, err := strconv.ParseFloat(event.Cost, 64)
 			if err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Invalid cost format for event %s", event.Name)})
 				return
