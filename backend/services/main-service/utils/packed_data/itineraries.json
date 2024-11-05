@@ -1,0 +1,44 @@
+[
+  {
+    "itineraryId": 201,
+    "name": "European Getaway",
+    "city": "Paris",
+    "country": "France",
+    "title": "Best of Europe",
+    "description": "A week-long adventure through the beautiful cities of Europe.",
+    "price": 1200.50,
+    "languages": ["English", "French"],
+    "tags": ["sightseeing", "culture"],
+    "events": ["Eiffel Tower Visit", "Seine River Cruise", "Notre Dame Visit"],
+    "postId": 101,
+    "username": "user789"
+  },
+  {
+    "itineraryId": 202,
+    "name": "Paris Highlights",
+    "city": "Paris",
+    "country": "France",
+    "title": "Explore Iconic Paris",
+    "description": "An itinerary to experience the must-see attractions in Paris.",
+    "price": 850.00,
+    "languages": ["English", "French"],
+    "tags": ["art", "history"],
+    "events": ["Versailles Palace Day Trip", "Montmartre Walking Tour", "Arc de Triomphe Visit"],
+    "postId": 102,
+    "username": "user123"
+  },
+  {
+    "itineraryId": 203,
+    "name": "Nightlife in Paris",
+    "city": "Paris",
+    "country": "France",
+    "title": "Paris After Dark",
+    "description": "Discover the best of Paris nightlife.",
+    "price": 400.00,
+    "languages": ["English", "French"],
+    "tags": ["nightlife", "entertainment"],
+    "events": ["Moulin Rouge Show"],
+    "postId": 103,
+    "username": "user456"
+  }
+]

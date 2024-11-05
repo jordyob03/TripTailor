@@ -8,6 +8,7 @@ import (
 	"time"
 
 	db "github.com/jordyob03/TripTailor/backend/services/main-service/internal/db/models"
+	pack "github.com/jordyob03/TripTailor/backend/services/main-service/utils"
 )
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
@@ -82,24 +83,15 @@ func main() {
 	} else {
 		fmt.Printf("Image %d added successfully!", id)
 	}
+	pack.PackUsersFromJSON("utils/packed_data/user.json", DB)
+	pack.PackEventFromJSON("utils/packed_data/events.json", DB)
+	pack.PackItinsFromJSON("utils/packed_data/itineraries.json", DB)
 
-	event := db.Event{
-		EventId:     0,
-		Name:        "Trip to the Beach",
-		Cost:        100.00,
-		Address:     "1234 Beach St.",
-		Description: "Enjoy a day at the beach with friends and family!",
-		StartTime:   time.Now(),
-		EndTime:     time.Now(),
-		ItineraryId: 0,
-		EventImages: []string{},
-	}
-
-	if err := db.AddEventImage(DB, event.EventId, 1); err != nil {
+	if err := db.AddEventImage(DB, 0, 1); err != nil {
 		log.Fatal("Error adding event image:", err)
 	}
 
-	if err := db.AddEventImage(DB, event.EventId, 2); err != nil {
+	if err := db.AddEventImage(DB, 0, 2); err != nil {
 		log.Fatal("Error adding event image:", err)
 	}
 

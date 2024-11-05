@@ -1,0 +1,11 @@
+[
+  {
+    "boardId": 1,
+    "name": "Travel Experiences",
+    "dateOfCreation": "2024-01-01T12:00:00Z",
+    "description": "A board dedicated to sharing travel experiences from around the world.",
+    "username": "user123",
+    "posts": ["Exploring the Alps", "Beach Adventures"],
+    "tags": ["travel", "adventure"]
+  }
+]

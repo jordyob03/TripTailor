@@ -1,0 +1,112 @@
+[
+  {
+    "eventId": 0,
+    "name": "Eiffel Tower Visit",
+    "cost": 25.00,
+    "address": "Champ de Mars, 5 Avenue Anatole France, 75007 Paris, France",
+    "description": "Guided tour of the Eiffel Tower with breathtaking views of Paris.",
+    "startTime": "2024-06-01T10:00:00Z",
+    "endTime": "2024-06-01T12:00:00Z",
+    "itineraryId": 201,
+    "eventImages": ["eiffel_tower_image1", "eiffel_tower_image2"]
+  },
+  {
+    "eventId": 1,
+    "name": "Louvre Museum Tour",
+    "cost": 20.00,
+    "address": "Rue de Rivoli, 75001 Paris, France",
+    "description": "Explore famous artworks including the Mona Lisa and the Venus de Milo.",
+    "startTime": "2024-06-02T09:00:00Z",
+    "endTime": "2024-06-02T11:30:00Z",
+    "itineraryId": 201,
+    "eventImages": ["louvre_image1", "louvre_image2"]
+  },
+  {
+    "eventId": 2,
+    "name": "Seine River Cruise",
+    "cost": 15.00,
+    "address": "Seine River, Paris, France",
+    "description": "Enjoy a scenic boat ride along the Seine with views of iconic landmarks.",
+    "startTime": "2024-06-02T15:00:00Z",
+    "endTime": "2024-06-02T16:00:00Z",
+    "itineraryId": 201,
+    "eventImages": ["seine_cruise_image1", "seine_cruise_image2"]
+  },
+  {
+    "eventId": 3,
+    "name": "Notre Dame Visit",
+    "cost": 10.00,
+    "address": "6 Parvis Notre-Dame - Pl. Jean-Paul II, 75004 Paris, France",
+    "description": "Tour the historic Notre Dame Cathedral and learn about its architecture.",
+    "startTime": "2024-06-03T10:00:00Z",
+    "endTime": "2024-06-03T12:00:00Z",
+    "itineraryId": 201,
+    "eventImages": ["notre_dame_image1", "notre_dame_image2"]
+  },
+  {
+    "eventId": 4,
+    "name": "Versailles Palace Day Trip",
+    "cost": 40.00,
+    "address": "Place d'Armes, 78000 Versailles, France",
+    "description": "Day trip to the Palace of Versailles with access to the gardens and fountains.",
+    "startTime": "2024-06-04T09:00:00Z",
+    "endTime": "2024-06-04T17:00:00Z",
+    "itineraryId": 202,
+    "eventImages": ["versailles_image1", "versailles_image2"]
+  },
+  {
+    "eventId": 5,
+    "name": "Montmartre Walking Tour",
+    "cost": 18.00,
+    "address": "Montmartre, 75018 Paris, France",
+    "description": "Walk through the artistic district of Montmartre, home to the Sacré-Cœur.",
+    "startTime": "2024-06-05T10:00:00Z",
+    "endTime": "2024-06-05T12:30:00Z",
+    "itineraryId": 202,
+    "eventImages": ["montmartre_image1", "montmartre_image2"]
+  },
+  {
+    "eventId": 6,
+    "name": "Arc de Triomphe Visit",
+    "cost": 12.00,
+    "address": "Place Charles de Gaulle, 75008 Paris, France",
+    "description": "Climb to the top of the Arc de Triomphe for stunning views of Paris.",
+    "startTime": "2024-06-06T14:00:00Z",
+    "endTime": "2024-06-06T15:30:00Z",
+    "itineraryId": 202,
+    "eventImages": ["arc_de_triomphe_image1", "arc_de_triomphe_image2"]
+  },
+  {
+    "eventId": 7,
+    "name": "Orsay Museum Tour",
+    "cost": 16.00,
+    "address": "1 Rue de la Légion d'Honneur, 75007 Paris, France",
+    "description": "Discover the world's largest collection of impressionist and post-impressionist art.",
+    "startTime": "2024-06-07T10:00:00Z",
+    "endTime": "2024-06-07T12:30:00Z",
+    "itineraryId": 202,
+    "eventImages": ["orsay_image1", "orsay_image2"]
+  },
+  {
+    "eventId": 8,
+    "name": "Latin Quarter Food Tour",
+    "cost": 30.00,
+    "address": "Latin Quarter, 75005 Paris, France",
+    "description": "A culinary tour through the Latin Quarter with tasting stops at local eateries.",
+    "startTime": "2024-06-07T14:00:00Z",
+    "endTime": "2024-06-07T17:00:00Z",
+    "itineraryId": 202,
+    "eventImages": ["latin_quarter_image1", "latin_quarter_image2"]
+  },
+  {
+    "eventId": 9,
+    "name": "Moulin Rouge Show",
+    "cost": 85.00,
+    "address": "82 Boulevard de Clichy, 75018 Paris, France",
+    "description": "Experience an evening of entertainment at the famous Moulin Rouge cabaret.",
+    "startTime": "2024-06-08T21:00:00Z",
+    "endTime": "2024-06-08T23:30:00Z",
+    "itineraryId": 203,
+    "eventImages": ["moulin_rouge_image1", "moulin_rouge_image2"]
+  }
+]

@@ -1,0 +1,11 @@
+[
+  {
+    "commentId": 1,
+    "postId": 101,
+    "itineraryId": 201,
+    "title": "Amazing place!",
+    "description": "Had a wonderful time visiting this location. Highly recommend!",
+    "likes": 10,
+    "username": "user456"
+  }
+]
