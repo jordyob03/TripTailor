@@ -10,7 +10,6 @@ import (
 
 func test() gin.HandlerFunc {
 	return func(c *gin.Context) {
-
 		// Log the received data
 		fmt.Printf("Received data")
 
@@ -22,5 +21,11 @@ func test() gin.HandlerFunc {
 }
 
 func RegisterRoutes(r *gin.Engine, dbConn *sql.DB) {
-	r.POST("/itin-creation", handlers.CreateItin(dbConn))
+	r.POST("/save-service-test", test())
+	r.POST("/boards/add", handlers.AddBoard(dbConn))
+	r.DELETE("/boards/delete", handlers.DeleteBoard(dbConn))
+	r.POST("/boards/:boardId/posts/add", handlers.AddBoardPost(dbConn))
+	r.DELETE("/boards/:boardId/posts/:postId", handlers.DeleteBoardPost(dbConn))
+	r.POST("/boards/search", handlers.SearchBoards(dbConn))
+	r.GET("/boards/:boardId/posts", handlers.GetBoard(dbConn))
 }
