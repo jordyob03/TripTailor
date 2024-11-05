@@ -83,7 +83,7 @@ func main() {
 	} else {
 		fmt.Printf("Image %d added successfully!", id)
 	}
-	pack.PackUsersFromJSON("utils/packed_data/user.json", DB)
+	pack.PackUsersFromJSON("utils/packed_data/users.json", DB)
 	pack.PackEventFromJSON("utils/packed_data/events.json", DB)
 	pack.PackItinsFromJSON("utils/packed_data/itineraries.json", DB)
 

@@ -9,9 +9,6 @@ import (
 	"os"
 )
 
-func pack_images() {
-
-}
 func PackUsersFromJSON(fp string, DB *sql.DB) (user_ids []int, count int) {
 	data, err := os.ReadFile(fp)
 	if err != nil {
@@ -82,8 +79,5 @@ func PackItinsFromJSON(fp string, DB *sql.DB) (itins_ids []int, count int) {
 		}
 	}
 	return itins_ids_list, len(itins)
-
-}
-func pack_board() {
 
 }
