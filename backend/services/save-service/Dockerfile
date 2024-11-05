@@ -18,4 +18,4 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /save-service-container ./cmd/main.go
 EXPOSE 8086
 
 
-ENTRYPOINT ["/itinerary-service-container"]
+ENTRYPOINT ["/save-service-container"]

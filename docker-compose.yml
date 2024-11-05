@@ -41,7 +41,7 @@ services:
     networks:
       - backend-network
 
-  intinerary-service:
+  itinerary-service:
     build:
       context: ./backend/services/itinerary-service
       dockerfile: Dockerfile
