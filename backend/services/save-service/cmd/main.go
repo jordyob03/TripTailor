@@ -21,7 +21,7 @@ func main() {
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:3000"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Itinerary"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Save"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
@@ -35,6 +35,6 @@ func main() {
 
 	api.RegisterRoutes(r, dbConn)
 
-	r.Run(":8083")
+	r.Run(":8086")
 
 }

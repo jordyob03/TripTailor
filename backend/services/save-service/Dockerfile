@@ -15,7 +15,7 @@ RUN chmod +x /wait-for-it.sh
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /save-service-container ./cmd/main.go
 
-Expose 8086
+EXPOSE 8086
 
 
 ENTRYPOINT ["/itinerary-service-container"]
