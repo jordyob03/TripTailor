@@ -45,6 +45,7 @@ function CreateItinerary() {
   };
 
   const addEvent = () => {
+
     if (events.length >= 24) {
       setEventErrorMessage('Cannot add more than 24 events in a 24-hour period.');
     } else {
@@ -67,6 +68,7 @@ function CreateItinerary() {
     const filteredEvents = events.filter(
       (event) => event.description.trim() !== '' || event.location.trim() !== ''
     );
+
   
     // Basic info check
     const { name, city, country, description} = itineraryDetails;
@@ -121,15 +123,12 @@ function CreateItinerary() {
     const Data = {
       Name: itineraryDetails.name,
       Username: localStorage.getItem('username'),
-      Location: itineraryDetails.location,
+      City: itineraryDetails.city,
+      Country: itineraryDetails.country,
       Description: itineraryDetails.description,
-      Cost: itineraryDetails.estimatedCost,
       Tags: selectedTags,
-      Events: events,
-
+      Events: filteredEvents,
     }
-
-    console.log(Data);
 
     try {
       const response = await itineraryAPI.post('/itin-creation', Data);
