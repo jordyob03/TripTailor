@@ -58,6 +58,8 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 
 		for _, event := range req.Events {
 
+			fmt.Print(event.StartTime)
+
 			//If these work as I think they will, both start and end time should be converted into time objects now, also layout has to
 			//be "3:04 PM" as this is the reference time for the package. shoulkd handle tiem strings in hh:mm AM/PM format
 			layout := "3:04 PM"
@@ -73,7 +75,7 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 				return
 			}
 
-			eventCost, err := strconv.ParseFloat(event.Cost, 64)
+			eventCost, err := strconv.ParseInt(event.Cost, 10, 0)
 			if err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Invalid cost format for event %s", event.Name)})
 				return
