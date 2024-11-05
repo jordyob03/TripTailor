@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
 
 	db "github.com/jordyob03/TripTailor/backend/services/main-service/internal/db/models"
 	pack "github.com/jordyob03/TripTailor/backend/services/main-service/utils"
@@ -41,27 +40,6 @@ func main() {
 		log.Fatal("Error initializing image table:", err)
 	}
 
-	user := db.User{
-		Username:     "wmksherwani",
-		Email:        "wmksherwani@mun.ca",
-		Password:     "password",
-		DateOfBirth:  time.Now(),
-		Name:         "Waleed Sherwani",
-		Country:      "Canada",
-		Languages:    []string{"English", "Urdu"},
-		Tags:         []string{"Travel", "Adventure"},
-		Boards:       []string{},
-		Posts:        []string{},
-		ProfileImage: 0,
-		CoverImage:   0,
-	}
-
-	if userid, err := db.AddUser(DB, user); err != nil {
-		log.Fatal("Error creating user:", err)
-	} else {
-		fmt.Printf("User %d created successfully!\n", userid)
-	}
-
 	image1 := db.Image{
 		ImageData: db.WebImageToByte("https://wallpapercave.com/wp/wp8484597.jpg"),
 	}
@@ -81,7 +59,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Error adding image:", err)
 	} else {
-		fmt.Printf("Image %d added successfully!", id)
+		fmt.Printf("Image %d added successfully!\n", id)
 	}
 	pack.PackUsersFromJSON("utils/packed_data/users.json", DB)
 	pack.PackEventFromJSON("utils/packed_data/events.json", DB)
