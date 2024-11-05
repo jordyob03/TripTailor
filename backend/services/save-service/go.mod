@@ -1,4 +1,4 @@
-module github.com/jordyob03/TripTailor/backend/services/itinerary-service
+module github.com/jordyob03/TripTailor/backend/services/save-service
 
 go 1.23.2
 
