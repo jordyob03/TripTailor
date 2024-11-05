@@ -1,0 +1,58 @@
+// QueryItineraries builds a dynamic SQL query based on the provided parameters
+func QueryItineraries(db *sql.DB, params map[string]interface{}) ([]models.Itinerary, error) {
+	baseQuery := `
+		SELECT itineraryid, name, city, country, languages, tags, events, postid, username, creationdate, lastupdate
+		FROM itineraries
+		WHERE 1=1
+	`
+
+	var conditions []string
+	var args []interface{}
+	argCounter := 1
+
+	// Dynamically build query conditions
+	for key, value := range params {
+		switch key {
+		case "username", "country", "city":
+			conditions = append(conditions, fmt.Sprintf("%s = $%d", key, argCounter))
+			args = append(args, value)
+			argCounter++
+		case "tags":
+			if tagArray, ok := value.([]string); ok && len(tagArray) > 0 {
+				// Use pq.Array to correctly handle PostgreSQL array intersection
+				conditions = append(conditions, fmt.Sprintf("tags && $%d", argCounter))
+				args = append(args, pq.Array(tagArray))
+				argCounter++
+			}
+		}
+	}
+
+	// Build the final query string
+	query := baseQuery + strings.Join(conditions, " AND ")
+
+	// Debugging: Print the final query and arguments
+	fmt.Println("Final Query:", query)
+	fmt.Println("Query Args:", args)
+
+	// Execute the query
+	rows, err := db.Query(query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute query: %w", err)
+	}
+	defer rows.Close()
+
+	// Process query results
+	var itineraries []models.Itinerary
+	for rows.Next() {
+		var itinerary models.Itinerary
+		if err := rows.Scan(
+			&itinerary.ItineraryId, &itinerary.Name, &itinerary.City, &itinerary.Country,
+			pq.Array(&itinerary.Languages), pq.Array(&itinerary.Tags), pq.Array(&itinerary.Events),
+			&itinerary.PostId, &itinerary.Username, &itinerary.CreationDate, &itinerary.LastUpdate,
+		); err != nil {
+			return nil, err
+		}
+		itineraries = append(itineraries, itinerary)
+	}
+	return itineraries, nil
+}
