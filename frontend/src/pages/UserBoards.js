@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import '../styles/styles.css';
 
 function MyBoards() {
-  const [selectedTab, setSelectedTab] = useState('boards');
-  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+
+  const handleBoardClick = (boardId) => {
+    navigate(`/my-boards/${boardId}`); // Navigate to the board's specific URL
+  };
 
   // Mock data for boards, with images added
   const mockData = [
@@ -76,19 +78,20 @@ function MyBoards() {
 
   return (
     <div className="my-boards">
-        <div className="heading">
-            <h2>My Boards</h2>
-        </div>
-        <div className="boards-container">
+      {/* Main Heading */}
+      <div className="heading">
+        <h2>My Boards</h2>
+      </div>
+      <div className="boards-container">
         {boards.map((board) => (
-          <div key={board.boardId} className="board-card">
+          <div key={board.boardId} className="board-card" onClick={() => handleBoardClick(board.boardId)}>
             {/* Image section */}
             <img src={board.image} alt={board.name} className="board-image" />
             
             {/* Content section */}
             <div className="board-content">
               <h3>{board.name}</h3>
-              <p><em>Date Created: <strong>{new Date(board.dateOfCreation).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</strong></em></p>
+              <p><strong>{new Date(board.dateOfCreation).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</strong></p>
               <p><em>{board.description}</em></p>
               <p><strong>Tags:</strong> {board.tags.join(', ')}</p>
             </div>

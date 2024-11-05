@@ -776,6 +776,11 @@
   padding-bottom: 20px;
 }
 
+.board-content {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 .board-card:hover {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
@@ -806,3 +811,178 @@
   color: #444;
 }
 
+.board-card-link {
+  text-decoration: none; /* Remove underline from the link */
+  color: inherit; /* Inherit color from parent */
+  display: block; /* Make the link a block element so it covers the card */
+}
+
+.board-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Ensures the image and content fit within rounded corners */
+  text-align: center;
+  transition: box-shadow 0.3s;
+  margin-bottom: 16px; /* Add gap at the bottom of the card */
+}
+
+.board-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Add hover effect */
+}
+
+/* General Container for Board Posts */
+.boardPostsContainer {
+  padding: 20px;
+  background-color: #f4f7fa; /* Light background color */
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding-top: 100px;
+}
+
+/* Board details section */
+.boardDetails {
+  text-align: center;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.boardDetails h2 {
+  font-size: 2em;
+  color: #333;
+}
+
+.boardDetails p {
+  font-size: 1.1em;
+  color: #555;
+  margin-top: 10px;
+}
+
+/* Grid layout for post cards */
+.postsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive grid with minimum size */
+  gap: 20px;
+  padding: 10px;
+  justify-items: center; /* Centers posts within grid cells */
+  max-width: 100%; /* Ensure it does not exceed the container width */
+}
+
+/* Individual post card styling */
+.postCard {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.postCard:hover {
+  transform: translateY(-5px); /* Lift the post on hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+}
+
+.postImage {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+/* Post info (username, date, likes) */
+.postInfo {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Reduce space between the elements */
+.postInfo h3 {
+  margin-bottom: -10px; /* Reduce bottom margin */
+  text-align: center; /* Center only the title */
+  margin: 0;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.postInfo p {
+  margin-bottom: -10px; /* Reduce bottom margin */
+  color: #666;
+  font-size: 0.9em;
+}
+
+.postInfo span {
+  margin-top: 10px; /* Optionally add small top margin */
+  color: #888;
+  font-size: 0.9em;
+}
+
+/* Post stats (likes and comments) */
+.postStats {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 0.9em;
+  color: #555;
+  margin-top: 15px;
+}
+
+.postStats span {
+  margin-right: 10px;
+}
+
+/* Message when no posts are available */
+.noPostsMessage {
+  text-align: center;
+  font-size: 1.2em;
+  color: #888;
+  margin-top: 30px;
+}
+
+/* Itinerary card styling (similar to post card) */
+.itineraryCard {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  padding: 20px; /* Add padding for better spacing */
+}
+
+.itineraryCard:hover {
+  transform: translateY(-5px); /* Lift the itinerary on hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+}
+
+/* Itinerary details layout */
+.itineraryDetails {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.itineraryDetails h4 {
+  font-size: 1.3em;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.itineraryDetails p {
+  color: #666;
+  font-size: 1em;
+  margin-bottom: 10px;
+}
+
+.itineraryDetails span {
+  color: #888;
+  font-size: 0.9em;
+}

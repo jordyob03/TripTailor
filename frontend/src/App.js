@@ -11,6 +11,7 @@ import HomePage from './pages/Homepage';
 import MyTravels from './pages/UserDashboard';
 import CreateItinerary from './pages/CreateItinerary'; 
 import MyBoards from './pages/UserBoards';
+import BoardPosts from './pages/BoardPosts';
 
 function App() {
   const [searchResults, setSearchResults] = useState([]);
@@ -39,6 +40,7 @@ function App() {
         <Route path="/search-results" element={<SearchResults searchResults={searchResults} searchParams={searchParams} isSearchPressed={true} />} />
         <Route path="/itincreation" element={<CreateItinerary />} />
         <Route path="/my-boards" element={<ProtectedRoute><MyBoards /></ProtectedRoute>} />
+        <Route path="/my-boards/:board_id" element={<ProtectedRoute><BoardPosts /></ProtectedRoute>} />
       </Routes>
     </Router>
   );
