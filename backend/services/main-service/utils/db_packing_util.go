@@ -9,16 +9,42 @@ import (
 	"os"
 )
 
-func PackImagesFromLocal(fp string, DB *sql.DB) (image_ids []int, count int) {
-
-	Image := db.Image{
-		ImageData: db.ImageToByte(fp),
-		Metadata:  []string{"local"},
-		ImageId:   3,
+func PackImagesFromLocal(dirPath string, DB *sql.DB) (image_ids []int, count int, err error) {
+	files, err := os.ReadDir(dirPath)
+	if err != nil {
+		log.Fatal("Error reading directory:", err)
+		return nil, 0, err
 	}
-	db.AddImage(DB, Image)
-	image_ids[0] = Image.ImageId
-	return image_ids, count
+
+	image_ids = make([]int, 0, len(files))
+
+	for _, file := range files {
+		filePath := fmt.Sprintf("%s/%s", dirPath, file.Name())
+
+		imageData := db.ImageToByte(filePath)
+
+		if len(imageData) == 0 {
+			log.Printf("Failed to convert image to bytes for file %s: empty byte data", file.Name())
+			continue
+		}
+
+		image := db.Image{
+			ImageData: imageData,
+			Metadata:  []string{"local"},
+			ImageId:   0,
+		}
+
+		imageID, err := db.AddImage(DB, image)
+		if err != nil {
+			log.Printf("Error adding image for file %s: %v", file.Name(), err)
+			continue
+		}
+
+		image_ids = append(image_ids, imageID)
+		count++
+	}
+
+	return image_ids, count, nil
 }
 func PackUsersFromJSON(fp string, DB *sql.DB) (user_ids []int, count int) {
 	data, err := os.ReadFile(fp)
