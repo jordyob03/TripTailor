@@ -9,6 +9,17 @@ import (
 	"os"
 )
 
+func PackImagesFromLocal(fp string, DB *sql.DB) (image_ids []int, count int) {
+
+	Image := db.Image{
+		ImageData: db.ImageToByte(fp),
+		Metadata:  []string{"local"},
+		ImageId:   3,
+	}
+	db.AddImage(DB, Image)
+	image_ids[0] = Image.ImageId
+	return image_ids, count
+}
 func PackUsersFromJSON(fp string, DB *sql.DB) (user_ids []int, count int) {
 	data, err := os.ReadFile(fp)
 	if err != nil {
