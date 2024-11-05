@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -55,18 +56,37 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 			return
 		}
 
-		// Iterate over events, create event then add to event db to get event ID
-		//eventIdStrings := []string{}
 		for _, event := range req.Events {
+
+			//If these work as I think they will, both start and end time should be converted into time objects now, also layout has to
+			//be "3:04 PM" as this is the reference time for the package. shoulkd handle tiem strings in hh:mm AM/PM format
+			layout := "3:04 PM"
+			startTime, err := time.Parse(layout, event.StartTime)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Invalid start time format for event %s", event.Name)})
+				return
+			}
+
+			endTime, err := time.Parse(layout, event.EndTime)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Invalid end time format for event %s", event.Name)})
+				return
+			}
+
+			eventCost, err := strconv.ParseFloat(event.Cost, 64)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Invalid cost format for event %s", event.Name)})
+				return
+			}
+
 			newEvent := models.Event{
 				Name:    event.Name,
 				Address: event.Location,
-
 				// I commented these out because it won't work until these are converted to the right data type time and float I think
-				//StartTime: event.StartTime,
-				//EndTime: event.EndTime,
+				StartTime:   startTime,
+				EndTime:     endTime,
 				Description: event.Description,
-				//Cost: event.Cost,
+				Cost:        eventCost,
 				ItineraryId: itinId,
 			}
 			eventId, err := models.AddEvent(dbConn, newEvent)
