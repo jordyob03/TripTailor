@@ -13,9 +13,8 @@ COPY ./internal/ ./internal/
 COPY wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o /itinerary-service-container ./cmd/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o /feed-service-container ./cmd/main.go
 
-EXPOSE 8083
+EXPOSE 8093
 
-
-ENTRYPOINT ["/itinerary-service-container"]
+ENTRYPOINT ["/feed-service-container"]

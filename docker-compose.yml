@@ -15,6 +15,16 @@ services:
     networks:
       - backend-network
       
+  feed-service:
+    build:
+      context: ./backend/services/feed-service
+      dockerfile: Dockerfile
+    container_name: feed-service-container
+    ports:
+      - "8093:8093"
+    command: ["/wait-for-it.sh", "db:5432", "--strict", "--", "/feed-service-container"]
+    networks:
+      - backend-network
   search-service:
     build:
       context: ./backend/services/search-service
