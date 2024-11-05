@@ -1,37 +1,12 @@
 import React, { useState, useRef } from 'react';
 import '../styles/styles.css';
 import Tags from '../config/tags.json';
-import iconMap from '../config/iconMap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function SearchResults({ searchResults = [], searchParams = {}, isSearchPressed = false }) {
   const tagContainerRef = useRef(null);
   const allTags = Object.values(Tags.categories).flat();
   const [selectedTags, setSelectedTags] = useState([]); 
   const [tagErrorMessage, setTagErrorMessage] = useState('');
-
-  const scrollTagsLeft = () => {
-    if (tagContainerRef.current) {
-      tagContainerRef.current.scrollBy({ left: -150, behavior: 'smooth' });
-    }
-  };
-
-  const scrollTagsRight = () => {
-    if (tagContainerRef.current) {
-      tagContainerRef.current.scrollBy({ left: 150, behavior: 'smooth' });
-    }
-  };
-
-  const handleTagClick = (tag) => {
-    // Toggle the selection of the tag
-    
-    if (selectedTags.includes(tag)) {
-      setSelectedTags(selectedTags.filter((t) => t !== tag));
-    } else {
-      setSelectedTags([...selectedTags, tag]);
-    }
-    setTagErrorMessage('');
-  };
 
   return (
     <div className="searchResultsContainer">

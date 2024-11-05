@@ -527,16 +527,33 @@
 
 .resultCard {
   background-color: white;
+  width: 23%; 
+  height: 10%; 
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   overflow: hidden;
   position: relative;
 }
 
+.tripsCard {
+  width: 23%; 
+  height: 10%; 
+  background-color: rgb(255, 255, 255);
+  overflow: hidden;
+  position: relative;
+}
+
 .resultCardImage {
   width: 100%;
-  height: 180px;
+  height: 250px;
   object-fit: cover;
+}
+
+.tripCardImage {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 30px
 }
 
 .resultCardContent {
@@ -669,11 +686,27 @@
   border: none;
   cursor: pointer;
 }
+
 .resultsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  display: flex;
+  gap: 2%;
+  flex-wrap: wrap;
   margin-top: 20px;
+  margin: 20px;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 95%;
+
+}
+
+.tripsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2%;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 95%;
+  padding: 0 60px;
 }
 
 .resultCard {
@@ -682,12 +715,6 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   overflow: hidden;
   position: relative;
-}
-
-.resultCardImage {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
 }
 
 .resultCardContent {
@@ -742,4 +769,12 @@
   margin-bottom: 10px;
   font-family: 'Red Hat Display', sans-serif;
   font-size: 14px;
+} 
+
+.itinCount {
+  color: #000000;
+  margin-top: 0px;
+  margin-bottom: 20px;
+  font-family: 'Red Hat Display', sans-serif;
+  font-size: 18px;
 } 

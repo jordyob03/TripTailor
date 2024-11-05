@@ -65,7 +65,6 @@ function NavBar({ onSearch }) {
         });
         console.log('API response:', response);
 
-
         const formattedResults = response.data.map(itinerary => ({
           location: `${itinerary.city}, ${itinerary.country}`,
           title: itinerary.name,
