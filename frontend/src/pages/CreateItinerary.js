@@ -13,9 +13,9 @@ function CreateItinerary() {
   const [itineraryImages, setItineraryImages] = useState([]);
   const [itineraryDetails, setItineraryDetails] = useState({
     name: '',
-    location: '',
-    description: '',
-    estimatedCost: ''
+    city: '',
+    country: '',
+    description: ''
   });
 
   const navigate = useNavigate()
@@ -61,8 +61,7 @@ function CreateItinerary() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {    e.preventDefault();
   
     // Filter out events that have no description and no location
     const filteredEvents = events.filter(
@@ -70,9 +69,9 @@ function CreateItinerary() {
     );
   
     // Basic info check
-    const { name, location, description, estimatedCost } = itineraryDetails;
+    const { name, city, country, description} = itineraryDetails;
   
-    if (name && location && description && estimatedCost) {
+    if (name && city && country && description) {
       setBasicErrorMessage('');
     } else {
       setBasicErrorMessage('Please fill out all basic info fields.');
@@ -105,7 +104,7 @@ function CreateItinerary() {
         event.cost
       ];
 
-      if (name && location && description && estimatedCost && selectedTags.length >= 3 && hasValidEvent)
+      if (name && city && country && description && selectedTags.length >= 3 && hasValidEvent)
       {navigate('/my-travels');}
     });
 
@@ -117,6 +116,7 @@ function CreateItinerary() {
     if (!hasIncompleteEvent && hasValidEvent) {
       setEventErrorMessage('');
     }
+    
 
     const Data = {
       Name: itineraryDetails.name,
@@ -126,7 +126,7 @@ function CreateItinerary() {
       Cost: itineraryDetails.estimatedCost,
       Tags: selectedTags,
       Events: events,
-      
+
     }
 
     console.log(Data);
@@ -180,15 +180,27 @@ function CreateItinerary() {
                 />
               </div>
             <div className="inputGroup">
-              <label htmlFor="location" className="subheadingLeft">Location</label>
+              <label htmlFor="city" className="subheadingLeft">City</label>
               <input
                 type="text"
-                id="location"
-                name="location"
-                value={itineraryDetails.location}
+                id="city"
+                name="city"
+                value={itineraryDetails.city}
                 onChange={handleInputChange}
                 className="input"
-                placeholder="Enter location"
+                placeholder="Enter city"
+              />
+            </div>
+            <div className="inputGroup">
+              <label htmlFor="country" className="subheadingLeft">Country</label>
+              <input
+                type="text"
+                id="country"
+                name="country"
+                value={itineraryDetails.country}
+                onChange={handleInputChange}
+                className="input"
+                placeholder="Enter country"
               />
             </div>
             <div className="inputGroup">
@@ -201,21 +213,6 @@ function CreateItinerary() {
                 className="input"
                 placeholder="Enter a brief description of your itinerary"
                 maxLength="100"
-              />
-            </div>
-            <div className="inputGroup">
-              <label htmlFor="estimatedCost" className="subheadingLeft">Estimated Cost</label>
-              <input
-                type="number"
-                id="estimatedCost"
-                name="estimatedCost"
-                value={itineraryDetails.estimatedCost}
-                onChange={handleInputChange}
-                className="input"
-                placeholder="Enter estimated total cost"
-                min="0"
-                max="1000000" 
-                step="0.01" 
               />
             </div>
             {basicErrorMessage && <div className="errorMessage">{basicErrorMessage}</div>}
