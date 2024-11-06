@@ -95,7 +95,7 @@ func main() {
 			if err := db.AddBoardPost(DB, boardId, postid1, true); err != nil {
 				log.Fatal("Error adding post to board:", err)
 			}
-			itinerary := db.Itinerary{
+			itinerary1 := db.Itinerary{
 				Name:        "Trip to the Beach",
 				City:        "St. John's",
 				Country:     "Canada",
@@ -109,10 +109,10 @@ func main() {
 				Username:    "wmksherwani",
 			}
 
-			if itineraryid, err := db.AddItinerary(DB, itinerary); err != nil {
+			if itineraryid1, err := db.AddItinerary(DB, itinerary1); err != nil {
 				log.Fatal("Error creating itinerary:", err)
 			} else {
-				fmt.Printf("Itinerary %d created successfully!\n", itineraryid)
+				fmt.Printf("Itinerary %d created successfully!\n", itineraryid1)
 
 				event := db.Event{
 					Name:        "Trip to the Beach",
@@ -121,7 +121,7 @@ func main() {
 					Description: "Enjoy a day at the beach with friends and family!",
 					StartTime:   time.Now(),
 					EndTime:     time.Now(),
-					ItineraryId: itineraryid,
+					ItineraryId: itineraryid1,
 					EventImages: []string{},
 				}
 
@@ -177,6 +177,72 @@ func main() {
 			fmt.Printf("Post %d created successfully!\n", postid2)
 			if err := db.AddBoardPost(DB, boardId, postid2, true); err != nil {
 				log.Fatal("Error adding post to board:", err)
+			}
+			itinerary2 := db.Itinerary{
+				Name:        "Trip to the Beach",
+				City:        "St. John's",
+				Country:     "Canada",
+				Title:       "Beach Trip",
+				Description: "Enjoy a day at the beach with friends and family!",
+				Price:       100.00,
+				Languages:   []string{"English", "Urdu"},
+				Tags:        []string{"Travel", "Adventure"},
+				Events:      []string{},
+				PostId:      postid2,
+				Username:    "wmksherwani",
+			}
+
+			if itineraryid2, err := db.AddItinerary(DB, itinerary2); err != nil {
+				log.Fatal("Error creating itinerary:", err)
+			} else {
+				fmt.Printf("Itinerary %d created successfully!\n", itineraryid2)
+
+				event := db.Event{
+					Name:        "Trip to the Beach",
+					Cost:        100.00,
+					Address:     "1234 Beach St.",
+					Description: "Enjoy a day at the beach with friends and family!",
+					StartTime:   time.Now(),
+					EndTime:     time.Now(),
+					ItineraryId: itineraryid2,
+					EventImages: []string{},
+				}
+
+				if eventid, err := db.AddEvent(DB, event); err != nil {
+					log.Fatal("Error creating event:", err)
+				} else {
+					fmt.Printf("Event %d created successfully!\n", eventid)
+				}
+
+				image1 := db.Image{
+					ImageData: db.WebImageToByte("https://wallpapercave.com/wp/wp8484597.jpg"),
+				}
+
+				id, err := db.AddImage(DB, image1)
+				if err != nil {
+					log.Fatal("Error adding image:", err)
+				} else {
+					fmt.Printf("Image %d added successfully!\n", id)
+				}
+
+				image2 := db.Image{
+					ImageData: db.WebImageToByte("https://wallpapercave.com/uwp/uwp4469044.png"),
+				}
+
+				id, err = db.AddImage(DB, image2)
+				if err != nil {
+					log.Fatal("Error adding image:", err)
+				} else {
+					fmt.Printf("Image %d added successfully!", id)
+				}
+
+				if err := db.AddEventImage(DB, event.EventId, 1); err != nil {
+					log.Fatal("Error adding event image:", err)
+				}
+
+				if err := db.AddEventImage(DB, event.EventId, 2); err != nil {
+					log.Fatal("Error adding event image:", err)
+				}
 			}
 		}
 	}

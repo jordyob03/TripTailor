@@ -162,7 +162,6 @@ function BoardPosts() {
       const postsData = await fetchposts(selectedBoard.boardId);
       const structuredData = [];
   
-      // For each post, fetch itineraries, then events
       for (let post of postsData) {
         console.log("Fetching itineraries for postId:", post.postId);
   

@@ -109,14 +109,13 @@ func RemoveItinerary(DB *sql.DB, itineraryID int) error {
 
 func GetItinerary(DB *sql.DB, itineraryID int) (Itinerary, error) {
 	getItinerarySQL := `
-	SELECT itineraries (name, city, country, title, description, price, languages, tags, events, postId, username)
+	SELECT name, city, country, title, description, price, languages, tags, events, postId, username
 	FROM itineraries
 	WHERE itineraryId = $1;`
 
 	var itinerary Itinerary
 
 	err := DB.QueryRow(getItinerarySQL, itineraryID).Scan(
-		&itinerary.ItineraryId,
 		&itinerary.Name,
 		&itinerary.City,
 		&itinerary.Country,
