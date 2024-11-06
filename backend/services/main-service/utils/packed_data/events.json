@@ -8,7 +8,7 @@
     "startTime": "2024-06-01T10:00:00Z",
     "endTime": "2024-06-01T12:00:00Z",
     "itineraryId": 201,
-    "eventImages": ["0"]
+    "eventImages": ["2"]
   },
   {
     "eventId": 1,
@@ -19,7 +19,7 @@
     "startTime": "2024-06-02T09:00:00Z",
     "endTime": "2024-06-02T11:30:00Z",
     "itineraryId": 201,
-    "eventImages": ["1"]
+    "eventImages": ["2"]
   },
   {
     "eventId": 2,
