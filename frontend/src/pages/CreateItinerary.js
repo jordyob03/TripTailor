@@ -3,7 +3,7 @@ import Tags from '../config/tags.json';
 import '../styles/styles.css'; 
 import { useNavigate } from 'react-router';
 import itineraryAPI from '../api/itineraryAPI.js';
-import { convertBytesToImage, convertFileToBytes } from '../utils/imageHandler.js';
+import { convertBytesToImage, convertFileToBase64 } from '../utils/imageHandler.js';
 
 function CreateItinerary() {
   const categories = Tags.categories;
@@ -37,15 +37,16 @@ function CreateItinerary() {
 
   const handleMultipleFileChange = async (e) => {
     const files = Array.from(e.target.files);
-    
+
     const convertedImages = await Promise.all(files.map(async (file) => {
-        const previewUrl = URL.createObjectURL(file);  
-        const imageBytes = await convertFileToBytes(file); 
-        return { file, previewUrl, imageBytes }; 
+        const previewUrl = URL.createObjectURL(file);
+        const base64String = await convertFileToBase64(file); 
+        return { file, previewUrl, base64String };
     }));
 
     setItineraryImages([...itineraryImages, ...convertedImages]);
 };
+
 
 
   const removeImage = (index) => {
@@ -137,7 +138,7 @@ function CreateItinerary() {
       Description: itineraryDetails.description,
       Tags: selectedTags,
       Events: filteredEvents,
-      Images: itineraryImages.map(img => img.imageBytes),
+      Images: itineraryImages.map(img => img.base64String)
     }
 
     try {

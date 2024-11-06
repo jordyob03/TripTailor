@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"encoding/base64"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -28,6 +29,7 @@ type CreateItinRequest struct {
 	Tags        []string             `json:"tags"`
 	Events      []CreateEventRequest `json:"events"`
 	Username    string               `json:"username"`
+	Images      []string             `json:"images"`
 }
 
 func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
@@ -44,20 +46,26 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 		for i, event := range req.Events {
 			eventNames[i] = event.Name
 		}
+		fmt.Printf("UPDATED PRINT HERE: %+v\n", req.Images)
+		var imageIds []int
+		for _, base64Image := range req.Images {
+			imageData, err := base64.StdEncoding.DecodeString(base64Image)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid image data format"})
+				return
+			}
 
-		var imageId int
-		if len(req.ImageData) > 0 {
 			image := models.Image{
-				ImageData: req.ImageData,
+				ImageData: imageData,
 				Metadata:  []string{"Itinerary image"},
 			}
 
-			var err error
-			imageId, err = models.AddImage(dbConn, image)
+			imageId, err := models.AddImage(dbConn, image)
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to store image"})
 				return
 			}
+			imageIds = append(imageIds, imageId)
 		}
 
 		itin := models.Itinerary{
@@ -67,7 +75,6 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 			Description: req.Description,
 			Tags:        req.Tags,
 			Events:      eventNames,
-			PostId:      req.PostId,
 			Username:    req.Username,
 		}
 
@@ -148,10 +155,10 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 
 		// Respond to the client with the received data
 		c.JSON(http.StatusOK, gin.H{
-			"message": "Itinerary received",
-			"itinId":  itinId,
-			"imageId": imageId,
-			"postId":  postId,
+			"message":  "Itinerary received",
+			"itinId":   itinId,
+			"imageIds": imageIds,
+			"postId":   postId,
 		})
 
 	}
