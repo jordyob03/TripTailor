@@ -2,51 +2,37 @@ package handlers
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
-	//"strconv"
 
-	db "github.com/jordyob03/TripTailor/backend/services/search-service/internal/db" // Import from internal/db
+	"github.com/jordyob03/TripTailor/backend/services/search-service/internal/db"
 
 	"github.com/gin-gonic/gin"
 )
 
-// SearchItineraries handles search requests with optional filters
+// SearchItineraries handles the search request
 func SearchItineraries(dbConn *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Collect query parameters dynamically
-		params := map[string]interface{}{}
-
-		// Add parameters only if they are present in the request
-		if username := c.Query("username"); username != "" {
-			params["username"] = username
-		}
-		if country := c.Query("country"); country != "" {
-			params["country"] = country
-		}
-		if city := c.Query("city"); city != "" {
-			params["city"] = city
-		}
-		if tags := c.QueryArray("tags"); len(tags) > 0 {
-			params["tags"] = tags
-		}
-		if languages := c.QueryArray("languages"); len(languages) > 0 {
-			params["languages"] = languages
+		// Parse query parameters into a map
+		params := map[string]interface{}{
+			"tags":      c.Query("tags"),
+			"languages": c.Query("languages"),
+			"country":   c.Query("country"),
+			"city":      c.Query("city"),
+			"username":  c.Query("username"),
 		}
 
-		// If no parameters are provided, return an error
-		if len(params) == 0 {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "No query parameters provided"})
-			return
-		}
+		// Debugging: Print parsed params
+		fmt.Printf("Parsed Params: %v\n", params)
 
-		// Query the database using the dynamic parameters
+		// Query the database
 		itineraries, err := db.QueryItineraries(dbConn, params)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
-		// Return the results as JSON
+		// Return the itineraries as JSON
 		c.JSON(http.StatusOK, itineraries)
 	}
 }
