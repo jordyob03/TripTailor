@@ -5,73 +5,6 @@ import boardAPI from '../api/boardAPI.js';
 
 const userId = localStorage.getItem('userId');
 
-// Mock function to simulate fetching selectedBoard data
-const getBoard = async (boardId) => {
-  // Simulate API response
-  const boardData = {
-    boardId: boardId, // Use the passed boardId correctly
-    name: "Sample Board", // Placeholder for actual selectedBoard name
-    creationDate: new Date(),
-    description: `Description for selectedBoard with ID ${boardId}`, // Update description to include boardId
-    username: "board_owner",
-    posts: ["1", "2", "3", "4", "5", "6"], // Placeholder for actual post IDs
-    tags: ["Travel", "Adventure"]
-  };
-  return boardData;
-};
-
-// Mock function to simulate fetching post data
-const getPost = async (postId) => {
-  // Simulate API response
-  const postData = {
-    postId: postId,
-    itineraryId: 101 + parseInt(postId), // Just an example
-    creationDate: new Date(),
-    username: `user_${postId}`,
-    boards: ["Sample Board"],
-    likes: Math.floor(Math.random() * 100), // Random number for likes
-    comments: [`Comment 1 for post ${postId}`, `Comment 2 for post ${postId}`]
-  };
-  return postData;
-};
-
-const GetItinerary = (itineraryId) => {
-    // Simulate fetching itinerary data from an API or database
-    const mockItineraryData = {
-      itineraryId: itineraryId,
-      name: "Summer in Paris",
-      city: "Paris",
-      country: "France",
-      title: "Amazing Summer Vacation",
-      description: "A detailed itinerary for an amazing summer vacation in Paris.",
-      price: 2000.00,
-      languages: ["English", "French"],
-      tags: ["Vacation", "Summer", "Paris"],
-      events: ["Eiffel Tower Visit", "Seine River Cruise"],
-      postId: 1,
-      username: "john_doe",
-    };
-
-    return mockItineraryData;
-}
-
-const GetEvent = (EventId) => {
-    // Simulate fetching itinerary data from an API or database
-    const mockEventData = {
-        EventId: EventId,
-        Name: "Eiffel Tower Visit",
-        Cost: 50.00,
-        Address: "Champ de Mars, 5 Avenue Anatole, 75007 Paris, France",
-        Description: "Visit the iconic Eiffel Tower and enjoy panoramic views of Paris.",
-        StartTime: "2024-07-01T10:00:00",
-        EndTime: "2024-07-01T12:00:00",
-        ItineraryId: 101,
-        EventImages: ["", ""],
-    };
-
-    return mockEventData;
-}
-
 function BoardPosts() {
   const navigate = useNavigate();
   const { boardIdStr } = useParams();
@@ -128,8 +61,8 @@ function BoardPosts() {
   
     try {
       const response = await boardAPI.get('/itineraries', { params: { postId: postId } });
-      console.log("Fetched itineraries:", response.data.itineraries);
-      return response.data;
+      console.log("Fetched itineraries:", response.data.Itinerary);
+      return response.data.Itinerary;
     } catch (error) {
       console.error("Error fetching itineraries:", error);
       setErrorMessage("Failed to fetch itineraries");
@@ -142,9 +75,9 @@ function BoardPosts() {
   
     try {
       const response = await boardAPI.get('/events', { params: { itineraryId: itineraryId } });
-      console.log("Fetched events:", response.data.events);
+      console.log("Fetched events:", response.data.Events);
   
-      return response.data;
+      return response.data.Events;
     } catch (error) {
       console.error("Error fetching events:", error);
       setErrorMessage("Failed to fetch events");
@@ -167,10 +100,9 @@ function BoardPosts() {
         const itinerary = await fetchitineraries(post.postId);
         console.log("Fetched itinerary for postId:", post.postId, itinerary);
   
-        const eventsData = await fetchevents(itinerary.ItineraryId);
+        const eventsData = await fetchevents(itinerary.itineraryId);
         console.log("Fetched events for itinerary:", itinerary.ItineraryId, eventsData);
   
-        // Push the post's itineraries and events into the structured data
         structuredData.push({ itinerary, events: eventsData });
       }
   
@@ -192,8 +124,23 @@ function BoardPosts() {
     fetchAllData(); // Fetch data when the component mounts
   }, [boardId]); // Re-fetch data if boardId changes
   
+  // Array of fallback images
+  const fallbackImages = [
+    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Boat-Trip_800x800.jpg",
+    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Beach-Cabin_800x800.jpg",
+    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Mining_800x800.jpg",
+    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Winter-Celebration_800x800.jpg",
+    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Media-Block-Image_Java-Keyart_800x450.jpg",
+    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Media-Block-Image_PC-Bundle-Keyart_800x450.jpg",
+    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Updates-Carousel_Tricky-Trials_800x450.jpg",
+    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Updates-Carousel_Wild-Update_800x450.jpg",
+  ];
 
-  const fallbackImage = 'https://www.minecraft.net/content/dam/minecraftnet/franchise/logos/Homepage_Download-Launcher_Creeper-Logo_500x500.png';
+  // Function to get a random fallback image
+  const getRandomImage = () => {
+    const randomIndex = Math.floor(Math.random() * fallbackImages.length);
+    return fallbackImages[randomIndex];
+  };
 
   return (
     <div className="boardPostsContainer">
@@ -204,42 +151,39 @@ function BoardPosts() {
           <p>Created by: {selectedBoard.username}, on {new Date(selectedBoard.creationDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
         </div>
       )}
+  
+  <div className="postsGrid">
+  {Array.isArray(data) && data.length > 0 ? (
+    data.map((dataEntry, index) => {
+      const { itinerary, events } = dataEntry;
+      const eventImage = events?.[0]?.EventImages?.[0] || getRandomImage();
 
-      <div className="postsGrid">
-        {Array.isArray(posts) && posts.length > 0 ? (
-          posts.map((post) => {
-            const itinerary = GetItinerary(post.itineraryId);
-            const eventImage = GetEvent(itinerary.events[0]).EventImages[0]
-              ? GetEvent(itinerary.events[0]).EventImages[0]
-              : [fallbackImage];
-
-            return (
-            <div key={post.postId} className="postCard" onClick={() => handleBoardClick(post.postId)}>
-                 <img src={eventImage} alt={selectedBoard.name} className="selectedBoard-image" />
-              <div key={post.postId} className="postCard">
-                <div className="postInfo">
-                <h3>{itinerary.title}</h3>
-                  <span>{new Date(post.creationDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
-                  <p><strong>City:</strong> {itinerary.city}</p>
-                  <p><strong>Country:</strong> {itinerary.country}</p>
-                  <p><strong>Price:</strong> ${itinerary.price}</p>
-                  <p><strong>Languages:</strong> {itinerary.languages.join(", ")}</p>
-                  <p><strong>Tags:</strong> {itinerary.tags.join(", ")}</p>
-                  <div className="postStats">
-                    <span>{post.likes} Likes</span>
-                    {/* <span>{post.comments ? post.comments.length : 0} Comments</span> */}
-                  </div>
-                </div>
-                </div>
+      return (
+        <div key={index} className="postCard" onClick={() => handleBoardClick(itinerary.postId)}>
+          <img src={eventImage} alt={selectedBoard.name} className="post-image" />
+          <div className="postInfo">
+            <h3>{itinerary.title}</h3>
+            <span>{new Date(itinerary.creationDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+            <p><strong>City:</strong> {itinerary.city}</p>
+            <p><strong>Country:</strong> {itinerary.country}</p>
+            <p><strong>Price:</strong> ${itinerary?.price !== undefined ? itinerary.price : 0}</p>
+            <p><strong>Languages:</strong> {Array.isArray(itinerary.languages) ? itinerary.languages.join(", ") : "N/A"}</p>
+            <p><strong>Tags:</strong> {Array.isArray(itinerary.tags) ? itinerary.tags.join(", ") : "N/A"}</p>
+            <div className="postStats">
+              <span>{itinerary.likes || 0} Likes</span>
+              <span>{itinerary.comments ? itinerary.comments.length : 0} Comments</span>
             </div>
-            );
-          })
-        ) : (
-          <div className="noPostsMessage">No posts available in this selectedBoard.</div>
-        )}
-      </div>
+          </div>
+        </div>
+      );
+    })
+  ) : (
+    <div className="noPostsMessage">No posts available in this board.</div>
+  )}
+</div>
+
     </div>
-  );
+  );  
 }
 
 export default BoardPosts;

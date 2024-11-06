@@ -65,183 +65,182 @@ func main() {
 		log.Fatal("Error creating user:", err)
 	} else {
 		fmt.Printf("User %d created successfully!\n", userid)
-	}
-
-	board := db.Board{
-		Name:         "Travel Board",
-		CreationDate: time.Now(),
-		Description:  "A board for all things travel!",
-		Username:     "wmksherwani",
-		Posts:        []string{},
-		Tags:         []string{"Travel", "Adventure"},
-	}
-
-	if boardId, err := db.AddBoard(DB, board); err != nil {
-		log.Fatal("Error creating board:", err)
-	} else {
-		fmt.Printf("Board %d created successfully!\n", boardId)
-		post1 := db.Post{
+		board := db.Board{
+			Name:         "Travel Board",
 			CreationDate: time.Now(),
+			Description:  "A board for all things travel!",
 			Username:     "wmksherwani",
-			Boards:       []string{},
-			Likes:        0,
-			Comments:     []string{},
+			Posts:        []string{},
+			Tags:         []string{"Travel", "Adventure"},
 		}
 
-		if postid1, err := db.AddPost(DB, post1); err != nil {
-			log.Fatal("Error creating post:", err)
+		if boardId, err := db.AddBoard(DB, board); err != nil {
+			log.Fatal("Error creating board:", err)
 		} else {
-			fmt.Printf("Post %d created successfully!\n", postid1)
-			if err := db.AddBoardPost(DB, boardId, postid1, true); err != nil {
-				log.Fatal("Error adding post to board:", err)
-			}
-			itinerary1 := db.Itinerary{
-				Name:        "Trip to the Beach",
-				City:        "St. John's",
-				Country:     "Canada",
-				Title:       "Beach Trip",
-				Description: "Enjoy a day at the beach with friends and family!",
-				Price:       100.00,
-				Languages:   []string{"English", "Urdu"},
-				Tags:        []string{"Travel", "Adventure"},
-				Events:      []string{},
-				PostId:      postid1,
-				Username:    "wmksherwani",
+			fmt.Printf("Board %d created successfully!\n", boardId)
+			post1 := db.Post{
+				CreationDate: time.Now(),
+				Username:     "wmksherwani",
+				Boards:       []string{},
+				Likes:        0,
+				Comments:     []string{},
 			}
 
-			if itineraryid1, err := db.AddItinerary(DB, itinerary1); err != nil {
-				log.Fatal("Error creating itinerary:", err)
+			if postid1, err := db.AddPost(DB, post1); err != nil {
+				log.Fatal("Error creating post:", err)
 			} else {
-				fmt.Printf("Itinerary %d created successfully!\n", itineraryid1)
-
-				event := db.Event{
+				fmt.Printf("Post %d created successfully!\n", postid1)
+				if err := db.AddBoardPost(DB, boardId, postid1, true); err != nil {
+					log.Fatal("Error adding post to board:", err)
+				}
+				itinerary1 := db.Itinerary{
 					Name:        "Trip to the Beach",
-					Cost:        100.00,
-					Address:     "1234 Beach St.",
+					City:        "St. John's",
+					Country:     "Canada",
+					Title:       "Beach Trip",
 					Description: "Enjoy a day at the beach with friends and family!",
-					StartTime:   time.Now(),
-					EndTime:     time.Now(),
-					ItineraryId: itineraryid1,
-					EventImages: []string{},
+					Price:       100.00,
+					Languages:   []string{"English", "Urdu"},
+					Tags:        []string{"Travel", "Adventure"},
+					Events:      []string{},
+					PostId:      postid1,
+					Username:    "wmksherwani",
 				}
 
-				if eventid, err := db.AddEvent(DB, event); err != nil {
-					log.Fatal("Error creating event:", err)
+				if itineraryid1, err := db.AddItinerary(DB, itinerary1); err != nil {
+					log.Fatal("Error creating itinerary:", err)
 				} else {
-					fmt.Printf("Event %d created successfully!\n", eventid)
-				}
+					fmt.Printf("Itinerary %d created successfully!\n", itineraryid1)
 
-				image1 := db.Image{
-					ImageData: db.WebImageToByte("https://wallpapercave.com/wp/wp8484597.jpg"),
-				}
+					event := db.Event{
+						Name:        "Trip to the Beach",
+						Cost:        100.00,
+						Address:     "1234 Beach St.",
+						Description: "Enjoy a day at the beach with friends and family!",
+						StartTime:   time.Now(),
+						EndTime:     time.Now(),
+						ItineraryId: itineraryid1,
+						EventImages: []string{},
+					}
 
-				id, err := db.AddImage(DB, image1)
-				if err != nil {
-					log.Fatal("Error adding image:", err)
-				} else {
-					fmt.Printf("Image %d added successfully!\n", id)
-				}
+					if eventid, err := db.AddEvent(DB, event); err != nil {
+						log.Fatal("Error creating event:", err)
+					} else {
+						fmt.Printf("Event %d created successfully!\n", eventid)
+					}
 
-				image2 := db.Image{
-					ImageData: db.WebImageToByte("https://wallpapercave.com/uwp/uwp4469044.png"),
-				}
+					image1 := db.Image{
+						ImageData: db.WebImageToByte("https://wallpapercave.com/wp/wp8484597.jpg"),
+					}
 
-				id, err = db.AddImage(DB, image2)
-				if err != nil {
-					log.Fatal("Error adding image:", err)
-				} else {
-					fmt.Printf("Image %d added successfully!", id)
-				}
+					id, err := db.AddImage(DB, image1)
+					if err != nil {
+						log.Fatal("Error adding image:", err)
+					} else {
+						fmt.Printf("Image %d added successfully!\n", id)
+					}
 
-				if err := db.AddEventImage(DB, event.EventId, 1); err != nil {
-					log.Fatal("Error adding event image:", err)
-				}
+					image2 := db.Image{
+						ImageData: db.WebImageToByte("https://wallpapercave.com/uwp/uwp4469044.png"),
+					}
 
-				if err := db.AddEventImage(DB, event.EventId, 2); err != nil {
-					log.Fatal("Error adding event image:", err)
+					id, err = db.AddImage(DB, image2)
+					if err != nil {
+						log.Fatal("Error adding image:", err)
+					} else {
+						fmt.Printf("Image %d added successfully!", id)
+					}
+
+					if err := db.AddEventImage(DB, event.EventId, 1); err != nil {
+						log.Fatal("Error adding event image:", err)
+					}
+
+					if err := db.AddEventImage(DB, event.EventId, 2); err != nil {
+						log.Fatal("Error adding event image:", err)
+					}
 				}
 			}
-		}
 
-		post2 := db.Post{
-			CreationDate: time.Now(),
-			Username:     "wmksherwani",
-			Boards:       []string{},
-			Likes:        0,
-			Comments:     []string{},
-		}
-
-		if postid2, err := db.AddPost(DB, post2); err != nil {
-			log.Fatal("Error creating post:", err)
-		} else {
-			fmt.Printf("Post %d created successfully!\n", postid2)
-			if err := db.AddBoardPost(DB, boardId, postid2, true); err != nil {
-				log.Fatal("Error adding post to board:", err)
-			}
-			itinerary2 := db.Itinerary{
-				Name:        "Trip to the Beach",
-				City:        "St. John's",
-				Country:     "Canada",
-				Title:       "Beach Trip",
-				Description: "Enjoy a day at the beach with friends and family!",
-				Price:       100.00,
-				Languages:   []string{"English", "Urdu"},
-				Tags:        []string{"Travel", "Adventure"},
-				Events:      []string{},
-				PostId:      postid2,
-				Username:    "wmksherwani",
+			post2 := db.Post{
+				CreationDate: time.Now(),
+				Username:     "wmksherwani",
+				Boards:       []string{},
+				Likes:        0,
+				Comments:     []string{},
 			}
 
-			if itineraryid2, err := db.AddItinerary(DB, itinerary2); err != nil {
-				log.Fatal("Error creating itinerary:", err)
+			if postid2, err := db.AddPost(DB, post2); err != nil {
+				log.Fatal("Error creating post:", err)
 			} else {
-				fmt.Printf("Itinerary %d created successfully!\n", itineraryid2)
-
-				event := db.Event{
+				fmt.Printf("Post %d created successfully!\n", postid2)
+				if err := db.AddBoardPost(DB, boardId, postid2, true); err != nil {
+					log.Fatal("Error adding post to board:", err)
+				}
+				itinerary2 := db.Itinerary{
 					Name:        "Trip to the Beach",
-					Cost:        100.00,
-					Address:     "1234 Beach St.",
+					City:        "St. John's",
+					Country:     "Canada",
+					Title:       "Beach Trip",
 					Description: "Enjoy a day at the beach with friends and family!",
-					StartTime:   time.Now(),
-					EndTime:     time.Now(),
-					ItineraryId: itineraryid2,
-					EventImages: []string{},
+					Price:       100.00,
+					Languages:   []string{"English", "Urdu"},
+					Tags:        []string{"Travel", "Adventure"},
+					Events:      []string{},
+					PostId:      postid2,
+					Username:    "wmksherwani",
 				}
 
-				if eventid, err := db.AddEvent(DB, event); err != nil {
-					log.Fatal("Error creating event:", err)
+				if itineraryid2, err := db.AddItinerary(DB, itinerary2); err != nil {
+					log.Fatal("Error creating itinerary:", err)
 				} else {
-					fmt.Printf("Event %d created successfully!\n", eventid)
-				}
+					fmt.Printf("Itinerary %d created successfully!\n", itineraryid2)
 
-				image1 := db.Image{
-					ImageData: db.WebImageToByte("https://wallpapercave.com/wp/wp8484597.jpg"),
-				}
+					event := db.Event{
+						Name:        "Trip to the Beach",
+						Cost:        100.00,
+						Address:     "1234 Beach St.",
+						Description: "Enjoy a day at the beach with friends and family!",
+						StartTime:   time.Now(),
+						EndTime:     time.Now(),
+						ItineraryId: itineraryid2,
+						EventImages: []string{},
+					}
 
-				id, err := db.AddImage(DB, image1)
-				if err != nil {
-					log.Fatal("Error adding image:", err)
-				} else {
-					fmt.Printf("Image %d added successfully!\n", id)
-				}
+					if eventid, err := db.AddEvent(DB, event); err != nil {
+						log.Fatal("Error creating event:", err)
+					} else {
+						fmt.Printf("Event %d created successfully!\n", eventid)
+					}
 
-				image2 := db.Image{
-					ImageData: db.WebImageToByte("https://wallpapercave.com/uwp/uwp4469044.png"),
-				}
+					image1 := db.Image{
+						ImageData: db.WebImageToByte("https://wallpapercave.com/wp/wp8484597.jpg"),
+					}
 
-				id, err = db.AddImage(DB, image2)
-				if err != nil {
-					log.Fatal("Error adding image:", err)
-				} else {
-					fmt.Printf("Image %d added successfully!", id)
-				}
+					id, err := db.AddImage(DB, image1)
+					if err != nil {
+						log.Fatal("Error adding image:", err)
+					} else {
+						fmt.Printf("Image %d added successfully!\n", id)
+					}
 
-				if err := db.AddEventImage(DB, event.EventId, 1); err != nil {
-					log.Fatal("Error adding event image:", err)
-				}
+					image2 := db.Image{
+						ImageData: db.WebImageToByte("https://wallpapercave.com/uwp/uwp4469044.png"),
+					}
 
-				if err := db.AddEventImage(DB, event.EventId, 2); err != nil {
-					log.Fatal("Error adding event image:", err)
+					id, err = db.AddImage(DB, image2)
+					if err != nil {
+						log.Fatal("Error adding image:", err)
+					} else {
+						fmt.Printf("Image %d added successfully!", id)
+					}
+
+					if err := db.AddEventImage(DB, event.EventId, 1); err != nil {
+						log.Fatal("Error adding event image:", err)
+					}
+
+					if err := db.AddEventImage(DB, event.EventId, 2); err != nil {
+						log.Fatal("Error adding event image:", err)
+					}
 				}
 			}
 		}
