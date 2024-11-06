@@ -19,7 +19,7 @@
     "startTime": "2024-06-02T09:00:00Z",
     "endTime": "2024-06-02T11:30:00Z",
     "itineraryId": 201,
-    "eventImages": ["louvre_image1", "louvre_image2"]
+    "eventImages": ["3"]
   },
   {
     "eventId": 2,
@@ -30,7 +30,7 @@
     "startTime": "2024-06-02T15:00:00Z",
     "endTime": "2024-06-02T16:00:00Z",
     "itineraryId": 201,
-    "eventImages": ["seine_cruise_image1", "seine_cruise_image2"]
+    "eventImages": ["4"]
   },
   {
     "eventId": 3,
@@ -41,7 +41,7 @@
     "startTime": "2024-06-03T10:00:00Z",
     "endTime": "2024-06-03T12:00:00Z",
     "itineraryId": 201,
-    "eventImages": ["notre_dame_image1", "notre_dame_image2"]
+    "eventImages": ["8"]
   },
   {
     "eventId": 4,
@@ -52,7 +52,7 @@
     "startTime": "2024-06-04T09:00:00Z",
     "endTime": "2024-06-04T17:00:00Z",
     "itineraryId": 202,
-    "eventImages": ["versailles_image1", "versailles_image2"]
+    "eventImages": ["1", "2"]
   },
   {
     "eventId": 5,

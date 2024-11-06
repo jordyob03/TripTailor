@@ -62,7 +62,7 @@ func main() {
 		fmt.Printf("Image %d added successfully!\n", id)
 	}
 	// This would submit images, successfully adds images to db but has repo size considerations
-	// pack.PackImagesFromLocal("utils/packed_data/images", DB)
+	pack.PackImagesFromLocal("utils/packed_data/images", DB)
 	pack.PackUsersFromJSON("utils/packed_data/users.json", DB)
 	pack.PackEventFromJSON("utils/packed_data/events.json", DB)
 	pack.PackItinsFromJSON("utils/packed_data/itineraries.json", DB)
