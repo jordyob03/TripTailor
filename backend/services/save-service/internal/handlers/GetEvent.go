@@ -9,7 +9,7 @@ import (
 )
 
 type GetEventRequest struct {
-	ItineraryId int `json:"ItineraryId" form:"ItineraryId"`
+	ItineraryId int `json:"itineraryId" form:"itineraryId" binding:"required"`
 }
 
 func GetEvent(dbConn *sql.DB) gin.HandlerFunc {
@@ -18,15 +18,6 @@ func GetEvent(dbConn *sql.DB) gin.HandlerFunc {
 		if err := c.ShouldBindQuery(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
-		}
-
-		// if req.ItineraryId <= 0 {
-		// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ItineraryId 0"})
-		// 	return
-		// }
-
-		if req.ItineraryId <= 0 {
-			req.ItineraryId = 1
 		}
 
 		Itinerary, err := db.GetItinerary(dbConn, req.ItineraryId)
@@ -42,7 +33,6 @@ func GetEvent(dbConn *sql.DB) gin.HandlerFunc {
 		}
 
 		Events := []db.Event{}
-
 		for _, event := range IntEvents {
 			event, err := db.GetEvent(dbConn, event)
 			if err != nil {

@@ -31,7 +31,7 @@ function BoardPosts() {
       const response = await boardAPI.get('/boards', { params: userData });
       // console.log("Fetched boards:", response.data);
   
-      const selectedBoard = response.data.boards.find(board => board.boardId === parseInt(boardId));
+      const selectedBoard = response.data.boards.find(board => board.boardId === boardId);
       // console.log("Selected board:", selectedBoard);
   
       setBoard(selectedBoard);
@@ -48,7 +48,7 @@ function BoardPosts() {
   
     try {
       const response = await boardAPI.get('/posts', { params: { boardId: boardId } });
-      // console.log("Fetched posts:", response.data.Posts);
+      console.log("Fetched posts:", response.data.Posts);
       setPosts(response.data.Posts);
       return response.data.Posts;
     } catch (error) {
@@ -92,12 +92,17 @@ function BoardPosts() {
     try {
       const selectedBoard = await fetchboards();
       if (!selectedBoard) return;
+
+      // console.log("BoardPosts", selectedBoard.posts); //Working fine
   
-      const postsData = await fetchposts(selectedBoard.boardId);
+      const postsData = await fetchposts(boardId);
       const structuredData = [];
+
+      console.log("PostsData", postsData);
   
       for (let post of postsData) {
         // console.log("Fetching itineraries for postId:", post.postId);
+        console.log("Fetching itineraries for postId:", post.postId);
   
         const itinerary = await fetchitineraries(post.postId);
         // console.log("Fetched itinerary for postId:", post.postId, itinerary);
@@ -147,7 +152,7 @@ function BoardPosts() {
   return (
     <div className="boardPostsContainer">
       {selectedBoard && (
-        <div className="selectedBoard">
+        <div className="boardDetails">
           <h2>{selectedBoard.name}</h2>
           <p><em>{selectedBoard.description}</em></p>
           <p>Created by: {selectedBoard.username}, on {new Date(selectedBoard.creationDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>

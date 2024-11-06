@@ -151,6 +151,10 @@ func GetPost(DB *sql.DB, postId int) (Post, error) {
 	return post, nil
 }
 
+func UpdatePostItineraryId(DB *sql.DB, postId int, itineraryId int) error {
+	return UpdateAttribute(DB, "posts", "postId", postId, "itineraryId", itineraryId)
+}
+
 func AddPostBoard(DB *sql.DB, postId int, board int, recursive bool) error {
 	return AddArrayAttribute(DB, "posts", "postId", postId, "boards", IntsToStrings([]int{board}))
 }

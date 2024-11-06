@@ -60,6 +60,12 @@ func AddItinerary(DB *sql.DB, itinerary Itinerary) (int, error) {
 		return 0, fmt.Errorf("failed to add itinerary: %w", err)
 	}
 
+	err = UpdatePostItineraryId(DB, itinerary.PostId, itineraryID)
+	if err != nil {
+		log.Printf("Error updating post with itinerary ID: %v\n", err)
+		return 0, fmt.Errorf("failed to update post with itinerary ID: %w", err)
+	}
+
 	log.Printf("Itinerary added successfully with ID: %d\n", itineraryID)
 	return itineraryID, nil
 }

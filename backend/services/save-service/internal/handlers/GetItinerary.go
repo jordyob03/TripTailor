@@ -10,7 +10,7 @@ import (
 )
 
 type GetItineraryRequest struct {
-	postId int `json:"postId" form:"postId"`
+	PostId int `json:"postId" form:"postId" binding:"required"`
 }
 
 func GetItinerary(dbConn *sql.DB) gin.HandlerFunc {
@@ -21,18 +21,18 @@ func GetItinerary(dbConn *sql.DB) gin.HandlerFunc {
 			return
 		}
 
-		req.postId += 1
-		Post, err := db.GetPost(dbConn, req.postId)
+		Post, err := db.GetPost(dbConn, req.PostId)
 		if err != nil {
-			fmt.Println("Error: ", err)
+			fmt.Println("Error: ", err, "Post ID: ", req.PostId)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve post"})
 			return
 		}
 
-		Post.ItineraryId += 1
+		fmt.Println("Post: ", Post)
+
 		itinerary, err := db.GetItinerary(dbConn, Post.ItineraryId)
 		if err != nil {
-			fmt.Println("Error: ", err)
+			fmt.Println("Error: ", err, "Itinerary ID: ", Post.ItineraryId)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve itinerary"})
 			return
 		}
