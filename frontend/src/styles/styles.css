@@ -838,28 +838,32 @@
   background-color: #f4f7fa; /* Light background color */
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  padding-top: 100px;
+  gap: 15px;
+  padding-top: 60px;
 }
 
 /* Board details section */
 .boardDetails {
   text-align: center;
   background-color: #fff;
-  padding: 20px;
+  padding: 10px;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .boardDetails h2 {
-  font-size: 2em;
-  color: #333;
+  color: #002f6c;
+  margin-top: 35px;
+  margin-bottom: 10px;
+  font-family: 'Red Hat Display', sans-serif;
+  font-size: 28px;
 }
 
 .boardDetails p {
-  font-size: 1.1em;
-  color: #555;
-  margin-top: 10px;
+  color: #002f6c;
+  margin: 5px 0;
+  font-family: 'Red Hat Display', sans-serif;
+  font-size: 10px;
 }
 
 /* Grid layout for post cards */
@@ -868,8 +872,14 @@
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive grid with minimum size */
   gap: 20px;
   padding: 10px;
-  justify-items: center; /* Centers posts within grid cells */
+  justify-items: stretch; /* Centers posts within grid cells */
   max-width: 100%; /* Ensure it does not exceed the container width */
+}
+
+@media (min-width: 600px) {
+  .postsGrid {
+    grid-template-columns: repeat(4, 1fr); /* 1 column on small screens */
+  }
 }
 
 /* Individual post card styling */

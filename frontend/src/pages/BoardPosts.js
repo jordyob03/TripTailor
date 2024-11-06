@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import {useNavigate, useParams } from 'react-router-dom';
 import '../styles/styles.css';
 
 // Mock function to simulate fetching board data
@@ -58,6 +58,13 @@ function BoardPosts() {
   const [itinerary, setItinerary] = useState(null); // State to store itinerary data
   const [boardDetails, setBoardDetails] = useState(null); // State to store board details
 
+  const navigate = useNavigate();
+  
+  const handleBoardClick = (postId) => {
+    // navigate(postId); // Navigate to the board's specific URL
+    window.location.href = `https://www.youtube.com/watch?v=dQw4w9WgXcQ`;
+  };
+
   useEffect(() => {
     const fetchBoardData = async () => {
       const board = await getBoard(board_id); // Correctly pass board_id to getBoard
@@ -76,7 +83,7 @@ function BoardPosts() {
       {boardDetails && (
         <div className="boardDetails">
           <h2>{boardDetails.name}</h2>
-          <p>{boardDetails.description}</p>
+          <p><em>{boardDetails.description}</em></p>
             <p>Created by: {boardDetails.username}, on {new Date(boardDetails.creationDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
         </div>
       )}
@@ -84,9 +91,9 @@ function BoardPosts() {
       <div className="postsGrid">
         {posts.length > 0 ? (
           posts.map((post) => {
-            // Get itinerary for each post
             const itinerary = GetItinerary(post.itineraryId);
             return (
+            <div key={post.postId} className="postCard" onClick={() => handleBoardClick(post.postId)}>
               <div key={post.postId} className="postCard">
                 <div className="postInfo">
                 <h3>{itinerary.title}</h3>
@@ -102,6 +109,7 @@ function BoardPosts() {
                   </div>
                 </div>
                 </div>
+            </div>
             );
           })
         ) : (

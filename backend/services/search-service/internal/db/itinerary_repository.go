@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/jordyob03/TripTailor/backend/services/search-service/internal/models" // Import the models package
+	"github.com/lib/pq"
 )
 
 type Itinerary struct {
@@ -36,21 +37,21 @@ func QueryItinerariesByLocation(db *sql.DB, country, city string) ([]models.Itin
 	itineraries := []models.Itinerary{}
 	for rows.Next() {
 		var itinerary models.Itinerary
-		var languages, tags, events string
+		var languages, tags, events []string
 
 		// Scan each row into the itinerary struct
 		if err := rows.Scan(
 			&itinerary.ItineraryId, &itinerary.Name, &itinerary.City, &itinerary.Country,
 			&itinerary.Title, &itinerary.Description, &itinerary.Price,
-			&languages, &tags, &events, &itinerary.PostId, &itinerary.Username,
+			pq.Array(&languages), pq.Array(&tags), pq.Array(&events), &itinerary.PostId, &itinerary.Username,
 		); err != nil {
 			return nil, err
 		}
 
 		// Convert comma-separated strings to slices
-		itinerary.Languages = splitTags(languages)
-		itinerary.Tags = splitTags(tags)
-		itinerary.Events = splitTags(events)
+		itinerary.Languages = splitTags(strings.Join(languages, ",")) // Convert []string to string
+		itinerary.Tags = splitTags(strings.Join(tags, ","))           // Convert []string to string
+		itinerary.Events = splitTags(strings.Join(events, ","))       // Convert []string to string
 
 		itineraries = append(itineraries, itinerary)
 	}

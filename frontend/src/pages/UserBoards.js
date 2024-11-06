@@ -5,7 +5,7 @@ import '../styles/styles.css';
 function MyBoards() {
   const navigate = useNavigate();
 
-  const handleBoardClick = (boardId) => {
+  const handlePostClick = (boardId) => {
     navigate(`/my-boards/${boardId}`); // Navigate to the board's specific URL
   };
 
@@ -84,7 +84,7 @@ function MyBoards() {
       </div>
       <div className="boards-container">
         {boards.map((board) => (
-          <div key={board.boardId} className="board-card" onClick={() => handleBoardClick(board.boardId)}>
+          <div key={board.boardId} className="board-card" onClick={() => handlePostClick(board.boardId)}>
             {/* Image section */}
             <img src={board.image} alt={board.name} className="board-image" />
             
