@@ -21,15 +21,7 @@ func GetItinerary(dbConn *sql.DB) gin.HandlerFunc {
 			return
 		}
 
-		// if req.postId <= 0 {
-		// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid postId 0"})
-		// 	return
-		// }
-
-		if req.postId <= 0 {
-			req.postId = 1
-		}
-
+		req.postId += 1
 		Post, err := db.GetPost(dbConn, req.postId)
 		if err != nil {
 			fmt.Println("Error: ", err)
@@ -37,17 +29,7 @@ func GetItinerary(dbConn *sql.DB) gin.HandlerFunc {
 			return
 		}
 
-		fmt.Println("PostId: ", Post.PostId)
-
-		// if Post.ItineraryId <= 0 {
-		// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid itineraryId 0"})
-		// 	return
-		// }
-
-		if Post.ItineraryId <= 0 {
-			Post.ItineraryId = 1
-		}
-
+		Post.ItineraryId += 1
 		itinerary, err := db.GetItinerary(dbConn, Post.ItineraryId)
 		if err != nil {
 			fmt.Println("Error: ", err)

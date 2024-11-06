@@ -40,7 +40,7 @@ function App() {
         <Route path="/search-results" element={<SearchResults searchResults={searchResults} searchParams={searchParams} isSearchPressed={true} />} />
         <Route path="/itincreation" element={<CreateItinerary />} />
         <Route path="/my-boards" element={<ProtectedRoute><MyBoards /></ProtectedRoute>} />
-        <Route path="/my-boards/:boardId" element={<ProtectedRoute><BoardPosts /></ProtectedRoute>} />
+        <Route path="/my-boards/:boardId" element={<BoardPosts />} />
       </Routes>
     </Router>
   );
