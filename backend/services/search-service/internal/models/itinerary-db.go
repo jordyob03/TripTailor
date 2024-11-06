@@ -45,13 +45,14 @@ func CreateItineraryTable(DB *sql.DB) error {
 
 func GetItinerary(DB *sql.DB, itineraryID int) (Itinerary, error) {
 	getItinerarySQL := `
-	SELECT name, city, country, title, description, price, languages, tags, events, postId, username
+	SELECT *
 	FROM itineraries
 	WHERE itineraryId = $1;`
 
 	var itinerary Itinerary
 
 	err := DB.QueryRow(getItinerarySQL, itineraryID).Scan(
+		&itinerary.ItineraryId,
 		&itinerary.Name,
 		&itinerary.City,
 		&itinerary.Country,

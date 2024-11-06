@@ -63,7 +63,7 @@ function BoardPosts() {
   
     try {
       const response = await boardAPI.get('/itineraries', { params: { postId: postId } });
-      // console.log("Fetched itineraries:", response.data.Itinerary);
+      console.log("Fetched itineraries:", response.data.Itinerary);
       return response.data.Itinerary;
     } catch (error) {
       console.error("Error fetching itineraries:", error);
@@ -77,7 +77,7 @@ function BoardPosts() {
   
     try {
       const response = await boardAPI.get('/events', { params: { itineraryId: itineraryId } });
-      // console.log("Fetched events:", response.data.Events);
+      console.log("Fetched events:", response.data.Events);
   
       return response.data.Events;
     } catch (error) {
@@ -155,7 +155,8 @@ function BoardPosts() {
         <div className="boardDetails">
           <h2>{selectedBoard.name}</h2>
           <p><em>{selectedBoard.description}</em></p>
-          <p>Created by: {selectedBoard.username}, on {new Date(selectedBoard.creationDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+          {/* <p>Created by: {selectedBoard.username}, on {new Date(selectedBoard.creationDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p> */}
+          <p>Created by: {selectedBoard.username}, on {selectedBoard.creationDate}</p>
         </div>
       )}
   

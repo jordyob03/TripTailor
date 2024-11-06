@@ -29,6 +29,7 @@ func GetItinerary(dbConn *sql.DB) gin.HandlerFunc {
 		}
 
 		fmt.Println("Post: ", Post)
+		fmt.Println("Itinerary ID: ", Post.ItineraryId)
 
 		itinerary, err := db.GetItinerary(dbConn, Post.ItineraryId)
 		if err != nil {
