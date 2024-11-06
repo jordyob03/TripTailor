@@ -129,12 +129,11 @@ function BoardPosts() {
     try {
       const response = await boardAPI.get('/itineraries', { params: { postId: postId } });
       console.log("Fetched itineraries:", response.data.itineraries);
-  
-      return response.data.itineraries;
+      return response.data;
     } catch (error) {
       console.error("Error fetching itineraries:", error);
       setErrorMessage("Failed to fetch itineraries");
-      return [];
+      return null;
     }
   };
   
@@ -145,7 +144,7 @@ function BoardPosts() {
       const response = await boardAPI.get('/events', { params: { itineraryId: itineraryId } });
       console.log("Fetched events:", response.data.events);
   
-      return response.data.events;
+      return response.data;
     } catch (error) {
       console.error("Error fetching events:", error);
       setErrorMessage("Failed to fetch events");
@@ -165,21 +164,14 @@ function BoardPosts() {
       for (let post of postsData) {
         console.log("Fetching itineraries for postId:", post.postId);
   
-        const itinerariesData = await fetchitineraries(post.postId);
-        console.log("Fetched itineraries for postId:", post.postId, itinerariesData);
+        const itinerary = await fetchitineraries(post.postId);
+        console.log("Fetched itinerary for postId:", post.postId, itinerary);
   
-        const itineraryEvents = [];
-  
-        for (let itinerary of itinerariesData) {
-          console.log("Fetching events for itineraryId:", itinerary.itineraryId);
-          const eventsData = await fetchevents(itinerary.itineraryId);
-          console.log("Fetched events for itineraryId:", itinerary.itineraryId, eventsData);
-  
-          itineraryEvents.push(eventsData);
-        }
+        const eventsData = await fetchevents(itinerary.ItineraryId);
+        console.log("Fetched events for itinerary:", itinerary.ItineraryId, eventsData);
   
         // Push the post's itineraries and events into the structured data
-        structuredData.push(itineraryEvents);
+        structuredData.push({ itinerary, events: eventsData });
       }
   
       console.log("Structured data:", structuredData);

@@ -20,6 +20,15 @@ func GetEvent(dbConn *sql.DB) gin.HandlerFunc {
 			return
 		}
 
+		// if req.ItineraryId <= 0 {
+		// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ItineraryId 0"})
+		// 	return
+		// }
+
+		if req.ItineraryId <= 0 {
+			req.ItineraryId = 1
+		}
+
 		Itinerary, err := db.GetItinerary(dbConn, req.ItineraryId)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve "})
