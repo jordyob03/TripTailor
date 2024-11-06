@@ -8,7 +8,7 @@
     "startTime": "2024-06-01T10:00:00Z",
     "endTime": "2024-06-01T12:00:00Z",
     "itineraryId": 201,
-    "eventImages": ["eiffel_tower_image1", "eiffel_tower_image2"]
+    "eventImages": ["0"]
   },
   {
     "eventId": 1,
@@ -19,7 +19,7 @@
     "startTime": "2024-06-02T09:00:00Z",
     "endTime": "2024-06-02T11:30:00Z",
     "itineraryId": 201,
-    "eventImages": ["3"]
+    "eventImages": ["1"]
   },
   {
     "eventId": 2,
@@ -30,7 +30,7 @@
     "startTime": "2024-06-02T15:00:00Z",
     "endTime": "2024-06-02T16:00:00Z",
     "itineraryId": 201,
-    "eventImages": ["4"]
+    "eventImages": ["2"]
   },
   {
     "eventId": 3,
@@ -41,7 +41,7 @@
     "startTime": "2024-06-03T10:00:00Z",
     "endTime": "2024-06-03T12:00:00Z",
     "itineraryId": 201,
-    "eventImages": ["8"]
+    "eventImages": ["3"]
   },
   {
     "eventId": 4,
@@ -52,7 +52,7 @@
     "startTime": "2024-06-04T09:00:00Z",
     "endTime": "2024-06-04T17:00:00Z",
     "itineraryId": 202,
-    "eventImages": ["1", "2"]
+    "eventImages": ["4"]
   },
   {
     "eventId": 5,
@@ -63,7 +63,7 @@
     "startTime": "2024-06-05T10:00:00Z",
     "endTime": "2024-06-05T12:30:00Z",
     "itineraryId": 202,
-    "eventImages": ["montmartre_image1", "montmartre_image2"]
+    "eventImages": ["5"]
   },
   {
     "eventId": 6,
@@ -74,7 +74,7 @@
     "startTime": "2024-06-06T14:00:00Z",
     "endTime": "2024-06-06T15:30:00Z",
     "itineraryId": 202,
-    "eventImages": ["arc_de_triomphe_image1", "arc_de_triomphe_image2"]
+    "eventImages": ["6"]
   },
   {
     "eventId": 7,
@@ -85,7 +85,7 @@
     "startTime": "2024-06-07T10:00:00Z",
     "endTime": "2024-06-07T12:30:00Z",
     "itineraryId": 202,
-    "eventImages": ["orsay_image1", "orsay_image2"]
+    "eventImages": ["7"]
   },
   {
     "eventId": 8,
@@ -96,7 +96,7 @@
     "startTime": "2024-06-07T14:00:00Z",
     "endTime": "2024-06-07T17:00:00Z",
     "itineraryId": 202,
-    "eventImages": ["latin_quarter_image1", "latin_quarter_image2"]
+    "eventImages": ["8"]
   },
   {
     "eventId": 9,
@@ -107,6 +107,6 @@
     "startTime": "2024-06-08T21:00:00Z",
     "endTime": "2024-06-08T23:30:00Z",
     "itineraryId": 203,
-    "eventImages": ["moulin_rouge_image1", "moulin_rouge_image2"]
+    "eventImages": ["9"]
   }
 ]
