@@ -16,16 +16,16 @@ function InitialUserProfile() {
   };
 
   // Initial state for user profile
+  const [name, setName] = useState(sampleUserData.name);
   const [selectedTags, setSelectedTags] = useState(sampleUserData.selectedTags);
-  const [tagErrorMessage, setTagErrorMessage] = useState('');
-  const [countryErrorMessage, setCountryErrorMessage] = useState('');
-  const [langErrorMessage, setLangErrorMessage] = useState('');
   const [country, setCountry] = useState(sampleUserData.country);
   const [languages, setLanguages] = useState(sampleUserData.languages);
   const [shuffledTags, setShuffledTags] = useState([]);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [name, setName] = useState(sampleUserData.name);
+  const [tagErrorMessage, setTagErrorMessage] = useState('');
+  const [countryErrorMessage, setCountryErrorMessage] = useState('');
+  const [langErrorMessage, setLangErrorMessage] = useState('');
   const [nameErrorMessage, setNameErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
   const countries = ['USA', 'Canada', 'UK', 'Australia', 'Other'];
   const languageOptions = ['English', 'Spanish', 'French', 'German', 'Chinese'];
@@ -38,7 +38,9 @@ function InitialUserProfile() {
 
   // Shuffle tags once when the component mounts
   useEffect(() => {
-    const shuffled = shuffleArray(allTags);
+    // Filter out the selected tags and shuffle the rest
+    const availableTags = allTags.filter(tag => !selectedTags.includes(tag));
+    const shuffled = shuffleArray(availableTags);
     setShuffledTags(shuffled);
   }, []);
 
@@ -55,7 +57,6 @@ function InitialUserProfile() {
     if (selectedTags.length >= 3) {
       setTagErrorMessage('');
     } else {
-      console.log({ selectedTags, country, languages });
       setTagErrorMessage('Please select at least 3 tags.');
     }
     
@@ -72,8 +73,6 @@ function InitialUserProfile() {
     }
   
     if (name && selectedTags.length >= 3 && country.length >= 1 && languages.length >= 1) {
-      console.log({ name, selectedTags, country, languages });
-  
       const profile_data = {
         languages: languages,
         country: country, 
@@ -83,10 +82,7 @@ function InitialUserProfile() {
       };
   
       try {
-        console.log('Trying to save', profile_data);
         const response = await profileAPI.post('/create', profile_data);
-        console.log('Profile saved', response.data);
-  
         navigate('/home-page');
       } catch (error) {
         if (error.response && error.response.data) {
@@ -100,11 +96,16 @@ function InitialUserProfile() {
   
   const handleTagSelection = (tag) => {
     if (selectedTags.includes(tag)) {
+      // Remove the tag from selectedTags and add it back to shuffledTags
       setSelectedTags(selectedTags.filter((t) => t !== tag));
+      setShuffledTags([...shuffledTags, tag]);
     } else {
+      // Add the tag to selectedTags and remove it from shuffledTags
       setSelectedTags([...selectedTags, tag]);
+      setShuffledTags(shuffledTags.filter((t) => t !== tag));
     }
   };
+  
 
   const handleLanguageSelection = (e) => {
     const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
@@ -140,13 +141,24 @@ function InitialUserProfile() {
 
           {/* Tag selection */}
           <div className="tags">
+            {/* Display selected tags first */}
+            {selectedTags.map((tag) => (
+              <div
+                key={tag}
+                className="tag selected"
+                onClick={() => handleTagSelection(tag)}
+              >
+                {tag} <span style={{ color: 'white' }}>✖</span> {/* White X icon */}
+              </div>
+            ))}
+            {/* Display available tags to add */}
             {shuffledTags.map((tag) => (
               <div
                 key={tag}
-                className={`tag ${selectedTags.includes(tag) ? 'selected' : ''}`}
+                className="tag"
                 onClick={() => handleTagSelection(tag)}
               >
-                {tag}
+                <span style={{ color: '' }}> +</span> {tag} {/* Yellow Plus icon */}
               </div>
             ))}
           </div>
