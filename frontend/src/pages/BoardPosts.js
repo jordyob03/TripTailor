@@ -52,6 +52,23 @@ const GetItinerary = (itineraryId) => {
     return mockItineraryData;
 }
 
+const GetEvent = (EventId) => {
+    // Simulate fetching itinerary data from an API or database
+    const mockEventData = {
+        EventId: EventId,
+        Name: "Eiffel Tower Visit",
+        Cost: 50.00,
+        Address: "Champ de Mars, 5 Avenue Anatole, 75007 Paris, France",
+        Description: "Visit the iconic Eiffel Tower and enjoy panoramic views of Paris.",
+        StartTime: "2024-07-01T10:00:00",
+        EndTime: "2024-07-01T12:00:00",
+        ItineraryId: 101,
+        EventImages: ["", ""],
+    };
+
+    return mockEventData;
+}
+
 function BoardPosts() {
   const { board_id } = useParams(); // Retrieve the boardId from URL params
   const [posts, setPosts] = useState([]); // State to store posts
@@ -78,13 +95,15 @@ function BoardPosts() {
     fetchBoardData();
   }, [board_id]); // Run effect when board_id changes
 
+  const fallbackImage = 'https://www.minecraft.net/content/dam/minecraftnet/franchise/logos/Homepage_Download-Launcher_Creeper-Logo_500x500.png';
+
   return (
     <div className="boardPostsContainer">
       {boardDetails && (
         <div className="boardDetails">
           <h2>{boardDetails.name}</h2>
           <p><em>{boardDetails.description}</em></p>
-            <p>Created by: {boardDetails.username}, on {new Date(boardDetails.creationDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+          <p>Created by: {boardDetails.username}, on {new Date(boardDetails.creationDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
         </div>
       )}
 
@@ -92,8 +111,13 @@ function BoardPosts() {
         {posts.length > 0 ? (
           posts.map((post) => {
             const itinerary = GetItinerary(post.itineraryId);
+            const eventImage = GetEvent(itinerary.events[0]).EventImages[0]
+              ? GetEvent(itinerary.events[0]).EventImages[0]
+              : [fallbackImage]; // Use fallback if no images available
+
             return (
             <div key={post.postId} className="postCard" onClick={() => handleBoardClick(post.postId)}>
+                 <img src={eventImage} alt={boardDetails.name} className="board-image" />
               <div key={post.postId} className="postCard">
                 <div className="postInfo">
                 <h3>{itinerary.title}</h3>
