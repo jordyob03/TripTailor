@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import {useNavigate, useParams } from 'react-router-dom';
 import '../styles/styles.css';
 
+const userId = localStorage.getItem('userId');
+
 // Mock function to simulate fetching board data
 const getBoard = async (boardId) => {
   // Simulate API response

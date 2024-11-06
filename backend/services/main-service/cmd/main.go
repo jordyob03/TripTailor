@@ -8,6 +8,7 @@ import (
 	"time"
 
 	db "github.com/jordyob03/TripTailor/backend/services/main-service/internal/db/models"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
@@ -40,10 +41,15 @@ func main() {
 		log.Fatal("Error initializing image table:", err)
 	}
 
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte("password123/"), bcrypt.DefaultCost)
+	if err != nil {
+		log.Fatal("Error hashing password:", err)
+	}
+
 	user := db.User{
 		Username:     "wmksherwani",
 		Email:        "wmksherwani@mun.ca",
-		Password:     "password",
+		Password:     string(hashedPassword),
 		DateOfBirth:  time.Now(),
 		Name:         "Waleed Sherwani",
 		Country:      "Canada",
@@ -59,6 +65,22 @@ func main() {
 		log.Fatal("Error creating user:", err)
 	} else {
 		fmt.Printf("User %d created successfully!\n", userid)
+	}
+
+	board := db.Board{
+		BoardId:      0,
+		Name:         "Travel Board",
+		CreationDate: time.Now(),
+		Description:  "A board for all things travel!",
+		Username:     "wmksherwani",
+		Posts:        []string{},
+		Tags:         []string{"Travel", "Adventure"},
+	}
+
+	if boardid, err := db.AddBoard(DB, board); err != nil {
+		log.Fatal("Error creating board:", err)
+	} else {
+		fmt.Printf("Board %d created successfully!\n", boardid)
 	}
 
 	image1 := db.Image{
@@ -93,6 +115,12 @@ func main() {
 		EndTime:     time.Now(),
 		ItineraryId: 0,
 		EventImages: []string{},
+	}
+
+	if eventid, err := db.AddEvent(DB, event); err != nil {
+		log.Fatal("Error creating event:", err)
+	} else {
+		fmt.Printf("Event %d created successfully!\n", eventid)
 	}
 
 	if err := db.AddEventImage(DB, event.EventId, 1); err != nil {
