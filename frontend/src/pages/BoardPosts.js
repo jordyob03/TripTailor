@@ -74,7 +74,8 @@ const GetEvent = (EventId) => {
 
 function BoardPosts() {
   const navigate = useNavigate();
-  const { boardId } = useParams(); // Extract boardId from the URL parameter
+  const { boardIdStr } = useParams();
+  const boardId = boardIdStr ? parseInt(boardIdStr, 10) : 1;
   const [data, setData] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedBoard, setBoard] = useState(null); // Store the selected selectedBoard
@@ -89,10 +90,15 @@ function BoardPosts() {
 
   const fetchboards = async () => {
     const userData = { username: localStorage.getItem('username') };
-
+    console.log("Fetching boards with username:", userData.username);
+  
     try {
       const response = await boardAPI.get('/boards', { params: userData });
-      const selectedBoard = response.data.boards.find(selectedBoard => selectedBoard.boardId === parseInt(boardId));
+      console.log("Fetched boards:", response.data);
+  
+      const selectedBoard = response.data.boards.find(board => board.boardId === parseInt(boardId));
+      console.log("Selected board:", selectedBoard);
+  
       setBoard(selectedBoard);
       return selectedBoard;
     } catch (error) {
@@ -101,22 +107,29 @@ function BoardPosts() {
       return null;
     }
   };
-
+  
   const fetchposts = async (boardId) => {
+    console.log("Fetching posts for boardId:", boardId);
+  
     try {
       const response = await boardAPI.get('/posts', { params: { boardId: boardId } });
-      setPosts(response.data.posts);
-      return response.data.posts;
+      console.log("Fetched posts:", response.data.Posts);
+      setPosts(response.data.Posts);
+      return response.data.Posts;
     } catch (error) {
-      console.error("Error fetching posts:", error);
+      console.error("Error fetching posts:", error.response ? error.response.data : error.message);
       setErrorMessage("Failed to fetch posts");
       return [];
     }
   };
-
+  
   const fetchitineraries = async (postId) => {
+    console.log("Fetching itineraries for postId:", postId);
+  
     try {
       const response = await boardAPI.get('/itineraries', { params: { postId: postId } });
+      console.log("Fetched itineraries:", response.data.itineraries);
+  
       return response.data.itineraries;
     } catch (error) {
       console.error("Error fetching itineraries:", error);
@@ -124,10 +137,14 @@ function BoardPosts() {
       return [];
     }
   };
-
+  
   const fetchevents = async (itineraryId) => {
+    console.log("Fetching events for itineraryId:", itineraryId);
+  
     try {
       const response = await boardAPI.get('/events', { params: { itineraryId: itineraryId } });
+      console.log("Fetched events:", response.data.events);
+  
       return response.data.events;
     } catch (error) {
       console.error("Error fetching events:", error);
@@ -135,40 +152,55 @@ function BoardPosts() {
       return [];
     }
   };
-
+  
   const fetchAllData = async () => {
+    console.log("Fetching all data for boardId:", boardId);
     try {
       const selectedBoard = await fetchboards();
       if (!selectedBoard) return;
-
+  
       const postsData = await fetchposts(selectedBoard.boardId);
       const structuredData = [];
-
+  
       // For each post, fetch itineraries, then events
       for (let post of postsData) {
+        console.log("Fetching itineraries for postId:", post.postId);
+  
         const itinerariesData = await fetchitineraries(post.postId);
+        console.log("Fetched itineraries for postId:", post.postId, itinerariesData);
+  
         const itineraryEvents = [];
-
+  
         for (let itinerary of itinerariesData) {
+          console.log("Fetching events for itineraryId:", itinerary.itineraryId);
           const eventsData = await fetchevents(itinerary.itineraryId);
+          console.log("Fetched events for itineraryId:", itinerary.itineraryId, eventsData);
+  
           itineraryEvents.push(eventsData);
         }
-
+  
         // Push the post's itineraries and events into the structured data
         structuredData.push(itineraryEvents);
       }
-
+  
+      console.log("Structured data:", structuredData);
       setData(structuredData); // Set the 3D array to the state
-
+  
     } catch (error) {
       setErrorMessage("An error occurred while fetching data");
       console.error("Error fetching data:", error);
     }
   };
-
+  
   useEffect(() => {
+    console.log("useEffect: Fetching data for boardId:", boardId);
+    if (isNaN(boardId)) {
+      console.error("Invalid boardId:", boardId);
+      return;
+    }
     fetchAllData(); // Fetch data when the component mounts
   }, [boardId]); // Re-fetch data if boardId changes
+  
 
   const fallbackImage = 'https://www.minecraft.net/content/dam/minecraftnet/franchise/logos/Homepage_Download-Launcher_Creeper-Logo_500x500.png';
 
@@ -183,7 +215,7 @@ function BoardPosts() {
       )}
 
       <div className="postsGrid">
-        {posts.length > 0 ? (
+        {Array.isArray(posts) && posts.length > 0 ? (
           posts.map((post) => {
             const itinerary = GetItinerary(post.itineraryId);
             const eventImage = GetEvent(itinerary.events[0]).EventImages[0]
@@ -204,7 +236,7 @@ function BoardPosts() {
                   <p><strong>Tags:</strong> {itinerary.tags.join(", ")}</p>
                   <div className="postStats">
                     <span>{post.likes} Likes</span>
-                    <span>{post.comments.length} Comments</span>
+                    {/* <span>{post.comments ? post.comments.length : 0} Comments</span> */}
                   </div>
                 </div>
                 </div>

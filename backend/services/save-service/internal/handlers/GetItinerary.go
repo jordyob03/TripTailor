@@ -20,6 +20,15 @@ func GetItinerary(dbConn *sql.DB) gin.HandlerFunc {
 			return
 		}
 
+		// if req.postId <= 0 {
+		// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid postId 0"})
+		// 	return
+		// }
+
+		if req.postId <= 0 {
+			req.postId = 1
+		}
+
 		Post, err := db.GetPost(dbConn, req.postId)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve post"})
