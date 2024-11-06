@@ -1,4 +1,4 @@
-package DBmodels
+package models
 
 import (
 	"database/sql"
@@ -58,7 +58,7 @@ func AddPost(DB *sql.DB, post Post) (int, error) {
 	}
 
 	log.Printf("Post with ID %d successfully added.\n", postId)
-	return postId, AddUserPost(DB, post.Username, postId)
+	return postId, nil
 }
 
 func RemovePost(DB *sql.DB, postId int) error {

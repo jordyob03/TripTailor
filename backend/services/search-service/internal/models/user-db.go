@@ -1,13 +1,29 @@
-package DBAuth
+package models
 
 import (
 	"database/sql"
 	"fmt"
-	models "github.com/jordyob03/TripTailor/backend/services/auth-service/internal/models"
 	"log"
+	"time"
 
 	"github.com/lib/pq"
 )
+
+type User struct {
+	UserId       int       `json:"userId"`
+	Username     string    `json:"username"`
+	Email        string    `json:"email"`
+	Password     string    `json:"password"`
+	DateOfBirth  time.Time `json:"dateOfBirth"`
+	Name         string    `json:"name"`
+	Country      string    `json:"country"`
+	Languages    []string  `json:"languages"`
+	Tags         []string  `json:"tags"`
+	Boards       []string  `json:"boards"`
+	Posts        []string  `json:"posts"`
+	ProfileImage int       `json:"profileImage"`
+	CoverImage   int       `json:"coverImage"`
+}
 
 func CreateUserTable(DB *sql.DB) error {
 	createTableSQL := `
@@ -22,38 +38,20 @@ func CreateUserTable(DB *sql.DB) error {
 		languages TEXT[],
 		tags TEXT[],
 		boards INTEGER[],
-		posts INTEGER[]
+		posts INTEGER[],
+		profileImage INTEGER,
+		coverImage INTEGER
 	);`
 	return CreateTable(DB, createTableSQL)
 }
 
-func AddUser(DB *sql.DB, user models.User) (int, error) {
-	insertUserSQL := `
-	INSERT INTO users (username, email, password, dateOfBirth, name, country, languages, tags, boards, posts)
-	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-	RETURNING userId;`
-
-	var userId int
-	err := DB.QueryRow(
-		insertUserSQL, user.Username, user.Email, user.Password,
-		user.DateOfBirth, user.Name, user.Country,
-		pq.Array(user.Languages), pq.Array(user.Tags),
-		pq.Array(user.Boards), pq.Array(user.Posts)).Scan(&userId)
-	if err != nil {
-		fmt.Println("Error adding user:", err)
-		return 0, err
-	}
-
-	return userId, nil
-}
-
-func GetUser(DB *sql.DB, username string) (models.User, error) {
+func GetUser(DB *sql.DB, username string) (User, error) {
 	query := `
-    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts
+    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, profileImage, coverImage
     FROM users 
     WHERE username = $1`
 
-	var user models.User
+	var user User
 	row := DB.QueryRow(query, username)
 	err := row.Scan(
 		&user.UserId, &user.Username, &user.Email,
@@ -62,13 +60,15 @@ func GetUser(DB *sql.DB, username string) (models.User, error) {
 		pq.Array(&user.Tags),
 		pq.Array(&user.Boards),
 		pq.Array(&user.Posts),
+		&user.ProfileImage,
+		&user.CoverImage,
 	)
 
 	if err == sql.ErrNoRows {
-		return models.User{}, fmt.Errorf("no user found with username: %s", username)
+		return User{}, fmt.Errorf("no user found with username: %s", username)
 	} else if err != nil {
 		log.Printf("Error retrieving user: %v\n", err)
-		return models.User{}, err
+		return User{}, err
 	}
 
 	if user.Languages == nil {
@@ -90,9 +90,9 @@ func GetUser(DB *sql.DB, username string) (models.User, error) {
 	return user, nil
 }
 
-func GetAllUsers(DB *sql.DB) ([]models.User, error) {
+func GetAllUsers(DB *sql.DB) ([]User, error) {
 	query := `
-    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts
+    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, profileImage, coverImage
     FROM users`
 
 	rows, err := DB.Query(query)
@@ -102,9 +102,9 @@ func GetAllUsers(DB *sql.DB) ([]models.User, error) {
 	}
 	defer rows.Close()
 
-	var users []models.User
+	var users []User
 	for rows.Next() {
-		var user models.User
+		var user User
 		if err := rows.Scan(
 			&user.UserId, &user.Username, &user.Email,
 			&user.Password, &user.DateOfBirth, &user.Name, &user.Country,
@@ -112,6 +112,8 @@ func GetAllUsers(DB *sql.DB) ([]models.User, error) {
 			pq.Array(&user.Tags),
 			pq.Array(&user.Boards),
 			pq.Array(&user.Posts),
+			&user.ProfileImage,
+			&user.CoverImage,
 		); err != nil {
 			log.Printf("Error scanning user: %v\n", err)
 			return nil, err
