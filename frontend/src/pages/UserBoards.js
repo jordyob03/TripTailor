@@ -9,7 +9,19 @@ console.log('User ID:', username);
 function MyBoards() {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState('');
-  const [boards, setBoards] = useState([]); // Define boards as a state variable
+  const [boards, setBoards] = useState([]);
+
+  const deleteBoard = async (boardId) => {
+    console.log("Deleting board:", boardId);
+    try {
+      await boardAPI.delete(`/boards/${boardId}`);
+      setBoards(boards.filter(board => board.boardId !== boardId));
+      window.location.reload();
+    } catch (error) {
+      console.error("Error deleting board:", error);
+      setErrorMessage("Failed to delete board");
+    }
+  }; 
 
   const handlePostClick = (boardId) => {
     navigate(`/my-boards/${boardId}`);
@@ -66,11 +78,12 @@ function MyBoards() {
           const eventImage = board.image ? board.image : getRandomImage();
           return (
           <div key={board.boardId} className="board-card" onClick={() => handlePostClick(board.boardId)}>
-            {/* Image section */}
-            <img src={eventImage} alt={board} className="board-image" />
-            
+            <div className="boardImageContainer">
+              <img src={eventImage} alt={board} className="board-image" />
+            </div>
             {/* Content section */}
             <div className="board-content">
+              <button className="deleteButton" onClick={(e) => {e.stopPropagation(); deleteBoard(board.boardId);}}>X</button>
               <h3>{board.name}</h3>
               <p><strong>{new Date(board.dateOfCreation).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</strong></p>
               <p><em>{board.description}</em></p>

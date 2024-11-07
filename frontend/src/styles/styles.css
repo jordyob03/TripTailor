@@ -766,6 +766,7 @@
 }
 
 .board-card {
+  position:relative;
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 10px;
@@ -815,21 +816,6 @@
   text-decoration: none; /* Remove underline from the link */
   color: inherit; /* Inherit color from parent */
   display: block; /* Make the link a block element so it covers the card */
-}
-
-.board-card {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden; /* Ensures the image and content fit within rounded corners */
-  text-align: center;
-  transition: box-shadow 0.3s;
-  margin-bottom: 16px; /* Add gap at the bottom of the card */
-}
-
-.board-card:hover {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Add hover effect */
 }
 
 /* General Container for Board Posts */
@@ -905,9 +891,8 @@
   height: 200px;
   object-fit: cover;
   border-radius: 10px;
-  margin-top: 10px; /* Optional, to add space between the post title and image */
+  transition: filter 0.3s ease; /* Smooth transition for blur */
 }
-
 
 .postCard:hover {
   transform: translateY(-5px); /* Lift the post on hover */
@@ -1012,4 +997,51 @@
 .itineraryDetails span {
   color: #888;
   font-size: 0.9em;
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: filter 0.3s ease;
+}
+
+.deleteButton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: transparent;
+  border: none;
+  color: red;
+  font-size: 25px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.deleteButton:hover + .imageContainer .post-image {
+  filter: blur(5px);
+}
+
+.deleteButton:hover ~ .postInfo h3,
+.deleteButton:hover ~ .postInfo p,
+.deleteButton:hover ~ .postStats span {
+  text-decoration: line-through;
+  color: #888; /* Optional: you can also change the text color to a lighter shade */
+}
+
+.boardImageContainer {
+  position: relative;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: filter 0.3s ease;
+}
+
+.deleteButton:hover ~ .board-card h3,
+.deleteButton:hover ~ .board-card p,
+.deleteButton:hover ~ .board-card span {
+  text-decoration: line-through;
+  color: #888; /* Optional: you can also change the text color to a lighter shade */
 }

@@ -21,14 +21,10 @@ func test() gin.HandlerFunc {
 }
 
 func RegisterRoutes(r *gin.Engine, dbConn *sql.DB) {
-	// r.POST("/save-service-test", test())
-	// r.POST("/boards/add", handlers.AddBoard(dbConn))
-	// r.DELETE("/boards/delete", handlers.DeleteBoard(dbConn))
-	// r.POST("/boards/:boardId/posts/add", handlers.AddBoardPost(dbConn))
-	// r.DELETE("/boards/:boardId/posts/:postId", handlers.DeleteBoardPost(dbConn))
-	// r.POST("/boards/search", handlers.SearchBoards(dbConn))
 	r.GET("/boards", handlers.GetBoard(dbConn))
 	r.GET("/posts", handlers.GetPost(dbConn))
 	r.GET("/itineraries", handlers.GetItinerary(dbConn))
 	r.GET("/events", handlers.GetEvent(dbConn))
+	r.DELETE("/boards/:boardId/posts/:postId", handlers.DeleteBoardPost(dbConn))
+	r.DELETE("/boards/:boardId", handlers.DeleteBoard(dbConn))
 }

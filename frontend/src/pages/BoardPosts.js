@@ -17,6 +17,17 @@ function BoardPosts() {
   const [itineraries, setItineraries] = useState([]);
   const [events, setEvents] = useState([]); 
 
+  const deleteBoardPost = async (boardId, postId) => {
+    console.log("Deleting post:", postId, "from board:", boardId);
+    try {
+      await boardAPI.delete(`/boards/${boardId}/posts/${postId}`);
+      setPosts(posts.filter(post => post.postId !== postId));
+      window.location.reload();
+    } catch (error) {
+      console.error("Error deleting post:", error);
+      setErrorMessage("Failed to delete post");
+    }
+  }; 
   
   const handleBoardClick = (postId) => {
     // navigate(postId); // Navigate to the selectedBoard's specific URL
@@ -110,7 +121,7 @@ function BoardPosts() {
         const eventsData = await fetchevents(itinerary.itineraryId);
         // console.log("Fetched events for itinerary:", itinerary.ItineraryId, eventsData);
   
-        structuredData.push({ itinerary, events: eventsData });
+        structuredData.push({ post, itinerary, events: eventsData });
       }
   
       // console.log("Structured data:", structuredData);
@@ -155,15 +166,15 @@ function BoardPosts() {
         <div className="boardDetails">
           <h2>{selectedBoard.name}</h2>
           <p><em>{selectedBoard.description}</em></p>
-          {/* <p>Created by: {selectedBoard.username}, on {new Date(selectedBoard.creationDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p> */}
-          <p>Created by: {selectedBoard.username}, on {selectedBoard.creationDate}</p>
+          <p>Created by: {selectedBoard.username}, on {new Date(selectedBoard.creationDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
         </div>
       )}
   
   <div className="postsGrid">
   {Array.isArray(data) && data.length > 0 ? (
     data.map((dataEntry, index) => {
-      const { itinerary, events } = dataEntry;
+      const { post, itinerary, events } = dataEntry;
+
       const eventImages = events.flatMap(event => event.eventImages || []);
       const randomImageNumber = eventImages.length > 0 
         ? eventImages[Math.floor(Math.random() * eventImages.length)]
@@ -174,19 +185,22 @@ function BoardPosts() {
         : getRandomImage();
 
       return (
-        <div key={index} className="postCard" onClick={() => handleBoardClick(itinerary.postId)}>
-          <img src={imageUrl} alt={selectedBoard.name} className="post-image" />
+        <div key={index} className="postCard" onClick={() => handleBoardClick(post.postId)}>
+          <button className="deleteButton" onClick={(e) => {e.stopPropagation(); deleteBoardPost(selectedBoard.boardId, post.postId);}}>X</button>
+          <div className="imageContainer">
+            <img src={imageUrl} alt={selectedBoard.name} className="post-image" />
+          </div>
           <div className="postInfo">
             <h3>{itinerary.title}</h3>
-            <span>{new Date(itinerary.creationDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+            <span>{new Date(post.creationDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
             <p><strong>City:</strong> {itinerary.city}</p>
             <p><strong>Country:</strong> {itinerary.country}</p>
             <p><strong>Price:</strong> ${itinerary?.price !== undefined ? itinerary.price : 0}</p>
             <p><strong>Languages:</strong> {Array.isArray(itinerary.languages) ? itinerary.languages.join(", ") : "N/A"}</p>
             <p><strong>Tags:</strong> {Array.isArray(itinerary.tags) ? itinerary.tags.join(", ") : "N/A"}</p>
             <div className="postStats">
-              <span>{itinerary.likes || 0} Likes</span>
-              <span>{itinerary.comments ? itinerary.comments.length : 0} Comments</span>
+              <span>{post.likes || 0} Likes</span>
+              <span>{post.comments ? post.comments.length : 0} Comments</span>
             </div>
           </div>
         </div>

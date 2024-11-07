@@ -55,25 +55,31 @@ func AddBoard(DB *sql.DB, board Board) error {
 }
 
 func RemoveBoard(DB *sql.DB, boardId int) error {
-	getUsernameSQL := `SELECT username, boards FROM posts WHERE postId = $1;`
-
-	var username string
-
-	err := DB.QueryRow(getUsernameSQL, boardId).Scan(&username)
+	boardData, err := GetBoard(DB, boardId)
 	if err != nil {
-		log.Printf("Error retrieving username for board ID %d: %v\n", boardId, err)
+		log.Printf("Error retrieving board with ID %d: %v\n", boardId, err)
 		return err
 	}
 
-	deleteBoardSQL := `DELETE FROM boards WHERE boardId = $1;`
-
-	_, err = DB.Exec(deleteBoardSQL, boardId)
+	boardPosts, err := StringsToInts(boardData.Posts)
 	if err != nil {
-		log.Printf("Error removing board: %v\n", err)
+		log.Printf("Error converting board posts to integers: %v\n", err)
 		return err
 	}
 
-	RemoveUserBoard(DB, username, boardId)
+	for _, postId := range boardPosts {
+		err = RemovePostBoard(DB, postId, boardId)
+		if err != nil {
+			log.Printf("Error removing post %d from board %d: %v\n", postId, boardId, err)
+			return err
+		}
+	}
+
+	err = RemoveUserBoard(DB, boardData.Username, boardId)
+	if err != nil {
+		log.Printf("Error removing board %d from user %s: %v\n", boardId, boardData.Username, err)
+		return err
+	}
 
 	log.Println("Board removed successfully.")
 	return nil
