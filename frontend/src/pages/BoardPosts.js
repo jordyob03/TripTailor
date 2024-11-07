@@ -17,6 +17,10 @@ function BoardPosts() {
   const [itineraries, setItineraries] = useState([]);
   const [events, setEvents] = useState([]); 
 
+  const addPost = () => {
+    console.log("Adding post to board:", boardId);
+  };
+
   const deleteBoardPost = async (boardId, postId) => {
     console.log("Deleting post:", postId, "from board:", boardId);
     try {
@@ -206,13 +210,34 @@ function BoardPosts() {
         </div>
       );
     })
-  ) : (
-    <div className="noPostsMessage">No posts available in this board.</div>
-  )}
+  ) : (<></>)}
+{/* Add Post Button */}
+<div 
+  className="postCard" 
+  onClick={addPost}
+  style={{
+    backgroundColor: '#DDDDDD',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    cursor: 'pointer',
+    height: '450px',
+  }}
+>
+  <img 
+    src="https://img.icons8.com/?size=100&id=1501&format=png&color=000000" 
+    alt="Add Post" 
+    style={{
+      maxWidth: '80%',           
+      maxHeight: '80%',
+      objectFit: 'contain',      
+    }} 
+  />
+  </div>
+    {errorMessage && <div className="message">{errorMessage}</div>}
+  </div>
 </div>
-
-    </div>
-  );  
+);
 }
 
 export default BoardPosts;
