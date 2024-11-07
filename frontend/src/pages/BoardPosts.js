@@ -164,11 +164,18 @@ function BoardPosts() {
   {Array.isArray(data) && data.length > 0 ? (
     data.map((dataEntry, index) => {
       const { itinerary, events } = dataEntry;
-      const eventImage = events?.[0]?.EventImages?.[0] || getRandomImage();
+      const eventImages = events.flatMap(event => event.eventImages || []);
+      const randomImageNumber = eventImages.length > 0 
+        ? eventImages[Math.floor(Math.random() * eventImages.length)]
+        : null;
+
+      const imageUrl = randomImageNumber 
+        ? `http://localhost:8080/images/${randomImageNumber}` 
+        : getRandomImage();
 
       return (
         <div key={index} className="postCard" onClick={() => handleBoardClick(itinerary.postId)}>
-          <img src={eventImage} alt={selectedBoard.name} className="post-image" />
+          <img src={imageUrl} alt={selectedBoard.name} className="post-image" />
           <div className="postInfo">
             <h3>{itinerary.title}</h3>
             <span>{new Date(itinerary.creationDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
