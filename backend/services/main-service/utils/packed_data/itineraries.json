@@ -10,7 +10,7 @@
     "languages": ["English", "French"],
     "tags": ["sightseeing", "culture"],
     "events": ["Eiffel Tower Visit", "Seine River Cruise", "Notre Dame Visit"],
-    "postId": 101,
+    "postId": 201,
     "username": "user789"
   },
   {
@@ -24,7 +24,7 @@
     "languages": ["English", "French"],
     "tags": ["art", "history"],
     "events": ["Versailles Palace Day Trip", "Montmartre Walking Tour", "Arc de Triomphe Visit"],
-    "postId": 102,
+    "postId": 202,
     "username": "user123"
   },
   {
@@ -38,7 +38,7 @@
     "languages": ["English", "French"],
     "tags": ["nightlife", "entertainment"],
     "events": ["Moulin Rouge Show"],
-    "postId": 103,
+    "postId": 203,
     "username": "user456"
   }
 ]

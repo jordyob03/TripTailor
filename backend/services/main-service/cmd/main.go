@@ -40,40 +40,10 @@ func main() {
 		log.Fatal("Error initializing image table:", err)
 	}
 
-	image1 := db.Image{
-		ImageData: db.WebImageToByte("https://wallpapercave.com/wp/wp8484597.jpg"),
-	}
-
-	id, err := db.AddImage(DB, image1)
-	if err != nil {
-		log.Fatal("Error adding image:", err)
-	} else {
-		fmt.Printf("Image %d added successfully!\n", id)
-	}
-
-	image2 := db.Image{
-		ImageData: db.WebImageToByte("https://wallpapercave.com/uwp/uwp4469044.png"),
-	}
-
-	id, err = db.AddImage(DB, image2)
-	if err != nil {
-		log.Fatal("Error adding image:", err)
-	} else {
-		fmt.Printf("Image %d added successfully!\n", id)
-	}
-	// This would submit images, successfully adds images to db but has repo size considerations
 	pack.PackImagesFromLocal("utils/packed_data/images", DB)
 	pack.PackUsersFromJSON("utils/packed_data/users.json", DB)
 	pack.PackEventFromJSON("utils/packed_data/events.json", DB)
 	pack.PackItinsFromJSON("utils/packed_data/itineraries.json", DB)
-
-	if err := db.AddEventImage(DB, 0, 1); err != nil {
-		log.Fatal("Error adding event image:", err)
-	}
-
-	if err := db.AddEventImage(DB, 0, 2); err != nil {
-		log.Fatal("Error adding event image:", err)
-	}
 
 	http.HandleFunc("/images/", db.ImageHandler(DB))
 	http.HandleFunc("/hello", helloHandler)

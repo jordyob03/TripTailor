@@ -1,6 +1,6 @@
 [
   {
-    "eventId": 0,
+    "eventId": 1,
     "name": "Eiffel Tower Visit",
     "cost": 25.00,
     "address": "Champ de Mars, 5 Avenue Anatole France, 75007 Paris, France",
@@ -11,7 +11,7 @@
     "eventImages": ["2"]
   },
   {
-    "eventId": 1,
+    "eventId": 2,
     "name": "Louvre Museum Tour",
     "cost": 20.00,
     "address": "Rue de Rivoli, 75001 Paris, France",
@@ -22,7 +22,7 @@
     "eventImages": ["2"]
   },
   {
-    "eventId": 2,
+    "eventId": 3,
     "name": "Seine River Cruise",
     "cost": 15.00,
     "address": "Seine River, Paris, France",
@@ -33,7 +33,7 @@
     "eventImages": ["2"]
   },
   {
-    "eventId": 3,
+    "eventId": 4,
     "name": "Notre Dame Visit",
     "cost": 10.00,
     "address": "6 Parvis Notre-Dame - Pl. Jean-Paul II, 75004 Paris, France",
@@ -44,7 +44,7 @@
     "eventImages": ["3"]
   },
   {
-    "eventId": 4,
+    "eventId": 5,
     "name": "Versailles Palace Day Trip",
     "cost": 40.00,
     "address": "Place d'Armes, 78000 Versailles, France",
@@ -55,7 +55,7 @@
     "eventImages": ["4"]
   },
   {
-    "eventId": 5,
+    "eventId": 6,
     "name": "Montmartre Walking Tour",
     "cost": 18.00,
     "address": "Montmartre, 75018 Paris, France",
@@ -66,7 +66,7 @@
     "eventImages": ["5"]
   },
   {
-    "eventId": 6,
+    "eventId": 7,
     "name": "Arc de Triomphe Visit",
     "cost": 12.00,
     "address": "Place Charles de Gaulle, 75008 Paris, France",
@@ -77,7 +77,7 @@
     "eventImages": ["6"]
   },
   {
-    "eventId": 7,
+    "eventId": 8,
     "name": "Orsay Museum Tour",
     "cost": 16.00,
     "address": "1 Rue de la Légion d'Honneur, 75007 Paris, France",
@@ -88,7 +88,7 @@
     "eventImages": ["7"]
   },
   {
-    "eventId": 8,
+    "eventId": 9,
     "name": "Latin Quarter Food Tour",
     "cost": 30.00,
     "address": "Latin Quarter, 75005 Paris, France",
@@ -99,7 +99,7 @@
     "eventImages": ["8"]
   },
   {
-    "eventId": 9,
+    "eventId": 10,
     "name": "Moulin Rouge Show",
     "cost": 85.00,
     "address": "82 Boulevard de Clichy, 75018 Paris, France",
