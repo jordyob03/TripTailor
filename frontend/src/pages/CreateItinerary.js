@@ -26,14 +26,6 @@ function CreateItinerary() {
     setItineraryDetails({ ...itineraryDetails, [name]: value });
   }; 
 
-  const handleTagSelection = (tag) => {
-    if (selectedTags.includes(tag)) {
-      setSelectedTags(selectedTags.filter((t) => t !== tag));
-    } else {
-      setSelectedTags([...selectedTags, tag]);
-    }
-  };
-
   const handleEventChange = (index, e) => {
     const { name, value } = e.target;
     const updatedEvents = [...events];
@@ -60,6 +52,15 @@ function CreateItinerary() {
     } else {
       setEvents([...events, { name: '', startTime: '1:00 AM', endTime: '2:00 AM', location: '', description: '', cost: '', images: [] }]);
       setEventErrorMessage('');
+    }
+  };
+
+  
+  const handleTagSelection = (tag) => {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter((t) => t !== tag));
+    } else {
+      setSelectedTags([...selectedTags, tag]);
     }
   };
 
@@ -159,54 +160,54 @@ function CreateItinerary() {
           <h2 className="heading">Create Itinerary</h2>
           <form onSubmit={handleSubmit} className="form">
             <h2 className="headingCI">Basic Info</h2>
-            <div className="inputGroup">
-              <label htmlFor="name" className="subheadingLeft">Name</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={itineraryDetails.name}
-                onChange={handleInputChange}
-                className="input"
-                placeholder='Like "A Day in Rome" or "Sightseeing Road Trip" '
-              />
-            </div>
-            <div className="inputGroup">
-              <label htmlFor="city" className="subheadingLeft">City</label>
-              <input
-                type="text"
-                id="city"
-                name="city"
-                value={itineraryDetails.city}
-                onChange={handleInputChange}
-                className="input"
-                placeholder="Enter city"
-              />
-            </div>
-            <div className="inputGroup">
-              <label htmlFor="country" className="subheadingLeft">Country</label>
-              <input
-                type="text"
-                id="country"
-                name="country"
-                value={itineraryDetails.country}
-                onChange={handleInputChange}
-                className="input"
-                placeholder="Enter country"
-              />
-            </div>
-            <div className="inputGroup">
-              <label htmlFor="description" className="subheadingLeft">Description</label>
-              <textarea
-                id="description"
-                name="description"
-                value={itineraryDetails.description}
-                onChange={handleInputChange}
-                className="input"
-                placeholder="Enter a brief description of your itinerary"
-                maxLength="100"
-              />
-            </div>
+              <div className="inputGroup">
+                <label htmlFor="name" className="subheadingLeft">Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={itineraryDetails.name}
+                  onChange={handleInputChange}
+                  className="input"
+                  placeholder='Like "A Day in Rome" or "Sightseeing Road Trip" '
+                />
+              </div>
+              <div className="inputGroup">
+                <label htmlFor="city" className="subheadingLeft">City</label>
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  value={itineraryDetails.city}
+                  onChange={handleInputChange}
+                  className="input"
+                  placeholder="Enter city"
+                />
+              </div>
+              <div className="inputGroup">
+                <label htmlFor="country" className="subheadingLeft">Country</label>
+                <input
+                  type="text"
+                  id="country"
+                  name="country"
+                  value={itineraryDetails.country}
+                  onChange={handleInputChange}
+                  className="input"
+                  placeholder="Enter country"
+                />
+              </div>
+              <div className="inputGroup">
+                <label htmlFor="description" className="subheadingLeft">Description</label>
+                <textarea
+                  id="description"
+                  name="description"
+                  value={itineraryDetails.description}
+                  onChange={handleInputChange}
+                  className="input"
+                  placeholder="Enter a brief description of your itinerary"
+                  maxLength="100"
+                />
+              </div>
             {basicErrorMessage && <div className="errorMessage">{basicErrorMessage}</div>}
             
             <div className="inputGroup">

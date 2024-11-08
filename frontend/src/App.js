@@ -10,8 +10,8 @@ import UserLogin from './pages/UserLogin';
 import HomePage from './pages/Homepage';
 import MyTravels from './pages/UserDashboard';
 import CreateItinerary from './pages/CreateItinerary'; 
-import MyBoards from './pages/UserBoards';
 import BoardPosts from './pages/BoardPosts';
+import EditUserProfile from './pages/EditUserProfile';
 
 function App() {
   const [searchResults, setSearchResults] = useState([]);
@@ -35,12 +35,11 @@ function App() {
         <Route path="/profile-creation" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
         <Route path="/create-itinerary" element={<ProtectedRoute><CreateItinerary /></ProtectedRoute>} />
         <Route path="/my-travels/*" element={<ProtectedRoute><MyTravels /></ProtectedRoute>} />
+        <Route path="/personal-info" element={<ProtectedRoute><EditUserProfile /></ProtectedRoute>} />
         <Route path="/account-settings" element={<ProtectedRoute><AccountSettings /></ProtectedRoute>} />
         <Route path="/home-page" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
         <Route path="/search-results" element={<SearchResults searchResults={searchResults} searchParams={searchParams} isSearchPressed={true} />} />
-        <Route path="/itincreation" element={<CreateItinerary />} />
-        <Route path="/my-boards" element={<ProtectedRoute><MyBoards /></ProtectedRoute>} />
-        <Route path="/my-boards/:boardId" element={<BoardPosts />} />
+        <Route path="/my-travels/boards/:boardId" element={<BoardPosts />} />
       </Routes>
     </Router>
   );
