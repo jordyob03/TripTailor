@@ -98,7 +98,6 @@ func main() {
 
 				// Itinerary 1
 				itinerary1 := db.Itinerary{
-					Name:        "Beach Vacation",
 					City:        "St. John's",
 					Country:     "Canada",
 					Title:       "Beach Trip",
@@ -167,7 +166,6 @@ func main() {
 
 				// Itinerary 2
 				itinerary2 := db.Itinerary{
-					Name:        "Mountain Hike",
 					City:        "Banff",
 					Country:     "Canada",
 					Title:       "Mountain Adventure",
@@ -251,7 +249,6 @@ func main() {
 
 				// Itinerary 3
 				itinerary3 := db.Itinerary{
-					Name:        "Scuba Diving",
 					City:        "Vancouver",
 					Country:     "Canada",
 					Title:       "Ocean Adventure",
@@ -321,7 +318,6 @@ func main() {
 
 				// Itinerary 4
 				itinerary4 := db.Itinerary{
-					Name:        "Skydiving",
 					City:        "Toronto",
 					Country:     "Canada",
 					Title:       "Skydiving Adventure",
@@ -386,7 +382,6 @@ func main() {
 
 				// Itinerary 5
 				itinerary5 := db.Itinerary{
-					Name:        "Bungee Jumping",
 					City:        "Niagara Falls",
 					Country:     "Canada",
 					Title:       "Bungee Jumping Adventure",

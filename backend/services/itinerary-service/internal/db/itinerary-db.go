@@ -10,7 +10,6 @@ import (
 
 type Itinerary struct {
 	ItineraryId int      `json:"itineraryId"`
-	Name        string   `json:"name"`
 	City        string   `json:"city"`
 	Country     string   `json:"country"`
 	Title       string   `json:"title"`
@@ -27,7 +26,6 @@ func CreateItineraryTable(DB *sql.DB) error {
 	createTableSQL := `
 	CREATE TABLE IF NOT EXISTS itineraries (
 		itineraryId SERIAL PRIMARY KEY,
-		name TEXT NOT NULL,
 		city TEXT NOT NULL,
 		country TEXT NOT NULL,
 		title TEXT,
@@ -45,12 +43,12 @@ func CreateItineraryTable(DB *sql.DB) error {
 
 func AddItinerary(DB *sql.DB, itinerary Itinerary) (int, error) {
 	insertItinerarySQL := `
-	INSERT INTO itineraries (name, city, country, title, description, price, languages, tags, events, postId, username)
-	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING itineraryId;`
+	INSERT INTO itineraries (city, country, title, description, price, languages, tags, events, postId, username)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING itineraryId;`
 
 	var itineraryID int
 	err := DB.QueryRow(
-		insertItinerarySQL, itinerary.Name, itinerary.City, itinerary.Country,
+		insertItinerarySQL, itinerary.City, itinerary.Country,
 		itinerary.Title, itinerary.Description, itinerary.Price,
 		pq.Array(itinerary.Languages), pq.Array(itinerary.Tags),
 		pq.Array(itinerary.Events), itinerary.PostId,
@@ -123,7 +121,6 @@ func GetItinerary(DB *sql.DB, itineraryID int) (Itinerary, error) {
 
 	err := DB.QueryRow(getItinerarySQL, itineraryID).Scan(
 		&itinerary.ItineraryId,
-		&itinerary.Name,
 		&itinerary.City,
 		&itinerary.Country,
 		&itinerary.Title,
@@ -158,10 +155,6 @@ func GetItinerary(DB *sql.DB, itineraryID int) (Itinerary, error) {
 
 	log.Printf("Itinerary retrieved successfully: %+v\n", itinerary)
 	return itinerary, nil
-}
-
-func UpdateItineraryName(DB *sql.DB, itineraryId int, name string) error {
-	return UpdateAttribute(DB, "itineraries", "itineraryId", itineraryId, "name", name)
 }
 
 func UpdateItineraryCity(DB *sql.DB, itineraryId int, city string) error {

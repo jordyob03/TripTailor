@@ -68,7 +68,7 @@ function NavBar({ onSearch }) {
 
         const formattedResults = response.data.map(itinerary => ({
           location: `${itinerary.city}, ${itinerary.country}`,
-          title: itinerary.name,
+          title: itinerary.title,
           description: `Itinerary by ${itinerary.username}. Tags: ${itinerary.tags.map(tag => tag.replace(/[{}]/g, '')).join(', ')}`,
           tags: itinerary.tags.map(tag => tag.replace(/[{}]/g, '')),
           image: 'https://via.placeholder.com/300x180', 
