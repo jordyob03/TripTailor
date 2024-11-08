@@ -34,7 +34,7 @@ function App() {
         <Route path="/sign-up" element={<UserSignup />} />
         <Route path="/profile-creation" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
         <Route path="/create-itinerary" element={<ProtectedRoute><CreateItinerary /></ProtectedRoute>} />
-        <Route path="/my-travels" element={<ProtectedRoute><MyTravels /></ProtectedRoute>} />
+        <Route path="/my-travels/*" element={<ProtectedRoute><MyTravels /></ProtectedRoute>} />
         <Route path="/account-settings" element={<ProtectedRoute><AccountSettings /></ProtectedRoute>} />
         <Route path="/home-page" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
         <Route path="/search-results" element={<SearchResults searchResults={searchResults} searchParams={searchParams} isSearchPressed={true} />} />

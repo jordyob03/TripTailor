@@ -46,7 +46,7 @@ function Itineraries() {
   };
 
   return (
-    <div>
+    <div className="results">
       {itineraries.length > 0 ? (
         // Render the results grid only when itineraries are present
         <div className="resultsGrid">

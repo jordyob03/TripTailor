@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import boardAPI from '../api/boardAPI.js';
 import '../styles/styles.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 const username = localStorage.getItem('username');
 
@@ -56,33 +58,46 @@ function Boards() {
   };
 
   return (
-    <div className="resultsGrid">
+    <div className="results">
       {boards.length > 0 ? (
-        boards.map((board) => {
-          const eventImage = board.image || getRandomImage();
-          return (
-            <div key={board.boardId} className="boardsCard" onClick={() => handleBoardClick(board.boardId)}>
-              <img src={eventImage} alt={board.name} className="resultCardImage" />
-              <div className="resultCardContent">
-                <button className="deleteButton" onClick={(e) => { e.stopPropagation(); deleteBoard(board.boardId); }}>X</button>
-                <h3 className="cardTitle">{board.name}</h3>
-                <div className="countAndDate">
-                  <h4 className="cardPostCount">{board.posts.length} itineraries</h4>
-                  <p className="cardDescription">
-                    {new Date(board.dateOfCreation).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
-                  </p>
-                </div>
-                <div className="resultTags">
-                  {board.tags.map((tag, i) => (
-                    <span key={i} className="resultCardTag">{tag}</span>
-                  ))}
+        <div className="resultsGrid">
+          {boards.map((board) => {
+            const eventImage = board.image || getRandomImage();
+            return (
+              <div key={board.boardId} className="boardsCard" onClick={() => handleBoardClick(board.boardId)}>
+                <img src={eventImage} alt={board.name} className="resultCardImage" />
+                <div className="resultCardContent">
+                <button
+                    className="deleteButton"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const confirmDelete = window.confirm("Are you sure you want to delete this board?");
+                      if (confirmDelete) deleteBoard(board.boardId);
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faTimes} style={{ color: 'white' }} />
+                  </button>
+                  <h3 className="cardTitle">{board.name}</h3>
+                  <div className="countAndDate">
+                    <h4 className="cardPostCount">{board.posts.length} itineraries</h4>
+                    <p className="cardDescription">
+                      {new Date(board.dateOfCreation).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    </p>
+                  </div>
+                  <div className="resultTags">
+                    {board.tags.map((tag, i) => (
+                      <span key={i} className="resultCardTag">{tag}</span>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })
+            );
+          })}
+        </div>
       ) : (
-        <div className="noBoardsMessage">No boards saved. Add some itineraries to your boards to start planning!</div>
+        <div className="centeredMessageContainer">
+          <div className="noBoardsMessage">No boards saved. Add some itineraries to your boards to start planning!</div>
+        </div>
       )}
     </div>
   );

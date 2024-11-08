@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Link, Route, Routes } from 'react-router-dom';
+import React from 'react';
+import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import Boards from './UserBoards';
 import Itineraries from './UserItineraries';
 import '../styles/styles.css';
 
 function MyTravels() {
-  const [selectedTab, setSelectedTab] = useState('itineraries');
+  const location = useLocation(); // Get the current path
 
   return (
     <div className="pageContainer">
@@ -15,12 +15,16 @@ function MyTravels() {
 
       <div className="tabNavigation">
         <Link to="/my-travels/itineraries">
-          <button className={selectedTab === 'itineraries' ? 'activeTab' : ''} onClick={() => setSelectedTab('itineraries')}>
+          <button
+            className={location.pathname === '/my-travels/itineraries' ? 'activeTab' : ''}
+          >
             Itineraries
           </button>
         </Link>
         <Link to="/my-travels/boards">
-          <button className={selectedTab === 'boards' ? 'activeTab' : ''} onClick={() => setSelectedTab('boards')}>
+          <button
+            className={location.pathname === '/my-travels/boards' ? 'activeTab' : ''}
+          >
             Boards
           </button>
         </Link>
