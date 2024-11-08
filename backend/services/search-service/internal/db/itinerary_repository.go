@@ -27,23 +27,27 @@ func QueryItineraries(db *sql.DB, params map[string]interface{}) ([]models.Itine
 	var conditions []string
 	var tagArray, langArray []string
 
-	// Prepare SQL conditions based on provided params
-	if v, ok := params["tags"].(string); ok && v != "" {
-		tagArray = prepareTagArray(v)
-		conditions = append(conditions, fmt.Sprintf("tags && %s", formatArrayForSQL(tagArray)))
-	}
-	if v, ok := params["languages"].(string); ok && v != "" {
-		langArray = prepareTagArray(v)
-		conditions = append(conditions, fmt.Sprintf("languages && %s", formatArrayForSQL(langArray)))
-	}
-	if v, ok := params["city"].(string); ok && v != "" {
-		conditions = append(conditions, fmt.Sprintf("city = '%s'", v))
-	}
-	if v, ok := params["country"].(string); ok && v != "" {
-		conditions = append(conditions, fmt.Sprintf("country = '%s'", v))
-	}
-	if v, ok := params["username"].(string); ok && v != "" {
-		conditions = append(conditions, fmt.Sprintf("username = '%s'", v))
+	for key, value := range params {
+		switch key {
+		case "tags":
+			if tagArray, ok := value.([]string); ok && len(tagArray) > 0 {
+				tagArray := prepareTagArray(tagArray[0])
+				conditions = append(conditions, fmt.Sprintf("tags && %s", formatArrayForSQL(tagArray)))
+			}
+		case "languages":
+			if langArray, ok := value.([]string); ok && len(langArray) > 0 {
+				langArray := prepareTagArray(langArray[0])
+				conditions = append(conditions, fmt.Sprintf("languages && %s", formatArrayForSQL(langArray)))
+			}
+		case "city", "country", "username", "name", "title":
+			if v, ok := value.(string); ok && v != "" {
+				conditions = append(conditions, fmt.Sprintf("%s ILIKE '%%%s%%'", key, v)) // ILIKE for case-insensitive partial matches
+			}
+		case "price":
+			if price, ok := value.(float64); ok && price > 0 {
+				conditions = append(conditions, fmt.Sprintf("price <= %f", price)) // Example: search for itineraries <= the given price
+			}
+		}
 	}
 
 	fmt.Printf("Conditions: %v\n", conditions)
@@ -55,7 +59,7 @@ func QueryItineraries(db *sql.DB, params map[string]interface{}) ([]models.Itine
 
 	// Construct the SQL query with scoring mechanism
 	query := fmt.Sprintf(`
-		SELECT itineraryid, name, city, country, languages, tags, events, postid, username, creationdate, lastupdate,
+		SELECT itineraryid, name, city, country, title, description, price, languages, tags, events, postid, username,
 			array_length(array(select unnest(tags) intersect select unnest(%s)), 1) AS tag_match_count,
 			array_length(array(select unnest(languages) intersect select unnest(%s)), 1) AS lang_match_count,
 			array_length(array(select unnest(tags) intersect select unnest(%s)), 1) +
@@ -84,8 +88,10 @@ func QueryItineraries(db *sql.DB, params map[string]interface{}) ([]models.Itine
 		var scored models.ScoredItinerary
 		var tagMatchCount, languageMatchCount, totalMatchCount sql.NullInt64
 
+		// Update the scanning process to account for all fields in Itinerary and the match counts
 		if err := rows.Scan(
 			&scored.Itinerary.ItineraryId, &scored.Itinerary.Name, &scored.Itinerary.City, &scored.Itinerary.Country,
+			&scored.Itinerary.Title, &scored.Itinerary.Description, &scored.Itinerary.Price,
 			pq.Array(&scored.Itinerary.Languages), pq.Array(&scored.Itinerary.Tags), pq.Array(&scored.Itinerary.Events),
 			&scored.Itinerary.PostId, &scored.Itinerary.Username,
 			&tagMatchCount, &languageMatchCount, &totalMatchCount,

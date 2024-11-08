@@ -12,6 +12,7 @@ type ScoredItinerary struct {
 	Itinerary
 	TagMatchCount      int `json:"tagMatchCount"`
 	LanguageMatchCount int `json:"languageMatchCount"`
+	PriceMatchCount    int `json:"priceMatchCount"`
 	TotalMatchCount    int `json:"totalMatchCount"`
 }
 
