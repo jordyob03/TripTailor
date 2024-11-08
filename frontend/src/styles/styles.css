@@ -744,10 +744,9 @@
   font-size: 14px;
 } 
 
-/* Main container for the boards */
 .my-boards {
   display: flex;
-  flex-direction: column; /* Stacks heading and grid vertically */
+  flex-direction: column;
   align-items: center;
   padding: 80px;
 }
@@ -758,10 +757,10 @@
 
 .boards-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Exactly 3 columns */
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   width: 100%;
-  max-width: 1200px; /* Limits the width for readability */
+  max-width: 1200px;
   padding: 20px;
 }
 
@@ -771,7 +770,7 @@
   border: 1px solid #ddd;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden; /* Ensures the image and content fit within rounded corners */
+  overflow: hidden;
   text-align: center;
   transition: box-shadow 0.3s;
   padding-bottom: 20px;
@@ -786,16 +785,14 @@
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Image styling for consistent sizing and cropping */
 .board-image {
   width: 100%;
-  height: 150px; /* Fixed height for uniformity */
-  object-fit: cover; /* Crops the image to fill the space */
+  height: 150px;
+  object-fit: cover;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
 
-/* Content inside the board card */
 .board-card h3 {
   font-size: 1.5rem;
   color: #333;
@@ -813,15 +810,14 @@
 }
 
 .board-card-link {
-  text-decoration: none; /* Remove underline from the link */
-  color: inherit; /* Inherit color from parent */
-  display: block; /* Make the link a block element so it covers the card */
+  text-decoration: none;
+  color: inherit;
+  display: block;
 }
 
-/* General Container for Board Posts */
 .boardPostsContainer {
   padding: 20px;
-  background-color: #f4f7fa; /* Light background color */
+  background-color: #f4f7fa;
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -830,14 +826,13 @@
 
 .boardPostsContainer h2{
   padding: 20px;
-  background-color: #f4f7fa; /* Light background color */
+  background-color: #f4f7fa;
   display: flex;
   flex-direction: column;
   gap: 15px;
   padding-top: 10px;
 }
 
-/* Board details section */
 .boardDetails {
   text-align: center;
   padding: 10px;
@@ -859,23 +854,21 @@
   font-size: 15px;
 }
 
-/* Grid layout for post cards */
 .postsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive grid with minimum size */
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
   padding: 10px;
-  justify-items: stretch; /* Centers posts within grid cells */
-  max-width: 100%; /* Ensure it does not exceed the container width */
+  justify-items: stretch;
+  max-width: 100%;
 }
 
 @media (min-width: 600px) {
   .postsGrid {
-    grid-template-columns: repeat(4, 1fr); /* 1 column on small screens */
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
-/* Individual post card styling */
 .postCard {
   background-color: #ffffff;
   border-radius: 12px;
@@ -885,18 +878,17 @@
   cursor: pointer;
 }
 
-/* Post image styling */
 .post-image {
   width: 100%;
   height: 200px;
   object-fit: cover;
   border-radius: 10px;
-  transition: filter 0.3s ease; /* Smooth transition for blur */
+  transition: filter 0.3s ease;
 }
 
 .postCard:hover {
-  transform: translateY(-5px); /* Lift the post on hover */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .postImage {
@@ -907,7 +899,6 @@
   border-top-right-radius: 12px;
 }
 
-/* Post info (username, date, likes) */
 .postInfo {
   padding: 15px;
   display: flex;
@@ -915,28 +906,26 @@
   align-items: flex-start;
 }
 
-/* Reduce space between the elements */
 .postInfo h3 {
-  margin-bottom: -10px; /* Reduce bottom margin */
-  text-align: center; /* Center only the title */
+  margin-bottom: -10px;
+  text-align: center;
   margin: 0;
   font-size: 1.2em;
   color: #333;
 }
 
 .postInfo p {
-  margin-bottom: -10px; /* Reduce bottom margin */
+  margin-bottom: -10px;
   color: #666;
   font-size: 0.9em;
 }
 
 .postInfo span {
-  margin-top: 10px; /* Optionally add small top margin */
+  margin-top: 10px;
   color: #888;
   font-size: 0.9em;
 }
 
-/* Post stats (likes and comments) */
 .postStats {
   display: flex;
   justify-content: space-between;
@@ -950,7 +939,6 @@
   margin-right: 10px;
 }
 
-/* Message when no posts are available */
 .noPostsMessage {
   text-align: center;
   font-size: 1.2em;
@@ -958,7 +946,6 @@
   margin-top: 30px;
 }
 
-/* Itinerary card styling (similar to post card) */
 .itineraryCard {
   background-color: #ffffff;
   border-radius: 12px;
@@ -966,15 +953,14 @@
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
-  padding: 20px; /* Add padding for better spacing */
+  padding: 20px;
 }
 
 .itineraryCard:hover {
-  transform: translateY(-5px); /* Lift the itinerary on hover */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Itinerary details layout */
 .itineraryDetails {
   padding: 15px;
   display: flex;
@@ -1028,7 +1014,7 @@
 .deleteButton:hover ~ .postInfo p,
 .deleteButton:hover ~ .postStats span {
   text-decoration: line-through;
-  color: #888; /* Optional: you can also change the text color to a lighter shade */
+  color: #888;
 }
 
 .boardImageContainer {
@@ -1043,5 +1029,5 @@
 .deleteButton:hover ~ .board-card p,
 .deleteButton:hover ~ .board-card span {
   text-decoration: line-through;
-  color: #888; /* Optional: you can also change the text color to a lighter shade */
+  color: #888;
 }

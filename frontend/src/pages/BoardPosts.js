@@ -12,17 +12,12 @@ function BoardPosts() {
   const boardId = parseInt(location.pathname.split("/").pop());
   const [data, setData] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
-  const [selectedBoard, setBoard] = useState(null); // Store the selected selectedBoard
+  const [selectedBoard, setBoard] = useState(null);
   const [posts, setPosts] = useState([]);
   const [itineraries, setItineraries] = useState([]);
   const [events, setEvents] = useState([]); 
 
-  const addPost = () => {
-    console.log("Adding post to board:", boardId);
-  };
-
   const deleteBoardPost = async (boardId, postId) => {
-    console.log("Deleting post:", postId, "from board:", boardId);
     try {
       await boardAPI.delete(`/boards/${boardId}/posts/${postId}`);
       setPosts(posts.filter(post => post.postId !== postId));
@@ -40,15 +35,9 @@ function BoardPosts() {
 
   const fetchboards = async () => {
     const userData = { username: localStorage.getItem('username') };
-    // console.log("Fetching boards with username:", userData.username);
-  
     try {
       const response = await boardAPI.get('/boards', { params: userData });
-      // console.log("Fetched boards:", response.data);
-  
       const selectedBoard = response.data.boards.find(board => board.boardId === boardId);
-      // console.log("Selected board:", selectedBoard);
-  
       setBoard(selectedBoard);
       return selectedBoard;
     } catch (error) {
@@ -59,11 +48,8 @@ function BoardPosts() {
   };
   
   const fetchposts = async (boardId) => {
-    // console.log("Fetching posts for boardId:", boardId);
-  
     try {
       const response = await boardAPI.get('/posts', { params: { boardId: boardId } });
-      console.log("Fetched posts:", response.data.Posts);
       setPosts(response.data.Posts);
       return response.data.Posts;
     } catch (error) {
@@ -74,11 +60,8 @@ function BoardPosts() {
   };
   
   const fetchitineraries = async (postId) => {
-    // console.log("Fetching itineraries for postId:", postId);
-  
     try {
       const response = await boardAPI.get('/itineraries', { params: { postId: postId } });
-      console.log("Fetched itineraries:", response.data.Itinerary);
       return response.data.Itinerary;
     } catch (error) {
       console.error("Error fetching itineraries:", error);
@@ -88,12 +71,8 @@ function BoardPosts() {
   };
   
   const fetchevents = async (itineraryId) => {
-    // console.log("Fetching events for itineraryId:", itineraryId);
-  
     try {
-      const response = await boardAPI.get('/events', { params: { itineraryId: itineraryId } });
-      console.log("Fetched events:", response.data.Events);
-  
+      const response = await boardAPI.get('/events', { params: { itineraryId: itineraryId } }); 
       return response.data.Events;
     } catch (error) {
       console.error("Error fetching events:", error);
@@ -103,34 +82,17 @@ function BoardPosts() {
   };
   
   const fetchAllData = async () => {
-    // console.log("Fetching all data for boardId:", boardId);
     try {
       const selectedBoard = await fetchboards();
       if (!selectedBoard) return;
-
-      // console.log("BoardPosts", selectedBoard.posts); //Working fine
-  
       const postsData = await fetchposts(boardId);
       const structuredData = [];
-
-      console.log("PostsData", postsData);
-  
       for (let post of postsData) {
-        // console.log("Fetching itineraries for postId:", post.postId);
-        console.log("Fetching itineraries for postId:", post.postId);
-  
-        const itinerary = await fetchitineraries(post.postId);
-        // console.log("Fetched itinerary for postId:", post.postId, itinerary);
-  
+        const itinerary = await fetchitineraries(post.postId); 
         const eventsData = await fetchevents(itinerary.itineraryId);
-        // console.log("Fetched events for itinerary:", itinerary.ItineraryId, eventsData);
-  
         structuredData.push({ post, itinerary, events: eventsData });
       }
-  
-      // console.log("Structured data:", structuredData);
       setData(structuredData); // Set the 3D array to the state
-  
     } catch (error) {
       setErrorMessage("An error occurred while fetching data");
       console.error("Error fetching data:", error);
@@ -138,15 +100,13 @@ function BoardPosts() {
   };
   
   useEffect(() => {
-    // console.log("useEffect: Fetching data for boardId:", boardId);
     if (isNaN(boardId)) {
       console.error("Invalid boardId:", boardId);
       return;
     }
-    fetchAllData(); // Fetch data when the component mounts
-  }, [boardId]); // Re-fetch data if boardId changes
+    fetchAllData();
+  }, [boardId]);
   
-  // Array of fallback images
   const fallbackImages = [
     "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Boat-Trip_800x800.jpg",
     "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Beach-Cabin_800x800.jpg",
@@ -158,7 +118,6 @@ function BoardPosts() {
     "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Updates-Carousel_Wild-Update_800x450.jpg",
   ];
 
-  // Function to get a random fallback image
   const getRandomImage = () => {
     const randomIndex = Math.floor(Math.random() * fallbackImages.length);
     return fallbackImages[randomIndex];
@@ -211,32 +170,9 @@ function BoardPosts() {
       );
     })
   ) : (<></>)}
-{/* Add Post Button */}
-<div 
-  className="postCard" 
-  onClick={addPost}
-  style={{
-    backgroundColor: '#DDDDDD',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    cursor: 'pointer',
-    height: '450px',
-  }}
->
-  <img 
-    src="https://img.icons8.com/?size=100&id=1501&format=png&color=000000" 
-    alt="Add Post" 
-    style={{
-      maxWidth: '80%',           
-      maxHeight: '80%',
-      objectFit: 'contain',      
-    }} 
-  />
   </div>
     {errorMessage && <div className="message">{errorMessage}</div>}
   </div>
-</div>
 );
 }
 

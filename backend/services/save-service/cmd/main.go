@@ -7,7 +7,6 @@ import (
 
 	api "github.com/jordyob03/TripTailor/backend/services/save-service/api"
 
-	//"net/http"
 	"time"
 
 	"github.com/gin-contrib/cors"

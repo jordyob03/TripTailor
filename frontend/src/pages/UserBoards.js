@@ -4,7 +4,6 @@ import '../styles/styles.css';
 import boardAPI from '../api/boardAPI.js';
 
 const username = localStorage.getItem('username');
-console.log('User ID:', username);
 
 function MyBoards() {
   const navigate = useNavigate();
@@ -12,7 +11,6 @@ function MyBoards() {
   const [boards, setBoards] = useState([]);
 
   const deleteBoard = async (boardId) => {
-    console.log("Deleting board:", boardId);
     try {
       await boardAPI.delete(`/boards/${boardId}`);
       setBoards(boards.filter(board => board.boardId !== boardId));
@@ -33,23 +31,17 @@ function MyBoards() {
     };
   
     try {
-      console.log('Fetching boards with:', userData);
-      // Ensure you use axios correctly
-      const response = await boardAPI.get('/boards', { params: userData });
-      console.log('Boards fetched successfully:', response.data.boards);
-  
+      const response = await boardAPI.get('/boards', { params: userData }); 
       setBoards(response.data.boards);
     } catch (error) {
       setErrorMessage(error.message || "An error occurred. Please try again.");
-      console.error("Error fetching boards:", error);
     }
   };
 
   useEffect(() => {
-    fetchboards(); // Call fetchboards when the component mounts
+    fetchboards();
   }, []);
 
-  // Array of fallback images
   const fallbackImages = [
     "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Boat-Trip_800x800.jpg",
     "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Beach-Cabin_800x800.jpg",
@@ -61,7 +53,6 @@ function MyBoards() {
     "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Updates-Carousel_Wild-Update_800x450.jpg",
   ];
 
-  // Function to get a random fallback image
   const getRandomImage = () => {
     const randomIndex = Math.floor(Math.random() * fallbackImages.length);
     return fallbackImages[randomIndex];
@@ -69,7 +60,6 @@ function MyBoards() {
 
   return (
     <div className="my-boards">
-      {/* Main Heading */}
       <div className="heading">
         <h2>My Boards</h2>
       </div>
@@ -81,7 +71,6 @@ function MyBoards() {
             <div className="boardImageContainer">
               <img src={eventImage} alt={board} className="board-image" />
             </div>
-            {/* Content section */}
             <div className="board-content">
               <button className="deleteButton" onClick={(e) => {e.stopPropagation(); deleteBoard(board.boardId);}}>X</button>
               <h3>{board.name}</h3>
