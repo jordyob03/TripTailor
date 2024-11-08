@@ -57,6 +57,8 @@ func main() {
 		Tags:         []string{"Travel", "Adventure"},
 		Boards:       []string{},
 		Posts:        []string{},
+		Followers:    []string{},
+		Following:    []string{},
 		ProfileImage: 0,
 		CoverImage:   0,
 	}

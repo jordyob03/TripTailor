@@ -21,8 +21,10 @@ func CreateUserTable(DB *sql.DB) error {
 		country TEXT,
 		languages TEXT[],
 		tags TEXT[],
-		boards INTEGER[],
-		posts INTEGER[],
+		boards TEXT[],
+		posts TEXT[],
+		followers TEXT[],
+		following TEXT[],
 		profileImage INTEGER,
 		coverImage INTEGER
 	);`
