@@ -129,7 +129,7 @@ function BoardPosts() {
         <div className="boardDetails">
           <h2>{selectedBoard.name}</h2>
           <p><em>{selectedBoard.description}</em></p>
-          <p>Created by: {selectedBoard.username}, on {new Date(selectedBoard.creationDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+          <p>Created by: {selectedBoard.username}, on {new Date(selectedBoard.dateOfCreation).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
         </div>
       )}
   
@@ -155,7 +155,7 @@ function BoardPosts() {
           </div>
           <div className="postInfo">
             <h3>{itinerary.title}</h3>
-            <span>{new Date(post.creationDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+            <span>{new Date(post.dateOfCreation).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
             <p><strong>City:</strong> {itinerary.city}</p>
             <p><strong>Country:</strong> {itinerary.country}</p>
             <p><strong>Price:</strong> ${itinerary?.price !== undefined ? itinerary.price : 0}</p>
