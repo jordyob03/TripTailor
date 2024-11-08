@@ -87,7 +87,7 @@ func QueryItineraries(db *sql.DB, params map[string]interface{}) ([]models.Itine
 		if err := rows.Scan(
 			&scored.Itinerary.ItineraryId, &scored.Itinerary.Name, &scored.Itinerary.City, &scored.Itinerary.Country,
 			pq.Array(&scored.Itinerary.Languages), pq.Array(&scored.Itinerary.Tags), pq.Array(&scored.Itinerary.Events),
-			&scored.Itinerary.PostId, &scored.Itinerary.Username, &scored.Itinerary.CreationDate, &scored.Itinerary.LastUpdate,
+			&scored.Itinerary.PostId, &scored.Itinerary.Username,
 			&tagMatchCount, &languageMatchCount, &totalMatchCount,
 		); err != nil {
 			return nil, fmt.Errorf("failed to scan row: %w", err)

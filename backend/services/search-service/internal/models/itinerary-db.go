@@ -8,6 +8,13 @@ import (
 	"github.com/lib/pq"
 )
 
+type ScoredItinerary struct {
+	Itinerary
+	TagMatchCount      int `json:"tagMatchCount"`
+	LanguageMatchCount int `json:"languageMatchCount"`
+	TotalMatchCount    int `json:"totalMatchCount"`
+}
+
 type Itinerary struct {
 	ItineraryId int      `json:"itineraryId"`
 	Name        string   `json:"name"`
