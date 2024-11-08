@@ -778,3 +778,290 @@
   font-family: 'Red Hat Display', sans-serif;
   font-size: 18px;
 } 
+.my-boards {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px;
+}
+
+.my-boards h2 {
+  margin-bottom: 20px;
+}
+
+.boards-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+  padding: 20px;
+}
+
+.board-card {
+  position:relative;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  text-align: center;
+  transition: box-shadow 0.3s;
+  padding-bottom: 20px;
+}
+
+.board-content {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.board-card:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.board-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.board-card h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 10px 0;
+}
+
+.board-card p {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 5px 0;
+}
+
+.board-card strong {
+  color: #444;
+}
+
+.board-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.boardPostsContainer {
+  padding: 20px;
+  background-color: #f4f7fa;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding-top: 60px;
+}
+
+.boardPostsContainer h2{
+  padding: 20px;
+  background-color: #f4f7fa;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding-top: 10px;
+}
+
+.boardDetails {
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.boardDetails h2 {
+  color: #002f6c;
+  margin-top: 35px;
+  margin-bottom: 0px;
+  font-family: 'Red Hat Display', sans-serif;
+  font-size: 45px;
+}
+
+.boardDetails p {
+  color: #002f6c;
+  margin: 0px 0;
+  font-family: 'Red Hat Display', sans-serif;
+  font-size: 15px;
+}
+
+.postsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 10px;
+  justify-items: stretch;
+  max-width: 100%;
+}
+
+@media (min-width: 600px) {
+  .postsGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.postCard {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.post-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: filter 0.3s ease;
+}
+
+.postCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.postImage {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.postInfo {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.postInfo h3 {
+  margin-bottom: -10px;
+  text-align: center;
+  margin: 0;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.postInfo p {
+  margin-bottom: -10px;
+  color: #666;
+  font-size: 0.9em;
+}
+
+.postInfo span {
+  margin-top: 10px;
+  color: #888;
+  font-size: 0.9em;
+}
+
+.postStats {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 0.9em;
+  color: #555;
+  margin-top: 15px;
+}
+
+.postStats span {
+  margin-right: 10px;
+}
+
+.noPostsMessage {
+  text-align: center;
+  font-size: 1.2em;
+  color: #888;
+  margin-top: 30px;
+}
+
+.itineraryCard {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  padding: 20px;
+}
+
+.itineraryCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.itineraryDetails {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.itineraryDetails h4 {
+  font-size: 1.3em;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.itineraryDetails p {
+  color: #666;
+  font-size: 1em;
+  margin-bottom: 10px;
+}
+
+.itineraryDetails span {
+  color: #888;
+  font-size: 0.9em;
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: filter 0.3s ease;
+}
+
+.deleteButton {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: transparent;
+  border: none;
+  color: red;
+  font-size: 25px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.deleteButton:hover + .imageContainer .post-image {
+  filter: blur(5px);
+}
+
+.deleteButton:hover ~ .postInfo h3,
+.deleteButton:hover ~ .postInfo p,
+.deleteButton:hover ~ .postStats span {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.boardImageContainer {
+  position: relative;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: filter 0.3s ease;
+}
+
+.deleteButton:hover ~ .board-card h3,
+.deleteButton:hover ~ .board-card p,
+.deleteButton:hover ~ .board-card span {
+  text-decoration: line-through;
+  color: #888;
+}

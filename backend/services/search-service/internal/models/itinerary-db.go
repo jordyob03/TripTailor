@@ -10,7 +10,6 @@ import (
 
 type Itinerary struct {
 	ItineraryId int      `json:"itineraryId"`
-	Name        string   `json:"name"`
 	City        string   `json:"city"`
 	Country     string   `json:"country"`
 	Title       string   `json:"title"`
@@ -27,7 +26,6 @@ func CreateItineraryTable(DB *sql.DB) error {
 	createTableSQL := `
 	CREATE TABLE IF NOT EXISTS itineraries (
 		itineraryId SERIAL PRIMARY KEY,
-		name TEXT NOT NULL,
 		city TEXT NOT NULL,
 		country TEXT NOT NULL,
 		title TEXT,
@@ -45,7 +43,7 @@ func CreateItineraryTable(DB *sql.DB) error {
 
 func GetItinerary(DB *sql.DB, itineraryID int) (Itinerary, error) {
 	getItinerarySQL := `
-	SELECT itineraries (name, city, country, title, description, price, languages, tags, events, postId, username)
+	SELECT *
 	FROM itineraries
 	WHERE itineraryId = $1;`
 
@@ -53,7 +51,6 @@ func GetItinerary(DB *sql.DB, itineraryID int) (Itinerary, error) {
 
 	err := DB.QueryRow(getItinerarySQL, itineraryID).Scan(
 		&itinerary.ItineraryId,
-		&itinerary.Name,
 		&itinerary.City,
 		&itinerary.Country,
 		&itinerary.Title,

@@ -26,7 +26,7 @@ func CreateEventTable(DB *sql.DB) error {
 	CREATE TABLE IF NOT EXISTS events (
 		eventId SERIAL PRIMARY KEY,
 		name TEXT NOT NULL,
-		cost INT NOT NULL,
+		cost FLOAT NOT NULL,
 		address TEXT NOT NULL,
 		description TEXT,
 		startTime TIMESTAMPTZ NOT NULL,

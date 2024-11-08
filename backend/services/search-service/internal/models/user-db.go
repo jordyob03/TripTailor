@@ -21,6 +21,8 @@ type User struct {
 	Tags         []string  `json:"tags"`
 	Boards       []string  `json:"boards"`
 	Posts        []string  `json:"posts"`
+	Followers    []string  `json:"followers"`
+	Following    []string  `json:"following"`
 	ProfileImage int       `json:"profileImage"`
 	CoverImage   int       `json:"coverImage"`
 }
@@ -37,8 +39,10 @@ func CreateUserTable(DB *sql.DB) error {
 		country TEXT,
 		languages TEXT[],
 		tags TEXT[],
-		boards INTEGER[],
-		posts INTEGER[],
+		boards TEXT[],
+		posts TEXT[],
+		followers TEXT[],
+		following TEXT[],
 		profileImage INTEGER,
 		coverImage INTEGER
 	);`
@@ -47,7 +51,7 @@ func CreateUserTable(DB *sql.DB) error {
 
 func GetUser(DB *sql.DB, username string) (User, error) {
 	query := `
-    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, profileImage, coverImage
+    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, followers, following, profileImage, coverImage
     FROM users 
     WHERE username = $1`
 
@@ -60,6 +64,8 @@ func GetUser(DB *sql.DB, username string) (User, error) {
 		pq.Array(&user.Tags),
 		pq.Array(&user.Boards),
 		pq.Array(&user.Posts),
+		pq.Array(&user.Followers),
+		pq.Array(&user.Following),
 		&user.ProfileImage,
 		&user.CoverImage,
 	)
@@ -87,12 +93,20 @@ func GetUser(DB *sql.DB, username string) (User, error) {
 		user.Posts = []string{}
 	}
 
+	if user.Followers == nil {
+		user.Followers = []string{}
+	}
+
+	if user.Following == nil {
+		user.Following = []string{}
+	}
+
 	return user, nil
 }
 
 func GetAllUsers(DB *sql.DB) ([]User, error) {
 	query := `
-    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, profileImage, coverImage
+    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, followers, following, profileImage, coverImage
     FROM users`
 
 	rows, err := DB.Query(query)
@@ -112,6 +126,8 @@ func GetAllUsers(DB *sql.DB) ([]User, error) {
 			pq.Array(&user.Tags),
 			pq.Array(&user.Boards),
 			pq.Array(&user.Posts),
+			pq.Array(&user.Followers),
+			pq.Array(&user.Following),
 			&user.ProfileImage,
 			&user.CoverImage,
 		); err != nil {
@@ -133,6 +149,14 @@ func GetAllUsers(DB *sql.DB) ([]User, error) {
 
 		if user.Posts == nil {
 			user.Posts = []string{}
+		}
+
+		if user.Followers == nil {
+			user.Followers = []string{}
+		}
+
+		if user.Following == nil {
+			user.Following = []string{}
 		}
 
 		users = append(users, user)

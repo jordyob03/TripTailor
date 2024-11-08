@@ -24,7 +24,7 @@ function CreateItinerary() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setItineraryDetails({ ...itineraryDetails, [name]: value });
-  };
+  }; 
 
   const handleTagSelection = (tag) => {
     if (selectedTags.includes(tag)) {
@@ -69,6 +69,7 @@ function CreateItinerary() {
     const filteredEvents = events.filter(
       (event) => event.description.trim() !== '' || event.location.trim() !== ''
     );
+
   
     const { name, city, country, description } = itineraryDetails;
   
@@ -118,14 +119,12 @@ function CreateItinerary() {
     const Data = {
       Name: itineraryDetails.name,
       Username: localStorage.getItem('username'),
-      Location: itineraryDetails.location,
+      City: itineraryDetails.city,
+      Country: itineraryDetails.country,
       Description: itineraryDetails.description,
-      Cost: itineraryDetails.estimatedCost,
       Tags: selectedTags,
-      Events: events,
-    };
-
-    console.log(Data);
+      Events: filteredEvents,
+    }
 
     try {
       const response = await itineraryAPI.post('/itin-creation', Data);
