@@ -1,42 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import boardAPI from '../api/boardAPI.js';
+import itineraryAPI from '../api/itineraryAPI.js';
 import '../styles/styles.css';
 
 const username = localStorage.getItem('username');
 
-function Boards() {
-  const [boards, setBoards] = useState([]);
+function Itineraries() {
+  const [itineraries, setItineraries] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
-  const deleteBoard = async (boardId) => {
-    try {
-      await boardAPI.delete(`/boards/${boardId}`);
-      setBoards(boards.filter((board) => board.boardId !== boardId));
-      window.location.reload();
-    } catch (error) {
-      console.error("Error deleting board:", error);
-      setErrorMessage("Failed to delete board");
-    }
-  };
 
-  const fetchBoards = async () => {
+  const fetchItins = async () => {
     const userData = { username: username };
     try {
-      const response = await boardAPI.get('/boards', { params: userData });
-      setBoards(response.data.boards);
+      const response = await itineraryAPI.get('/itineraries', { params: userData }); // This endpoint doesnt exist yet idt?
+      setItineraries(response.data.itineraries);
+      console.log(response.data.itineraries)
     } catch (error) {
       setErrorMessage(error.message || "An error occurred. Please try again.");
     }
   };
-
-  const handleBoardClick = (id) => {
-    navigate(`/my-travels/boards/${id}`);
+  const handleItinClick = (id) => {
+    navigate(`/itinerary/${id}`);
   };
 
   useEffect(() => {
-    fetchBoards();
+    fetchItins();
   }, []);
 
   const fallbackImages = [
@@ -56,36 +46,34 @@ function Boards() {
   };
 
   return (
-    <div className="resultsGrid">
-      {boards.length > 0 ? (
-        boards.map((board) => {
-          const eventImage = board.image || getRandomImage();
-          return (
-            <div key={board.boardId} className="boardsCard" onClick={() => handleBoardClick(board.boardId)}>
-              <img src={eventImage} alt={board.name} className="resultCardImage" />
+    <div>
+      {itineraries.length > 0 ? (
+        // Render the results grid only when itineraries are present
+        <div className="resultsGrid">
+          {itineraries.map((itinerary) => (
+            <div key={itinerary.ItineraryID} className="resultCard" onClick={() => handleItinClick(itinerary.ItineraryID)} style={{ cursor: 'pointer' }}>
+              <img src={getRandomImage()} alt={itinerary.Title} className="resultCardImage" />
               <div className="resultCardContent">
-                <button className="deleteButton" onClick={(e) => { e.stopPropagation(); deleteBoard(board.boardId); }}>X</button>
-                <h3 className="cardTitle">{board.name}</h3>
-                <div className="countAndDate">
-                  <h4 className="cardPostCount">{board.posts.length} itineraries</h4>
-                  <p className="cardDescription">
-                    {new Date(board.dateOfCreation).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
-                  </p>
-                </div>
+                <h4 className="cardLocation">{itinerary.City + ', ' + itinerary.Country}</h4>
+                <h3 className="cardTitle">{itinerary.Title}</h3>
+                <p className="cardDescription">{itinerary.Description}</p>
                 <div className="resultTags">
-                  {board.tags.map((tag, i) => (
+                  {itinerary.Tags.map((tag, i) => (
                     <span key={i} className="resultCardTag">{tag}</span>
                   ))}
                 </div>
               </div>
             </div>
-          );
-        })
+          ))}
+        </div>
       ) : (
-        <div className="noBoardsMessage">No boards saved. Add some itineraries to your boards to start planning!</div>
+        // Render the centered message container when no itineraries are found
+        <div className="centeredMessageContainer">
+          <div className="noItinerariesMessage">No itineraries found. Create a new one to get started!</div>
+        </div>
       )}
     </div>
   );
 }
 
-export default Boards;
+export default Itineraries;

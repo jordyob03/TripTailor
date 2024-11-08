@@ -28,7 +28,7 @@ function UserLogin() {
       localStorage.setItem('username', username); 
       console.log('User signed in successfully:', response.data);
 
-      navigate('/profile-creation');
+      navigate('/home-page');
     } catch (error) {
       if (error.response && error.response.data) {
         setErrorMessage(error.response.data.error);  
@@ -41,10 +41,6 @@ function UserLogin() {
 
   const handleSignUpClick = () => {
     navigate('/sign-up');
-  };
-
-  const handleItinClick = () => {
-    navigate('/itincreation');
   };
 
 

@@ -208,10 +208,11 @@
   }
   
   .cardTitle {
-    font-size: 18px;
-    color: #002f6c;
+    font-size: 22px;
+    color: #000000;
     font-family: 'Red Hat Display', sans-serif;
     margin-bottom: 5px;
+    margin-top: 0px;
   }
   
   .cardDescription {
@@ -525,20 +526,13 @@
   padding: 20px;
 }
 
-.resultCard {
+.resultCard,
+.boardsCard {
   background-color: white;
   width: 23%; 
   height: 10%; 
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
-  position: relative;
-}
-
-.tripsCard {
-  width: 23%; 
-  height: 10%; 
-  background-color: rgb(255, 255, 255);
   overflow: hidden;
   position: relative;
 }
@@ -549,7 +543,7 @@
   object-fit: cover;
 }
 
-.tripCardImage {
+.boardCardImage {
   width: 100%;
   height: 250px;
   object-fit: cover;
@@ -656,7 +650,7 @@
 }
 
 .itinerariesList,
-.tripsList {
+.boardsList {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -664,7 +658,7 @@
 }
 
 .noItinerariesMessage,
-.noTripsMessage {
+.noBoardsMessage {
   background-color: #f0f8ff;
   padding: 15px 25px;
   border-radius: 20px;
@@ -673,6 +667,9 @@
   font-weight: bold;
   color: #00509e;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .createItineraryButton {
@@ -699,7 +696,7 @@
 
 }
 
-.tripsGrid {
+.boardsGrid {
   display: flex;
   flex-wrap: wrap;
   gap: 2%;
@@ -749,18 +746,22 @@
   margin-top: 20px;
 }
 
-.cardLocation {
+.cardPostCount {
   color: #000000;
   margin: 0 0;
   font-family: 'Red Hat Display', sans-serif;
   font-size: 14px;
+  margin-top: 10px;
+  margin-right: 20px;
+  margin-bottom: 12px;
 } 
 
-.cardTitle {
+.cardLocation{
   color: #000000;
-  margin-top: 10px;
+  margin: 0 0;
   font-family: 'Red Hat Display', sans-serif;
-  font-size: 18px;
+  font-size: 14px;
+  margin-bottom: 5px;
 } 
 
 .cardDescription {
@@ -1064,4 +1065,18 @@
 .deleteButton:hover ~ .board-card span {
   text-decoration: line-through;
   color: #888;
+}
+
+.countAndDate {
+  display: flex;
+  justify-content: left;
+  align-items: top;
+  margin-top: 0px;
+}
+
+.centeredMessageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
