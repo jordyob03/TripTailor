@@ -33,8 +33,8 @@ func CreateUserTable(DB *sql.DB) error {
 
 func AddUser(DB *sql.DB, user models.User) (int, error) {
 	insertUserSQL := `
-	INSERT INTO users (username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, profileImage, coverImage)
-	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+	INSERT INTO users (username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, followers, following, profileImage, coverImage)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
 	RETURNING userId;`
 
 	var userId int
@@ -43,6 +43,7 @@ func AddUser(DB *sql.DB, user models.User) (int, error) {
 		user.DateOfBirth, user.Name, user.Country,
 		pq.Array(user.Languages), pq.Array(user.Tags),
 		pq.Array(user.Boards), pq.Array(user.Posts),
+		pq.Array(user.Followers), pq.Array(user.Following),
 		user.ProfileImage, user.CoverImage).Scan(&userId)
 	if err != nil {
 		fmt.Println("Error adding user:", err)
@@ -54,7 +55,7 @@ func AddUser(DB *sql.DB, user models.User) (int, error) {
 
 func GetUser(DB *sql.DB, username string) (models.User, error) {
 	query := `
-    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, profileImage, coverImage
+    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, followers, following, profileImage, coverImage
     FROM users 
     WHERE username = $1`
 
@@ -67,6 +68,8 @@ func GetUser(DB *sql.DB, username string) (models.User, error) {
 		pq.Array(&user.Tags),
 		pq.Array(&user.Boards),
 		pq.Array(&user.Posts),
+		pq.Array(&user.Followers),
+		pq.Array(&user.Following),
 		&user.ProfileImage,
 		&user.CoverImage,
 	)
@@ -94,12 +97,20 @@ func GetUser(DB *sql.DB, username string) (models.User, error) {
 		user.Posts = []string{}
 	}
 
+	if user.Followers == nil {
+		user.Followers = []string{}
+	}
+
+	if user.Following == nil {
+		user.Following = []string{}
+	}
+
 	return user, nil
 }
 
 func GetAllUsers(DB *sql.DB) ([]models.User, error) {
 	query := `
-    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, profileImage, coverImage
+    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, followers, following, profileImage, coverImage
     FROM users`
 
 	rows, err := DB.Query(query)
@@ -119,6 +130,8 @@ func GetAllUsers(DB *sql.DB) ([]models.User, error) {
 			pq.Array(&user.Tags),
 			pq.Array(&user.Boards),
 			pq.Array(&user.Posts),
+			pq.Array(&user.Followers),
+			pq.Array(&user.Following),
 			&user.ProfileImage,
 			&user.CoverImage,
 		); err != nil {
@@ -140,6 +153,14 @@ func GetAllUsers(DB *sql.DB) ([]models.User, error) {
 
 		if user.Posts == nil {
 			user.Posts = []string{}
+		}
+
+		if user.Followers == nil {
+			user.Followers = []string{}
+		}
+
+		if user.Following == nil {
+			user.Following = []string{}
 		}
 
 		users = append(users, user)
