@@ -9,44 +9,33 @@ import (
 	"github.com/lib/pq" // PostgreSQL driver
 )
 
-// formatArrayForSQL formats a slice of strings for SQL array operations
-func formatArrayForSQL(arr []string) string {
-	quoted := make([]string, len(arr))
-	for i, v := range arr {
-		quoted[i] = fmt.Sprintf("'%s'", v)
-	}
-	return fmt.Sprintf("ARRAY[%s]::text[]", strings.Join(quoted, ","))
-}
-
-// prepareTagArray splits a comma-separated string into a slice
-func prepareTagArray(tagString string) []string {
-	return strings.Split(tagString, ",")
-}
-
 func BuildQuery(params map[string]interface{}) (string, []interface{}) {
 	innerQuery := "SELECT *, ("     // Start inner query with SELECT and begin total_score calculation
 	scoringConditions := []string{} // Conditions for calculating total_score
+	filterConditions := []string{}  // Conditions for WHERE clause (filters)
 	args := []interface{}{}         // Holds query parameter values
 	argIndex := 1                   // Counter for argument placeholders
+	paramCount := 0                 // Count of specified parameters
 
-	// Add scoring condition for name
-	if name, ok := params["name"].(string); ok && name != "" {
-		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN $%d::text IS NOT NULL AND name ILIKE '%%' || $%d || '%%' THEN 1 ELSE 0 END)", argIndex, argIndex))
-		args = append(args, name)
-		argIndex++
-	}
-
-	// Add scoring condition for city
+	// City as a filter
 	if city, ok := params["city"].(string); ok && city != "" {
-		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN $%d::text IS NOT NULL AND city ILIKE '%%' || $%d || '%%' THEN 1 ELSE 0 END)", argIndex, argIndex))
+		filterConditions = append(filterConditions, fmt.Sprintf("city ILIKE '%%' || $%d || '%%'", argIndex))
 		args = append(args, city)
 		argIndex++
 	}
 
-	// Add scoring condition for country
+	// Country as a filter
 	if country, ok := params["country"].(string); ok && country != "" {
-		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN $%d::text IS NOT NULL AND country ILIKE '%%' || $%d || '%%' THEN 1 ELSE 0 END)", argIndex, argIndex))
+		filterConditions = append(filterConditions, fmt.Sprintf("country ILIKE '%%' || $%d || '%%'", argIndex))
 		args = append(args, country)
+		argIndex++
+	}
+
+	// Add scoring for name
+	if name, ok := params["name"].(string); ok && name != "" {
+		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN $%d::text IS NOT NULL AND name ILIKE '%%' || $%d || '%%' THEN 1 ELSE 0 END)", argIndex, argIndex))
+		args = append(args, name)
+		paramCount++
 		argIndex++
 	}
 
@@ -54,6 +43,7 @@ func BuildQuery(params map[string]interface{}) (string, []interface{}) {
 	if languages, ok := params["languages"].([]string); ok && len(languages) > 0 {
 		scoringConditions = append(scoringConditions, fmt.Sprintf("(SELECT COUNT(*) FROM unnest($%d::text[]) AS lang WHERE lang = ANY(languages))", argIndex))
 		args = append(args, pq.Array(languages))
+		paramCount++
 		argIndex++
 	}
 
@@ -61,6 +51,7 @@ func BuildQuery(params map[string]interface{}) (string, []interface{}) {
 	if tags, ok := params["tags"].([]string); ok && len(tags) > 0 {
 		scoringConditions = append(scoringConditions, fmt.Sprintf("(SELECT COUNT(*) FROM unnest($%d::text[]) AS tag WHERE tag = ANY(tags))", argIndex))
 		args = append(args, pq.Array(tags))
+		paramCount++
 		argIndex++
 	}
 
@@ -68,6 +59,7 @@ func BuildQuery(params map[string]interface{}) (string, []interface{}) {
 	if price, ok := params["price"].(float64); ok && price > 0 {
 		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN price <= $%d THEN 1 ELSE 0 END)", argIndex))
 		args = append(args, price)
+		paramCount++
 		argIndex++
 	}
 
@@ -75,6 +67,7 @@ func BuildQuery(params map[string]interface{}) (string, []interface{}) {
 	if title, ok := params["title"].(string); ok && title != "" {
 		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN $%d::text IS NOT NULL AND title ILIKE '%%' || $%d || '%%' THEN 1 ELSE 0 END)", argIndex, argIndex))
 		args = append(args, title)
+		paramCount++
 		argIndex++
 	}
 
@@ -82,6 +75,7 @@ func BuildQuery(params map[string]interface{}) (string, []interface{}) {
 	if username, ok := params["username"].(string); ok && username != "" {
 		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN $%d::text IS NOT NULL AND username ILIKE '%%' || $%d || '%%' THEN 1 ELSE 0 END)", argIndex, argIndex))
 		args = append(args, username)
+		paramCount++
 		argIndex++
 	}
 
@@ -93,12 +87,23 @@ func BuildQuery(params map[string]interface{}) (string, []interface{}) {
 	}
 	innerQuery += ") AS total_score FROM itineraries"
 
+	// Add filter conditions to the WHERE clause
+	if len(filterConditions) > 0 {
+		innerQuery += " WHERE " + strings.Join(filterConditions, " AND ")
+	}
+
+	// Determine the total_score threshold based on the number of parameters
+	threshold := 1
+	if paramCount >= 3 {
+		threshold = 2
+	}
+
 	// Wrap the inner query in an outer query to apply the total_score filter
 	outerQuery := fmt.Sprintf(`
         SELECT * 
         FROM (%s) AS scored_itineraries
-        WHERE total_score > 0
-        ORDER BY total_score DESC`, innerQuery)
+        WHERE total_score >= %d
+        ORDER BY total_score DESC`, innerQuery, threshold)
 
 	return outerQuery, args
 }
