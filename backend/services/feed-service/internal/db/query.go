@@ -3,7 +3,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"strings"
 	"github.com/lib/pq"
 	"github.com/jordyob03/TripTailor/backend/services/feed-service/internal/models" 
 

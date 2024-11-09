@@ -6,13 +6,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jordyob03/TripTailor/backend/services/feed-service/api"
-	"github.com/jordyob03/TripTailor/backend/services/feed-service/handlers"
 	_ "github.com/lib/pq"
 )
 
 func main() {
 	// Set up database connection
-	connStr := "user=username dbname=trip_tailor sslmode=disable"
+	connStr := "postgres://postgres:password@db:5432/database?sslmode=disable"
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatal("Failed to connect to the database:", err)
@@ -23,10 +22,10 @@ func main() {
 	router := gin.Default()
 
 	// Register the feed route
-	api.SetupRoutes("/feed", handlers.FeedService(db))
+	api.SetupRoutes(router, db)
 
 	// Start the server
-	if err := router.Run(":8080"); err != nil {
+	if err := router.Run(":8093"); err != nil {
 		log.Fatal("Failed to start server:", err)
 	}
 }

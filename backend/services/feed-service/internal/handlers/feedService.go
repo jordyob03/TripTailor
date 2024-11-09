@@ -6,10 +6,10 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	db "github.com/jordyob03/TripTailor/backend/services/feed-service/internal/db" // Import the db package
+	db "github.com/jordyob03/TripTailor/backend/services/feed-service/internal/db" 
 )
 
-//feedService handles feed requests based on tags
+//FeedService handles feed requests based on tags
 func FeedService(database *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		

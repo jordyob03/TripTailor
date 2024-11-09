@@ -11,5 +11,5 @@ import (
 // SetupRoutes initializes the routes for the service, passing the database connection
 func SetupRoutes(router *gin.Engine, db *sql.DB) {
 	// Define the /search route and pass the database connection
-	router.GET("/search", handlers.FeedService(db))
+	router.GET("/feed", handlers.FeedService(db))
 }
