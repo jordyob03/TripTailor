@@ -23,100 +23,126 @@ func prepareTagArray(tagString string) []string {
 	return strings.Split(tagString, ",")
 }
 
-func QueryItineraries(db *sql.DB, params map[string]interface{}) ([]models.Itinerary, error) {
-	var conditions []string
-	var tagArray, langArray []string
+func BuildQuery(params map[string]interface{}) (string, []interface{}) {
+	innerQuery := "SELECT *, ("     // Start inner query with SELECT and begin total_score calculation
+	scoringConditions := []string{} // Conditions for calculating total_score
+	args := []interface{}{}         // Holds query parameter values
+	argIndex := 1                   // Counter for argument placeholders
 
-	for key, value := range params {
-		switch key {
-		case "tags":
-			if tagArray, ok := value.([]string); ok && len(tagArray) > 0 {
-				tagArray := prepareTagArray(tagArray[0])
-				conditions = append(conditions, fmt.Sprintf("tags && %s", formatArrayForSQL(tagArray)))
-			}
-		case "languages":
-			if langArray, ok := value.([]string); ok && len(langArray) > 0 {
-				langArray := prepareTagArray(langArray[0])
-				conditions = append(conditions, fmt.Sprintf("languages && %s", formatArrayForSQL(langArray)))
-			}
-		case "city", "country", "username", "name", "title":
-			if v, ok := value.(string); ok && v != "" {
-				conditions = append(conditions, fmt.Sprintf("%s ILIKE '%%%s%%'", key, v)) // ILIKE for case-insensitive partial matches
-			}
-		case "price":
-			if price, ok := value.(float64); ok && price > 0 {
-				conditions = append(conditions, fmt.Sprintf("price <= %f", price)) // Example: search for itineraries <= the given price
-			}
-		}
+	// Add scoring condition for name
+	if name, ok := params["name"].(string); ok && name != "" {
+		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN $%d::text IS NOT NULL AND name ILIKE '%%' || $%d || '%%' THEN 1 ELSE 0 END)", argIndex, argIndex))
+		args = append(args, name)
+		argIndex++
 	}
 
-	fmt.Printf("Conditions: %v\n", conditions)
-	// Build the WHERE clause only if conditions exist
-	whereClause := ""
-	if len(conditions) > 0 {
-		whereClause = "WHERE " + strings.Join(conditions, " AND ")
+	// Add scoring condition for city
+	if city, ok := params["city"].(string); ok && city != "" {
+		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN $%d::text IS NOT NULL AND city ILIKE '%%' || $%d || '%%' THEN 1 ELSE 0 END)", argIndex, argIndex))
+		args = append(args, city)
+		argIndex++
 	}
 
-	// Construct the SQL query with scoring mechanism
-	query := fmt.Sprintf(`
-		SELECT itineraryid, name, city, country, title, description, price, languages, tags, events, postid, username,
-			array_length(array(select unnest(tags) intersect select unnest(%s)), 1) AS tag_match_count,
-			array_length(array(select unnest(languages) intersect select unnest(%s)), 1) AS lang_match_count,
-			array_length(array(select unnest(tags) intersect select unnest(%s)), 1) +
-			array_length(array(select unnest(languages) intersect select unnest(%s)), 1) AS total_match_count
-		FROM itineraries
-		%s
-		ORDER BY total_match_count DESC,
-		lang_match_count DESC, 
-        tag_match_count DESC;
-	`, formatArrayForSQL(tagArray), formatArrayForSQL(langArray), formatArrayForSQL(tagArray), formatArrayForSQL(langArray), whereClause)
+	// Add scoring condition for country
+	if country, ok := params["country"].(string); ok && country != "" {
+		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN $%d::text IS NOT NULL AND country ILIKE '%%' || $%d || '%%' THEN 1 ELSE 0 END)", argIndex, argIndex))
+		args = append(args, country)
+		argIndex++
+	}
 
-	// Print the final query and arguments for debugging
-	fmt.Printf("Final Query: %s\n", query)
-	//fmt.Printf("Query Args: %v\n", args)
+	// Add scoring for languages
+	if languages, ok := params["languages"].([]string); ok && len(languages) > 0 {
+		scoringConditions = append(scoringConditions, fmt.Sprintf("(SELECT COUNT(*) FROM unnest($%d::text[]) AS lang WHERE lang = ANY(languages))", argIndex))
+		args = append(args, pq.Array(languages))
+		argIndex++
+	}
 
-	// Execute the query
-	rows, err := db.Query(query)
+	// Add scoring for tags
+	if tags, ok := params["tags"].([]string); ok && len(tags) > 0 {
+		scoringConditions = append(scoringConditions, fmt.Sprintf("(SELECT COUNT(*) FROM unnest($%d::text[]) AS tag WHERE tag = ANY(tags))", argIndex))
+		args = append(args, pq.Array(tags))
+		argIndex++
+	}
+
+	// Add scoring for price
+	if price, ok := params["price"].(float64); ok && price > 0 {
+		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN price <= $%d THEN 1 ELSE 0 END)", argIndex))
+		args = append(args, price)
+		argIndex++
+	}
+
+	// Add scoring for title
+	if title, ok := params["title"].(string); ok && title != "" {
+		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN $%d::text IS NOT NULL AND title ILIKE '%%' || $%d || '%%' THEN 1 ELSE 0 END)", argIndex, argIndex))
+		args = append(args, title)
+		argIndex++
+	}
+
+	// Add scoring for username
+	if username, ok := params["username"].(string); ok && username != "" {
+		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN $%d::text IS NOT NULL AND username ILIKE '%%' || $%d || '%%' THEN 1 ELSE 0 END)", argIndex, argIndex))
+		args = append(args, username)
+		argIndex++
+	}
+
+	// Default score to 0 if no scoring conditions exist
+	if len(scoringConditions) > 0 {
+		innerQuery += strings.Join(scoringConditions, " + ")
+	} else {
+		innerQuery += "0"
+	}
+	innerQuery += ") AS total_score FROM itineraries"
+
+	// Wrap the inner query in an outer query to apply the total_score filter
+	outerQuery := fmt.Sprintf(`
+        SELECT * 
+        FROM (%s) AS scored_itineraries
+        WHERE total_score > 0
+        ORDER BY total_score DESC`, innerQuery)
+
+	return outerQuery, args
+}
+
+// GetScoredItineraries dynamically builds a query to filter and score itineraries
+func GetScoredItineraries(db *sql.DB, params map[string]interface{}) ([]models.ScoredItinerary, error) {
+	fmt.Printf("Parsed parameters: %+v\n", params)
+	query, args := BuildQuery(params)
+	fmt.Printf("Executing query: %s with args: %+v\n", query, args)
+
+	fmt.Printf("Executing query: %s with params: %+v\n", query, params)
+
+	// Execute the query with parameters
+	rows, err := db.Query(query, args...)
 	if err != nil {
-		return nil, fmt.Errorf("failed to execute query: %w", err)
+		fmt.Printf("Query execution error: %v\n", err)
+		return nil, err
 	}
 	defer rows.Close()
 
-	// Process the rows into ScoredItinerary objects
-	var scoredItineraries []models.ScoredItinerary
+	// Parse results
+	itineraries := []models.ScoredItinerary{}
 	for rows.Next() {
 		var scored models.ScoredItinerary
-		var tagMatchCount, languageMatchCount, totalMatchCount sql.NullInt64
-
-		// Update the scanning process to account for all fields in Itinerary and the match counts
-		if err := rows.Scan(
-			&scored.Itinerary.ItineraryId, &scored.Itinerary.Name, &scored.Itinerary.City, &scored.Itinerary.Country,
-			&scored.Itinerary.Title, &scored.Itinerary.Description, &scored.Itinerary.Price,
-			pq.Array(&scored.Itinerary.Languages), pq.Array(&scored.Itinerary.Tags), pq.Array(&scored.Itinerary.Events),
-			&scored.Itinerary.PostId, &scored.Itinerary.Username,
-			&tagMatchCount, &languageMatchCount, &totalMatchCount,
-		); err != nil {
-			return nil, fmt.Errorf("failed to scan row: %w", err)
+		err := rows.Scan(
+			&scored.Itinerary.ItineraryId,
+			&scored.Itinerary.Name,
+			&scored.Itinerary.City,
+			&scored.Itinerary.Country,
+			&scored.Itinerary.Title,
+			&scored.Itinerary.Description,
+			&scored.Itinerary.Price,
+			pq.Array(&scored.Itinerary.Languages),
+			pq.Array(&scored.Itinerary.Tags),
+			pq.Array(&scored.Itinerary.Events),
+			&scored.Itinerary.PostId,
+			&scored.Itinerary.Username,
+			&scored.TotalMatchCount, // Map the calculated score to TotalMatchCount
+		)
+		if err != nil {
+			fmt.Printf("Row scan error: %v\n", err)
+			return nil, err
 		}
-
-		// Convert sql.NullInt64 to regular int if it's not null
-		if tagMatchCount.Valid {
-			scored.TagMatchCount = int(tagMatchCount.Int64)
-		}
-		if languageMatchCount.Valid {
-			scored.LanguageMatchCount = int(languageMatchCount.Int64)
-		}
-		if totalMatchCount.Valid {
-			scored.TotalMatchCount = int(totalMatchCount.Int64)
-		}
-
-		scoredItineraries = append(scoredItineraries, scored)
-	}
-
-	// Extract only the Itinerary part to return
-	itineraries := make([]models.Itinerary, len(scoredItineraries))
-	for i, scored := range scoredItineraries {
-		itineraries[i] = scored.Itinerary
+		itineraries = append(itineraries, scored)
 	}
 
 	return itineraries, nil
