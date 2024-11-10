@@ -109,10 +109,10 @@ func PackItinsFromJSON(fp string, DB *sql.DB) (itins_ids []int, count int) {
 
 	for i, itin := range itins {
 		if itin_id, err := db.AddItinerary(DB, itins[i]); err != nil {
-			fmt.Printf("Failed to insert itinerary %s: %v\n", itin.Name, err)
+			fmt.Printf("Failed to insert itinerary %s: %v\n", itin.Title, err)
 		} else {
 			itins_ids_list[i] = itin_id
-			fmt.Printf("Successfully inserted itinerary: %s with ID: %d\n", itin.Name, itin_id)
+			fmt.Printf("Successfully inserted itinerary: %s with ID: %d\n", itin.Title, itin_id)
 		}
 	}
 	return itins_ids_list, len(itins)
