@@ -229,6 +229,5 @@ func UpdateItineraryPrice(DB *sql.DB, itineraryId int) error {
 		price += temp.Cost
 	}
 
-	fmt.Println("Price Updated to:", price)
 	return UpdateAttribute(DB, "itineraries", "itineraryId", itineraryId, "price", price)
 }
