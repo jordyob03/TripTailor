@@ -56,8 +56,6 @@ func AddBoard(DB *sql.DB, board Board) (int, error) {
 		return 0, fmt.Errorf("error adding board: %v", err)
 	}
 
-	AddUserBoard(DB, board.Username, boardID)
-
 	log.Printf("Board added successfully with ID: %d\n", boardID)
 	return boardID, AddUserBoard(DB, board.Username, boardID)
 }
