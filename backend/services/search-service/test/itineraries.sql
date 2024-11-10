@@ -1,16 +1,17 @@
-INSERT INTO itineraries (itineraryid, title, city, country, languages, tags, events, postid, username, creationdate, lastupdate) VALUES
-(1, 'Discover NYC', 'New York', 'USA', ARRAY['English', 'Spanish'], ARRAY['sightseeing', 'food'], ARRAY['event1', 'event2'], 101, 'user1', NOW(), NOW()),
-(2, 'Beach Day LA', 'Los Angeles', 'USA', ARRAY['English'], ARRAY['beach', 'surfing'], ARRAY['event3', 'event4'], 102, 'user2', NOW(), NOW()),
-(3, 'Tokyo Adventure', 'Tokyo', 'Japan', ARRAY['Japanese', 'English'], ARRAY['shopping', 'nightlife'], ARRAY['event5', 'event6'], 103, 'user3', NOW(), NOW()),
-(4, 'Historical London', 'London', 'UK', ARRAY['English'], ARRAY['history', 'museum'], ARRAY['event7'], 104, 'user4', NOW(), NOW()),
-(5, 'Sydney Exploration', 'Sydney', 'Australia', ARRAY['English'], ARRAY['beach', 'opera'], ARRAY['event8', 'event9'], 105, 'user1', NOW(), NOW()),
-(6, 'New York Art Tour', 'New York', 'USA', ARRAY['English'], ARRAY['art', 'gallery'], ARRAY['event10'], 106, 'user2', NOW(), NOW()),
-(7, 'Cultural Experience LA', 'Los Angeles', 'USA', ARRAY['English', 'Spanish'], ARRAY['culture', 'food'], ARRAY['event11'], 107, 'user5', NOW(), NOW()),
-(8, 'Paris Getaway', 'Paris', 'France', ARRAY['French', 'English'], ARRAY['romantic', 'food'], ARRAY['event12', 'event13'], 108, 'user3', NOW(), NOW()),
-(9, 'Tokyo Food Tour', 'Tokyo', 'Japan', ARRAY['Japanese', 'English'], ARRAY['food', 'sushi'], ARRAY['event14'], 109, 'user1', NOW(), NOW()),
-(10, 'Melbourne Weekend', 'Melbourne', 'Australia', ARRAY['English'], ARRAY['sports', 'coffee'], ARRAY['event15'], 110, 'user6', NOW(), NOW()),
-(11, 'Paris Fashion Week', 'Paris', 'France', ARRAY['French'], ARRAY['fashion', 'luxury'], ARRAY['event16'], 111, 'user4', NOW(), NOW()),
-(12, 'London Music Festival', 'London', 'UK', ARRAY['English'], ARRAY['music', 'festival'], ARRAY['event17', 'event18'], 112, 'user5', NOW(), NOW()),
-(13, 'Hiking Adventure', 'Vancouver', 'Canada', ARRAY['English'], ARRAY['hiking', 'nature'], ARRAY['event19'], 113, 'user2', NOW(), NOW()),
-(14, 'Tech Conference', 'San Francisco', 'USA', ARRAY['English'], ARRAY['tech', 'innovation'], ARRAY['event20'], 114, 'user3', NOW(), NOW()),
-(15, 'Tokyo Nightlife', 'Tokyo', 'Japan', ARRAY['Japanese', 'English'], ARRAY['nightlife', 'club'], ARRAY['event21', 'event22'], 115, 'user1', NOW(), NOW());
+INSERT INTO itineraries (itineraryid, city, country, title, description, price, languages, tags, events, postid, username)
+VALUES
+(1, 'New York', 'USA', 'City Highlights', 'Explore iconic landmarks of NYC.', 250.00, ARRAY['English', 'Spanish'], ARRAY['sightseeing', 'food'], ARRAY['event1', 'event2'], 101, 'user1'),
+(2, 'Sydney', 'Australia', 'Opera & Beaches', 'Experience Sydney''s opera house and beaches.', 300.00, ARRAY['English'], ARRAY['beach', 'opera'], ARRAY['event3', 'event4'], 102, 'user2'),
+(3, 'Tokyo', 'Japan', 'Taste of Tokyo', 'Delve into the best sushi and ramen in Tokyo.', 150.00, ARRAY['Japanese', 'English'], ARRAY['food', 'sushi'], ARRAY['event5', 'event6'], 103, 'user1'),
+(4, 'Tokyo', 'Japan', 'Night Owls', 'Enjoy Tokyo''s vibrant nightlife scene.', 180.00, ARRAY['Japanese', 'English'], ARRAY['nightlife', 'club'], ARRAY['event7', 'event8'], 104, 'user1'),
+(5, 'Paris', 'France', 'Romantic Escape', 'A romantic journey through Paris.', 500.00, ARRAY['French', 'English'], ARRAY['romantic', 'food'], ARRAY['event9', 'event10'], 105, 'user3'),
+(6, 'Los Angeles', 'USA', 'Hollywood & More', 'Discover the culture of Los Angeles.', 220.00, ARRAY['English', 'Spanish'], ARRAY['culture', 'food'], ARRAY['event11', 'event12'], 106, 'user3'),
+(7, 'Melbourne', 'Australia', 'Art & Coffee', 'Explore Melbourne''s art galleries and coffee spots.', 200.00, ARRAY['English'], ARRAY['art', 'coffee'], ARRAY['event13', 'event14'], 107, 'user4'),
+(8, 'Los Angeles', 'USA', 'Relax by the Ocean', 'Spend a relaxing day at the beaches of LA.', 100.00, ARRAY['English'], ARRAY['beach', 'surfing'], ARRAY['event15', 'event16'], 108, 'user2'),
+(9, 'London', 'UK', 'Time Travel', 'Walk through the history of London.', 250.00, ARRAY['English'], ARRAY['history', 'museum'], ARRAY['event17', 'event18'], 109, 'user4'),
+(10, 'Vancouver', 'Canada', 'Nature''s Best', 'Embark on an adventurous hiking trip.', 180.00, ARRAY['English'], ARRAY['hiking', 'nature'], ARRAY['event19', 'event20'], 110, 'user2'),
+(11, 'Tokyo', 'Japan', 'Shopaholic''s Dream', 'Find the best shopping districts in Tokyo.', 200.00, ARRAY['Japanese', 'English'], ARRAY['shopping', 'fashion'], ARRAY['event21', 'event22'], 111, 'user5'),
+(12, 'London', 'UK', 'Sounds of London', 'Join London''s famous music festival.', 150.00, ARRAY['English'], ARRAY['music', 'festival'], ARRAY['event23', 'event24'], 112, 'user5'),
+(13, 'Sydney', 'Australia', 'Explore Trails', 'Discover scenic trails around Sydney.', 140.00, ARRAY['English'], ARRAY['hiking', 'adventure'], ARRAY['event25', 'event26'], 113, 'user2'),
+(14, 'Tokyo', 'Japan', 'Traditions & More', 'Explore Tokyo''s rich traditions.', 200.00, ARRAY['Japanese', 'English'], ARRAY['culture', 'history'], ARRAY['event27', 'event28'], 114, 'user5'),
+(15, 'Paris', 'France', 'Gastronomic Escape', 'Taste the best of French cuisine.', 350.00, ARRAY['French', 'English'], ARRAY['food', 'wine'], ARRAY['event29', 'event30'], 115, 'user3');

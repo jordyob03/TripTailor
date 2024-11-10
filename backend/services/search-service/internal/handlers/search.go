@@ -16,7 +16,6 @@ import (
 func SearchItineraries(dbConn *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		params := map[string]interface{}{
-			"name":      c.Query("name"),
 			"city":      c.Query("city"),
 			"country":   c.Query("country"),
 			"title":     c.Query("title"),
