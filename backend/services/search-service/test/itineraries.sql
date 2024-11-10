@@ -1,4 +1,4 @@
-INSERT INTO itineraries (itineraryid, name, city, country, languages, tags, events, postid, username, creationdate, lastupdate) VALUES
+INSERT INTO itineraries (itineraryid, title, city, country, languages, tags, events, postid, username, creationdate, lastupdate) VALUES
 (1, 'Discover NYC', 'New York', 'USA', ARRAY['English', 'Spanish'], ARRAY['sightseeing', 'food'], ARRAY['event1', 'event2'], 101, 'user1', NOW(), NOW()),
 (2, 'Beach Day LA', 'Los Angeles', 'USA', ARRAY['English'], ARRAY['beach', 'surfing'], ARRAY['event3', 'event4'], 102, 'user2', NOW(), NOW()),
 (3, 'Tokyo Adventure', 'Tokyo', 'Japan', ARRAY['Japanese', 'English'], ARRAY['shopping', 'nightlife'], ARRAY['event5', 'event6'], 103, 'user3', NOW(), NOW()),

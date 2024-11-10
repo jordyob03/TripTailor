@@ -41,7 +41,7 @@ services:
     networks:
       - backend-network
 
-  intinerary-service:
+  itinerary-service:
     build:
       context: ./backend/services/itinerary-service
       dockerfile: Dockerfile
@@ -53,6 +53,21 @@ services:
     depends_on:
       - db
     command: ["/wait-for-it.sh", "db:5432", "--strict", "--", "/itinerary-service-container"]
+    networks:
+      - backend-network
+
+  save-service:
+    build:
+      context: ./backend/services/save-service
+      dockerfile: Dockerfile
+    container_name: save-service-container
+    ports:
+      - "8086:8086"
+    environment:
+      - DATABASE_URL=postgres://postgres:password@db:5432/database
+    depends_on:
+      - db
+    command: ["/wait-for-it.sh", "db:5432", "--strict", "--", "/save-service-container"]
     networks:
       - backend-network
 

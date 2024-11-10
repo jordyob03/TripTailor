@@ -21,7 +21,7 @@ type CreateEventRequest struct {
 }
 
 type CreateItinRequest struct {
-	Name        string               `json:"name"`
+	Title       string               `json:"title"`
 	City        string               `json:"city"`
 	Country     string               `json:"country"`
 	Description string               `json:"description"`
@@ -41,7 +41,7 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 		fmt.Printf("Received Itinerary: %+v\n", req)
 
 		itin := models.Itinerary{
-			Name:        req.Name,
+			Title:       req.Title,
 			City:        req.City,
 			Country:     req.Country,
 			Description: req.Description,
@@ -123,6 +123,8 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create post"})
 			return
 		}
+
+		models.AddUserPost(dbConn, req.Username, postId)
 
 		// Respond to the client with the received data
 		c.JSON(http.StatusOK, gin.H{
