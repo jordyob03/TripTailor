@@ -43,6 +43,10 @@ func AddEvent(DB *sql.DB, event Event) (int, error) {
 	INSERT INTO events (name, cost, address, description, startTime, endTime, itineraryId, eventImages)
 	VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING eventId;`
 
+	if event.EventImages == nil {
+		event.EventImages = []string{}
+	}
+
 	var eventID int
 	err := DB.QueryRow(
 		insertEventSQL, event.Name, event.Cost,
@@ -65,7 +69,6 @@ func AddEvent(DB *sql.DB, event Event) (int, error) {
 }
 
 func RemoveEvent(DB *sql.DB, eventID int) error {
-
 	getImages := `SELECT eventImages FROM events WHERE eventId = $1;`
 	var imageStringIDs []string
 	err := DB.QueryRow(getImages, eventID).Scan(pq.Array(&imageStringIDs))
@@ -119,6 +122,10 @@ func GetEvent(DB *sql.DB, eventID int) (Event, error) {
 	if err != nil {
 		log.Printf("Error retrieving event: %v\n", err)
 		return Event{}, fmt.Errorf("failed to retrieve event: %w", err)
+	}
+
+	if event.EventImages == nil {
+		event.EventImages = []string{}
 	}
 
 	log.Printf("Event with ID %d successfully retrieved.\n", eventID)

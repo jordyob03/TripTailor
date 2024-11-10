@@ -57,6 +57,22 @@ func AddUser(DB *sql.DB, user User) (int, error) {
 	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
 	RETURNING userId;`
 
+	if user.Followers == nil {
+		user.Followers = []string{}
+	}
+
+	if user.Following == nil {
+		user.Following = []string{}
+	}
+
+	if user.Languages == nil {
+		user.Languages = []string{}
+	}
+
+	if user.Tags == nil {
+		user.Tags = []string{}
+	}
+
 	var userId int
 	err := DB.QueryRow(
 		insertUserSQL, user.Username, user.Email, user.Password,

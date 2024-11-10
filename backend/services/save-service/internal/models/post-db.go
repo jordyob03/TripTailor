@@ -41,6 +41,14 @@ func AddPost(DB *sql.DB, post Post) (int, error) {
 	RETURNING postId;
 	`
 
+	if post.Boards == nil {
+		post.Boards = []string{}
+	}
+
+	if post.Comments == nil {
+		post.Comments = []string{}
+	}
+
 	var postId int
 	err := DB.QueryRow(
 		insertSQL,
@@ -58,7 +66,7 @@ func AddPost(DB *sql.DB, post Post) (int, error) {
 	}
 
 	log.Printf("Post with ID %d successfully added.\n", postId)
-	return postId, nil
+	return postId, AddUserPost(DB, post.Username, postId)
 }
 
 func RemovePost(DB *sql.DB, postId int) error {
@@ -145,6 +153,14 @@ func GetPost(DB *sql.DB, postId int) (Post, error) {
 	if err != nil {
 		log.Printf("Error retrieving post with ID %d: %v\n", postId, err)
 		return Post{}, fmt.Errorf("failed to retrieve post: %w", err)
+	}
+
+	if post.Boards == nil {
+		post.Boards = []string{}
+	}
+
+	if post.Comments == nil {
+		post.Comments = []string{}
 	}
 
 	log.Printf("Post with ID %d successfully retrieved.\n", postId)

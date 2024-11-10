@@ -147,6 +147,14 @@ func GetPost(DB *sql.DB, postId int) (Post, error) {
 		return Post{}, fmt.Errorf("failed to retrieve post: %w", err)
 	}
 
+	if post.Boards == nil {
+		post.Boards = []string{}
+	}
+
+	if post.Comments == nil {
+		post.Comments = []string{}
+	}
+
 	log.Printf("Post with ID %d successfully retrieved.\n", postId)
 	return post, nil
 }

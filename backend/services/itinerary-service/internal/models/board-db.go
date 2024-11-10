@@ -38,6 +38,14 @@ func AddBoard(DB *sql.DB, board Board) error {
     INSERT INTO boards (name, description, username, posts, tags) 
     VALUES ($1, $2, $3, $4, $5) RETURNING boardId;`
 
+	if board.Posts == nil {
+		board.Posts = []string{}
+	}
+
+	if board.Tags == nil {
+		board.Tags = []string{}
+	}
+
 	var boardID int
 	err := DB.QueryRow(
 		insertBoardSQL, board.Name, board.Description,
@@ -51,7 +59,7 @@ func AddBoard(DB *sql.DB, board Board) error {
 	AddUserBoard(DB, board.Username, boardID)
 
 	log.Printf("Board added successfully with ID: %d\n", boardID)
-	return nil
+	return boardID, AddUserBoard(DB, board.Username, boardID)
 }
 
 func RemoveBoard(DB *sql.DB, boardId int) error {
@@ -106,6 +114,14 @@ func GetBoard(DB *sql.DB, boardId int) (Board, error) {
 	if err != nil {
 		log.Printf("Error fetching board with ID %d: %v\n", boardId, err)
 		return Board{}, err
+	}
+
+	if board.Posts == nil {
+		board.Posts = []string{}
+	}
+
+	if board.Tags == nil {
+		board.Tags = []string{}
 	}
 
 	log.Printf("Board with ID %d retrieved successfully.\n", boardId)
