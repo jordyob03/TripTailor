@@ -11,15 +11,20 @@ function Itineraries() {
   const navigate = useNavigate();
 
 
+
   const fetchItins = async () => {
-    const userData = { username: username };
-    try {
-      const response = await itineraryAPI.get('/itineraries', { params: userData }); // This endpoint doesnt exist yet idt?
-      setItineraries(response.data.itineraries);
-      console.log(response.data.itineraries)
-    } catch (error) {
-      setErrorMessage(error.message || "An error occurred. Please try again.");
-    }
+    
+      try {
+        const data = {
+          Username: localStorage.getItem('username'),
+        };
+        const response = await itineraryAPI.post('/get-user-itins', data);
+        console.log('Received', response.data);
+        setItineraries(response.data.itineraries);
+      } catch (error) {
+        console.error('Error fetching itineraries:', error);
+      }
+    
   };
   const handleItinClick = (id) => {
     navigate(`/itinerary/${id}`);
@@ -47,18 +52,18 @@ function Itineraries() {
 
   return (
     <div className="results">
-      {itineraries.length > 0 ? (
+      {Array.isArray(itineraries) && itineraries.length > 0 ? (
         // Render the results grid only when itineraries are present
         <div className="resultsGrid">
           {itineraries.map((itinerary) => (
-            <div key={itinerary.ItineraryID} className="resultCard" onClick={() => handleItinClick(itinerary.ItineraryID)} style={{ cursor: 'pointer' }}>
-              <img src={getRandomImage()} alt={itinerary.Title} className="resultCardImage" />
+            <div key={itinerary.itineraryID} className="resultCard" onClick={() => handleItinClick(itinerary.itineraryID)} style={{ cursor: 'pointer' }}>
+              <img src={getRandomImage()} alt={itinerary.title} className="resultCardImage" />
               <div className="resultCardContent">
-                <h4 className="cardLocation">{itinerary.City + ', ' + itinerary.Country}</h4>
-                <h3 className="cardTitle">{itinerary.Title}</h3>
-                <p className="cardDescription">{itinerary.Description}</p>
+                <h4 className="cardLocation">{itinerary.city + ', ' + itinerary.country}</h4>
+                <h3 className="cardTitle">{itinerary.title}</h3>
+                <p className="cardDescription">{itinerary.description}</p>
                 <div className="resultTags">
-                  {itinerary.Tags.map((tag, i) => (
+                  {itinerary.tags.map((tag, i) => (
                     <span key={i} className="resultCardTag">{tag}</span>
                   ))}
                 </div>
