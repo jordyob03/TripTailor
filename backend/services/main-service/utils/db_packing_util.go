@@ -7,6 +7,7 @@ import (
 	db "github.com/jordyob03/TripTailor/backend/services/main-service/internal/db/models"
 	"log"
 	"os"
+	"time"
 )
 
 func PackImagesFromLocal(dirPath string, DB *sql.DB) (image_ids []int, count int, err error) {
@@ -94,27 +95,65 @@ func PackEventFromJSON(fp string, DB *sql.DB) (event_ids []int, count int) {
 
 	return event_ids_list, len(events)
 }
-func PackItinsFromJSON(fp string, DB *sql.DB) (itins_ids []int, count int) {
+func PackItinsAndPostFromJSON(fp string, DB *sql.DB) (itins_ids []int, count int) {
 	var itins []db.Itinerary
 	data, err := os.ReadFile(fp)
 	if err != nil {
 		fmt.Printf("Error reading file: %v\n", err)
-		return
+		return nil, 0
 	}
 	err = json.Unmarshal(data, &itins)
 	if err != nil {
 		fmt.Printf("Failed to decode JSON: %v\n", err)
+		return nil, 0
 	}
+
 	itins_ids_list := make([]int, len(itins))
 
 	for i, itin := range itins {
 		if itin_id, err := db.AddItinerary(DB, itins[i]); err != nil {
 			fmt.Printf("Failed to insert itinerary %s: %v\n", itin.Title, err)
 		} else {
-			itins_ids_list[i] = itin_id
-			fmt.Printf("Successfully inserted itinerary: %s with ID: %d\n", itin.Title, itin_id)
+			post := db.Post{
+				ItineraryId:  itin_id,
+				CreationDate: time.Now(),
+				Username:     itin.Username,
+				Boards:       []string{},
+				Likes:        0,
+				Comments:     []string{},
+			}
+
+			if post_id, err := db.AddPost(DB, post); err != nil {
+				fmt.Printf("Failed to insert post for itinerary %s: %v\n", itin.Title, err)
+			} else {
+				itins_ids_list[i] = itin_id
+				fmt.Printf("Successfully inserted itinerary: %s with ID: %d and post ID: %d\n", itin.Title, itin_id, post_id)
+			}
 		}
 	}
-	return itins_ids_list, len(itins)
 
+	return itins_ids_list, len(itins)
+}
+func PackBoardsFromJSON(fp string, DB *sql.DB) (board_ids []int, count int) {
+	var boards []db.Board
+	data, err := os.ReadFile(fp)
+	if err != nil {
+		fmt.Printf("Error reading file: %v\n", err)
+		return nil, 0
+	}
+	err = json.Unmarshal(data, &boards)
+	if err != nil {
+		fmt.Printf("Failed to decode JSON: %v\n", err)
+		return nil, 0
+	}
+	board_ids = make([]int, len(boards))
+	for i, board := range boards {
+		if board_id, err := db.AddBoard(DB, boards[i]); err != nil {
+			fmt.Printf("Failed to insert board %s: %v\n", board.Name, err)
+		} else {
+			board_ids[i] = board_id
+			fmt.Printf("Successfully inserted board: %s with ID: %d\n", board.Name, board_id)
+		}
+	}
+	return board_ids, len(boards)
 }

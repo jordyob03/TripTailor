@@ -7,7 +7,7 @@
     "description": "Guided tour of the Eiffel Tower with breathtaking views of Paris.",
     "startTime": "2024-06-01T10:00:00Z",
     "endTime": "2024-06-01T12:00:00Z",
-    "itineraryId": 201,
+    "itineraryId": 1,
     "eventImages": ["2"]
   },
   {
@@ -18,7 +18,7 @@
     "description": "Explore famous artworks including the Mona Lisa and the Venus de Milo.",
     "startTime": "2024-06-02T09:00:00Z",
     "endTime": "2024-06-02T11:30:00Z",
-    "itineraryId": 201,
+    "itineraryId": 1,
     "eventImages": ["2"]
   },
   {
@@ -29,7 +29,7 @@
     "description": "Enjoy a scenic boat ride along the Seine with views of iconic landmarks.",
     "startTime": "2024-06-02T15:00:00Z",
     "endTime": "2024-06-02T16:00:00Z",
-    "itineraryId": 201,
+    "itineraryId": 1,
     "eventImages": ["2"]
   },
   {
@@ -40,7 +40,7 @@
     "description": "Tour the historic Notre Dame Cathedral and learn about its architecture.",
     "startTime": "2024-06-03T10:00:00Z",
     "endTime": "2024-06-03T12:00:00Z",
-    "itineraryId": 201,
+    "itineraryId": 1,
     "eventImages": ["3"]
   },
   {
@@ -51,7 +51,7 @@
     "description": "Day trip to the Palace of Versailles with access to the gardens and fountains.",
     "startTime": "2024-06-04T09:00:00Z",
     "endTime": "2024-06-04T17:00:00Z",
-    "itineraryId": 202,
+    "itineraryId": 2,
     "eventImages": ["4"]
   },
   {
@@ -62,7 +62,7 @@
     "description": "Walk through the artistic district of Montmartre, home to the Sacré-Cœur.",
     "startTime": "2024-06-05T10:00:00Z",
     "endTime": "2024-06-05T12:30:00Z",
-    "itineraryId": 202,
+    "itineraryId": 2,
     "eventImages": ["5"]
   },
   {
@@ -73,7 +73,7 @@
     "description": "Climb to the top of the Arc de Triomphe for stunning views of Paris.",
     "startTime": "2024-06-06T14:00:00Z",
     "endTime": "2024-06-06T15:30:00Z",
-    "itineraryId": 202,
+    "itineraryId": 2,
     "eventImages": ["6"]
   },
   {
@@ -84,7 +84,7 @@
     "description": "Discover the world's largest collection of impressionist and post-impressionist art.",
     "startTime": "2024-06-07T10:00:00Z",
     "endTime": "2024-06-07T12:30:00Z",
-    "itineraryId": 202,
+    "itineraryId": 2,
     "eventImages": ["7"]
   },
   {
@@ -95,7 +95,7 @@
     "description": "A culinary tour through the Latin Quarter with tasting stops at local eateries.",
     "startTime": "2024-06-07T14:00:00Z",
     "endTime": "2024-06-07T17:00:00Z",
-    "itineraryId": 202,
+    "itineraryId": 2,
     "eventImages": ["8"]
   },
   {
@@ -106,7 +106,7 @@
     "description": "Experience an evening of entertainment at the famous Moulin Rouge cabaret.",
     "startTime": "2024-06-08T21:00:00Z",
     "endTime": "2024-06-08T23:30:00Z",
-    "itineraryId": 203,
+    "itineraryId": 3,
     "eventImages": ["9"]
   }
 ]
