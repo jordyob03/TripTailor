@@ -14,6 +14,8 @@ type User struct {
 	Tags         []string  `json:"tags"`
 	Boards       []string  `json:"boards"`
 	Posts        []string  `json:"posts"`
+	Followers    []string  `json:"followers"`
+	Following    []string  `json:"following"`
 	ProfileImage int       `json:"profileImage"`
 	CoverImage   int       `json:"coverImage"`
 }

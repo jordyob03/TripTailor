@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import Tags from '../config/tags.json';
 import '../styles/styles.css'; 
 import { useNavigate } from 'react-router';
@@ -10,7 +10,6 @@ function CreateItinerary() {
   const [tagErrorMessage, setTagErrorMessage] = useState('');
   const [eventErrorMessage, setEventErrorMessage] = useState('');
   const [basicErrorMessage, setBasicErrorMessage] = useState('');
-  const [itineraryImages, setItineraryImages] = useState([]);
   const [itineraryDetails, setItineraryDetails] = useState({
     name: '',
     city: '',
@@ -18,14 +17,14 @@ function CreateItinerary() {
     description: ''
   });
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const [events, setEvents] = useState([{ name: '', startTime: '1:00 AM', endTime: '2:00 AM', location: '', description: '', cost: '' }]);
+  const [events, setEvents] = useState([{ name: '', startTime: '1:00 AM', endTime: '2:00 AM', location: '', description: '', cost: '', images: [] }]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setItineraryDetails({ ...itineraryDetails, [name]: value });
-  };
+  }; 
 
   const handleEventChange = (index, e) => {
     const { name, value } = e.target;
@@ -34,26 +33,29 @@ function CreateItinerary() {
     setEvents(updatedEvents);
   };
 
-  const handleMultipleFileChange = (e) => {
+  const handleEventImagesChange = (index, e) => {
     const files = Array.from(e.target.files);
-    setItineraryImages([...itineraryImages, ...files]);
+    const updatedEvents = [...events];
+    updatedEvents[index].images = [...updatedEvents[index].images, ...files];
+    setEvents(updatedEvents);
   };
 
-  const removeImage = (index) => {
-    const updatedImages = itineraryImages.filter((_, i) => i !== index);
-    setItineraryImages(updatedImages);
+  const removeEventImage = (eventIndex, imageIndex) => {
+    const updatedEvents = [...events];
+    updatedEvents[eventIndex].images = updatedEvents[eventIndex].images.filter((_, i) => i !== imageIndex);
+    setEvents(updatedEvents);
   };
 
   const addEvent = () => {
-
     if (events.length >= 24) {
       setEventErrorMessage('Cannot add more than 24 events in a 24-hour period.');
     } else {
-      setEvents([...events, { name: '', startTime: '1:00 AM', endTime: '2:00 AM', location: '', description: '', cost: '' }]);
+      setEvents([...events, { name: '', startTime: '1:00 AM', endTime: '2:00 AM', location: '', description: '', cost: '', images: [] }]);
       setEventErrorMessage('');
     }
-  };  
+  };
 
+  
   const handleTagSelection = (tag) => {
     if (selectedTags.includes(tag)) {
       setSelectedTags(selectedTags.filter((t) => t !== tag));
@@ -62,40 +64,38 @@ function CreateItinerary() {
     }
   };
 
-  const handleSubmit = async (e) => {    e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
   
-    // Filter out events that have no description and no location
     const filteredEvents = events.filter(
       (event) => event.description.trim() !== '' || event.location.trim() !== ''
     );
 
   
-    // Basic info check
-    const { name, city, country, description} = itineraryDetails;
+    const { name, city, country, description } = itineraryDetails;
   
     if (name && city && country && description) {
       setBasicErrorMessage('');
     } else {
       setBasicErrorMessage('Please fill out all basic info fields.');
+      return;
     }
   
-    // Check that at least 3 tags have been selected
     if (selectedTags.length >= 3) {
       setTagErrorMessage('');
     } else {
       setTagErrorMessage('Please select at least 3 tags.');
+      return;
     }
   
-    // Events checks
-    // Check that there is at least one event with complete details
     const hasValidEvent = filteredEvents.length > 0;
 
     if (!hasValidEvent) {
       setEventErrorMessage('At least one complete event is required.');
-      console.log({ itineraryDetails, itineraryImages, selectedTags, events: filteredEvents, hasValidEvent });
+      console.log({ itineraryDetails, selectedTags, events: filteredEvents });
+      return;
     }
   
-    // Check if there is any event with an incomplete state
     const hasIncompleteEvent = filteredEvents.some((event) => {
       const fields = [
         event.name.trim(),
@@ -106,13 +106,14 @@ function CreateItinerary() {
         event.cost
       ];
 
-      if (name && city && country && description && selectedTags.length >= 3 && hasValidEvent)
-      {navigate('/my-travels');}
+      if (name && city && country && description && selectedTags.length >= 3 && hasValidEvent) {
+        navigate('/my-travels');
+      }
     });
 
-  
     if (hasIncompleteEvent) {
       setEventErrorMessage('Please complete all fields for incomplete events or delete them.');
+      return;
     }
 
     if (!hasIncompleteEvent && hasValidEvent) {
@@ -121,7 +122,7 @@ function CreateItinerary() {
     
 
     const Data = {
-      Name: itineraryDetails.name,
+      Title: itineraryDetails.name,
       Username: localStorage.getItem('username'),
       City: itineraryDetails.city,
       Country: itineraryDetails.country,
@@ -133,12 +134,9 @@ function CreateItinerary() {
     try {
       const response = await itineraryAPI.post('/itin-creation', Data);
       console.log('Location created:', response.data);
-
     } catch (error) {
-
+      console.error(error);
     }
-
-    return;
   };
   
   const generateTimeOptions = () => {
@@ -154,10 +152,10 @@ function CreateItinerary() {
     return times;
   };
 
-    const removeEvent = (index) => {
-      const updatedEvents = events.filter((_, i) => i !== index);
-      setEvents(updatedEvents);
-    };
+  const removeEvent = (index) => {
+    const updatedEvents = events.filter((_, i) => i !== index);
+    setEvents(updatedEvents);
+  };
     
   return (
     <>
@@ -178,73 +176,46 @@ function CreateItinerary() {
                   placeholder='Like "A Day in Rome" or "Sightseeing Road Trip" '
                 />
               </div>
-            <div className="inputGroup">
-              <label htmlFor="city" className="subheadingLeft">City</label>
-              <input
-                type="text"
-                id="city"
-                name="city"
-                value={itineraryDetails.city}
-                onChange={handleInputChange}
-                className="input"
-                placeholder="Enter city"
-              />
-            </div>
-            <div className="inputGroup">
-              <label htmlFor="country" className="subheadingLeft">Country</label>
-              <input
-                type="text"
-                id="country"
-                name="country"
-                value={itineraryDetails.country}
-                onChange={handleInputChange}
-                className="input"
-                placeholder="Enter country"
-              />
-            </div>
-            <div className="inputGroup">
-              <label htmlFor="description" className="subheadingLeft">Description</label>
-              <textarea
-                id="description"
-                name="description"
-                value={itineraryDetails.description}
-                onChange={handleInputChange}
-                className="input"
-                placeholder="Enter a brief description of your itinerary"
-                maxLength="100"
-              />
-            </div>
-            {basicErrorMessage && <div className="errorMessage">{basicErrorMessage}</div>}
-            <div className="inputGroup">
-              <label htmlFor="itineraryImages" className="subheadingLeft">Upload Itinerary Images</label>
-              <div className="imageUploadContainer">
-                <div className="imagePreview">
-                  {itineraryImages.map((image, index) => (
-                    <div key={index} className="imageContainer">
-                      <img src={URL.createObjectURL(image)} alt={`Itinerary Preview ${index + 1}`} className="previewImage" />
-                      <button className="removeButton" onClick={() => removeImage(index)}>x</button>
-                    </div>
-                  ))}
-                  <div className="addImageButton">
-                    <input
-                      type="file"
-                      id="itineraryImages"
-                      name="itineraryImages"
-                      accept="image/*"
-                      multiple
-                      onChange={handleMultipleFileChange}
-                      className="inputFile"
-                    />
-                    <label htmlFor="itineraryImages">
-                      <i className="fa-regular fa-square-plus fa-3x"></i>
-                    </label>
-                  </div>
-                </div>
+              <div className="inputGroup">
+                <label htmlFor="city" className="subheadingLeft">City</label>
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  value={itineraryDetails.city}
+                  onChange={handleInputChange}
+                  className="input"
+                  placeholder="Enter city"
+                />
               </div>
-            </div>
-            <div style={{ height: '15px' }}></div>
+              <div className="inputGroup">
+                <label htmlFor="country" className="subheadingLeft">Country</label>
+                <input
+                  type="text"
+                  id="country"
+                  name="country"
+                  value={itineraryDetails.country}
+                  onChange={handleInputChange}
+                  className="input"
+                  placeholder="Enter country"
+                />
+              </div>
+              <div className="inputGroup">
+                <label htmlFor="description" className="subheadingLeft">Description</label>
+                <textarea
+                  id="description"
+                  name="description"
+                  value={itineraryDetails.description}
+                  onChange={handleInputChange}
+                  className="input"
+                  placeholder="Enter a brief description of your itinerary"
+                  maxLength="100"
+                />
+              </div>
+            {basicErrorMessage && <div className="errorMessage">{basicErrorMessage}</div>}
+            
             <div className="inputGroup">
-              <h2 className="headingCI">What tags apply to your itinerary?</h2>
+              <label htmlFor="itineraryImages" className="subheadingLeft">What tags apply to your itinerary?</label>
               {Object.keys(categories).map((category) => (
                 <div key={category} className="inputGroup">
                   <label className="subheadingLeft">
@@ -265,12 +236,11 @@ function CreateItinerary() {
               ))}
               {tagErrorMessage && <div className="errorMessage">{tagErrorMessage}</div>}
             </div>
+            
             <h2 className="headingCI">What events are part of your itinerary?</h2>
-
             <div className="events">
               {events.map((event, index) => (
                 <div key={index} className="eventBox">
-                  {/* Top Row: Event Name and Location */}
                   <div className="inputGroup" style={{ display: 'flex', gap: '20px' }}>
                     <div style={{ flex: 1 }}>
                       <label htmlFor={`name-${index}`} className="subheadingLeft">Event Name</label>
@@ -299,7 +269,6 @@ function CreateItinerary() {
                     <button className="removeButton" onClick={() => removeEvent(index)}>x</button>
                   </div>
                   
-                  {/* Second Row: Start Time, End Time, and cost */}
                   <div className="inputGroup" style={{ display: 'flex', gap: '20px', marginTop: '10px' }}>
                     <div style={{ flex: 1 }}>
                       <label htmlFor={`startTime-${index}`} className="subheadingLeft">Start Time</label>
@@ -345,7 +314,6 @@ function CreateItinerary() {
                     </div>
                   </div>
 
-                  {/* Description Field (optional) */}
                   <div className="inputGroup" style={{ marginTop: '10px' }}>
                     <label htmlFor={`description-${index}`} className="subheadingLeft">Description (100 character max.)</label>
                     <textarea
@@ -358,6 +326,34 @@ function CreateItinerary() {
                       maxLength="100"
                     />
                   </div>
+
+                  <div className="inputGroup">
+                    <label htmlFor={`eventImages-${index}`} className="subheadingLeft">Upload Event Images</label>
+                    <div className="imageUploadContainer">
+                      <div className="imagePreview">
+                        {event.images.map((image, imgIndex) => (
+                          <div key={imgIndex} className="imageContainer">
+                            <img src={URL.createObjectURL(image)} alt={`Event ${index + 1} Preview ${imgIndex + 1}`} className="previewImage" />
+                            <button className="removeButton" onClick={() => removeEventImage(index, imgIndex)}>x</button>
+                          </div>
+                        ))}
+                        <div className="addImageButton">
+                          <input
+                            type="file"
+                            id={`eventImages-${index}`}
+                            name={`eventImages-${index}`}
+                            accept="image/*"
+                            multiple
+                            onChange={(e) => handleEventImagesChange(index, e)}
+                            className="inputFile"
+                          />
+                          <label htmlFor={`eventImages-${index}`}>
+                            <i className="fa-regular fa-square-plus fa-3x"></i>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ))}
               {eventErrorMessage && <div className="errorMessage">{eventErrorMessage}</div>}
@@ -366,7 +362,6 @@ function CreateItinerary() {
               </button>
             </div>
 
-            <div style={{ height: '15px' }}></div>
             <button type="submit" className="continueButton">
               Submit Itinerary
             </button>
