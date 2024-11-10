@@ -15,7 +15,7 @@ RUN chmod +x /wait-for-it.sh
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /itinerary-service-container ./cmd/main.go
 
-Expose 8083
+EXPOSE 8083
 
 
 ENTRYPOINT ["/itinerary-service-container"]

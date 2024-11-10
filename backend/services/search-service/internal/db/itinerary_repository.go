@@ -31,14 +31,6 @@ func BuildQuery(params map[string]interface{}) (string, []interface{}) {
 		argIndex++
 	}
 
-	// Add scoring for name
-	if name, ok := params["name"].(string); ok && name != "" {
-		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN $%d::text IS NOT NULL AND name ILIKE '%%' || $%d || '%%' THEN 1 ELSE 0 END)", argIndex, argIndex))
-		args = append(args, name)
-		paramCount++
-		argIndex++
-	}
-
 	// Add scoring for languages
 	if languages, ok := params["languages"].([]string); ok && len(languages) > 0 {
 		scoringConditions = append(scoringConditions, fmt.Sprintf("(SELECT COUNT(*) FROM unnest($%d::text[]) AS lang WHERE lang = ANY(languages))", argIndex))
@@ -130,7 +122,6 @@ func GetScoredItineraries(db *sql.DB, params map[string]interface{}) ([]models.S
 		var scored models.ScoredItinerary
 		err := rows.Scan(
 			&scored.Itinerary.ItineraryId,
-			&scored.Itinerary.Name,
 			&scored.Itinerary.City,
 			&scored.Itinerary.Country,
 			&scored.Itinerary.Title,
