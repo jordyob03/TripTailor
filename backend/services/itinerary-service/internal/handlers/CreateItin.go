@@ -124,6 +124,8 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 			return
 		}
 
+		models.AddUserPost(dbConn, req.Username, postId)
+
 		// Respond to the client with the received data
 		c.JSON(http.StatusOK, gin.H{
 			"message": "Itinerary received",

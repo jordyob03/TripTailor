@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/styles.css';
+import itineraryAPI from '../api/itineraryAPI.js';
 
 function MyTravels() {
   const [selectedTab, setSelectedTab] = useState('itineraries');
@@ -12,6 +13,25 @@ function MyTravels() {
   const handleTabChange = (tab) => {
     setSelectedTab(tab);
   };
+
+  useEffect(() => {
+    const fetchItineraries = async () => {
+      if (selectedTab === 'itineraries') {
+        try {
+          const data = {
+            Username: localStorage.getItem('username'),
+          };
+          const response = await itineraryAPI.post('/get-user-itins', data);
+          console.log('Received', response.data);
+          setItineraries(response.data.itineraries);
+        } catch (error) {
+          console.error('Error fetching itineraries:', error);
+        }
+      }
+    };
+  
+    fetchItineraries();
+  }, [selectedTab]);
 
   return (
     <div>
@@ -39,9 +59,11 @@ function MyTravels() {
                 <div key={index} className="itineraryCard">
                   <img src={itinerary.image} alt={itinerary.title} className="itineraryImage" />
                   <div className="itineraryInfo">
-                    <h3>{itinerary.title}</h3>
+                    <h3>{itinerary.name}</h3>
+                    <p>{itinerary.city}</p>
+                    <p>{itinerary.country}</p>
+                    <p>{itinerary.price}</p>
                     <p>{itinerary.description}</p>
-                    <span>{itinerary.location}</span>
                   </div>
                 </div>
               ))
