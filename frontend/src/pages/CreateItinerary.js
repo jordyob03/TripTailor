@@ -108,7 +108,7 @@ function CreateItinerary() {
       ];
 
       if (name && city && country && description && selectedTags.length >= 3 && hasValidEvent) {
-        navigate('/my-travels');
+        window.location.href = '/my-travels/itineraries';
       }
     });
 
