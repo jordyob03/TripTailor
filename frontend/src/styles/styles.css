@@ -801,5 +801,167 @@
   margin-top: 100px; 
   padding: 0 20px; 
 }
+.saveButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 6px 12px;
+  background-color: #00509e;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  display: none;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.resultCard:hover .saveButton {
+  display: block;
+}
+
+.saveButton:hover {
+  background-color: #003d73; 
+  transform: scale(1.05); 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
+}
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  width: 300px;
+  max-width: 90%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.modalHeader h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.boardList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.boardItem {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.boardItem:hover {
+  background-color: #f0f0f0;
+}
+
+.boardImage {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+.boardName {
+  font-size: 14px;
+}
+
+.newBoardItem {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  background-color: #e0e0e0;
+}
+
+.newBoardIcon {
+  font-size: 24px;
+  margin-right: 10px;
+  color: #00509e;
+}
+.newBoardInput {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 10px;
+}
+
+.newBoardInputField {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.newBoardFileInput {
+  margin-bottom: 10px;
+}
+
+.newBoardPreview {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  object-fit: cover;
+}
+
+.createBoardButton {
+  padding: 8px 12px;
+  background-color: #00509e;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.createBoardButton:hover {
+  background-color: #003d73;
+}
+
+
 
 
