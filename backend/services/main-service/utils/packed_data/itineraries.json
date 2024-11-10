@@ -9,7 +9,7 @@
     "price": 1200.50,
     "languages": ["English", "French"],
     "tags": ["sightseeing", "culture"],
-    "events": ["Eiffel Tower Visit", "Seine River Cruise", "Notre Dame Visit"],
+    "events": ["1", "2", "3", "4"],
     "postId": 1,
     "username": "testuser"
   },
@@ -23,7 +23,7 @@
     "price": 850.00,
     "languages": ["English", "French"],
     "tags": ["art", "history"],
-    "events": ["Versailles Palace Day Trip", "Montmartre Walking Tour", "Arc de Triomphe Visit"],
+    "events": ["5", "6", "7", "8", "9"],
     "postId": 2,
     "username": "testuser"
   },
@@ -37,7 +37,7 @@
     "price": 400.00,
     "languages": ["English", "French"],
     "tags": ["nightlife", "entertainment"],
-    "events": ["Moulin Rouge Show"],
+    "events": ["10"],
     "postId": 3,
     "username": "testuser"
   }
