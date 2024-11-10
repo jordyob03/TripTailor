@@ -52,7 +52,7 @@ function Itineraries() {
 
   return (
     <div className="results">
-      {itineraries.length > 0 ? (
+      {Array.isArray(itineraries) && itineraries.length > 0 ? (
         // Render the results grid only when itineraries are present
         <div className="resultsGrid">
           {itineraries.map((itinerary) => (

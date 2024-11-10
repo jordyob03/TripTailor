@@ -68,7 +68,8 @@ function CreateItinerary() {
     e.preventDefault();
   
     const filteredEvents = events.filter(
-      (event) => event.description.trim() !== '' || event.location.trim() !== ''
+      (event) => event.description.trim() !== '' && event.location.trim() !== ''
+      && event.name.trim() !== '' && event.cost >= 0 
     );
 
   
