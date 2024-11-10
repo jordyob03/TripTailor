@@ -65,7 +65,7 @@ func AddEvent(DB *sql.DB, event Event) (int, error) {
 	}
 
 	log.Printf("Event added successfully with ID: %d\n", eventID)
-	return eventID, nil
+	return eventID, UpdateItineraryPrice(DB, event.ItineraryId)
 }
 
 func RemoveEvent(DB *sql.DB, eventID int) error {

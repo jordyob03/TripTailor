@@ -125,13 +125,14 @@ func RemoveItinerary(DB *sql.DB, itineraryID int) error {
 
 func GetItinerary(DB *sql.DB, itineraryID int) (Itinerary, error) {
 	getItinerarySQL := `
-	SELECT city, country, title, description, price, languages, tags, events, postId, username
+	SELECT *
 	FROM itineraries
 	WHERE itineraryId = $1;`
 
 	var itinerary Itinerary
 
 	err := DB.QueryRow(getItinerarySQL, itineraryID).Scan(
+		&itinerary.ItineraryId,
 		&itinerary.City,
 		&itinerary.Country,
 		&itinerary.Title,
@@ -151,7 +152,6 @@ func GetItinerary(DB *sql.DB, itineraryID int) (Itinerary, error) {
 		log.Println(err)
 		return Itinerary{}, fmt.Errorf("failed to get itinerary: %w", err)
 	}
-	itinerary.ItineraryId = itineraryID
 
 	if itinerary.Languages == nil {
 		itinerary.Languages = []string{}
