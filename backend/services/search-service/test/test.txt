@@ -13,24 +13,24 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSearchItineraries(t *testing.T) {
+func TestSearchItineraries_ValidParams(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockDB := &sql.DB{}
 
 	expectedItineraries := []db.Itinerary{
-		{ItineraryId: 1, Country: "France", City: "Paris", Title: "Eiffel Tower Tour"},
-		{ItineraryId: 2, Country: "France", City: "Paris", Title: "Louvre Museum Visit"},
+		{ItineraryId: 1, City: "Tokyo", Country: "Japan", Title: "Food Tour"},
+		{ItineraryId: 2, City: "Paris", Country: "France", Title: "Romantic Getaway"},
 	}
 
-	db.QueryItinerariesByLocation = func(dbConn *sql.DB, country, city string) ([]db.Itinerary, error) {
+	db.GetScoredItineraries = func(dbConn *sql.DB, params map[string]interface{}) ([]db.Itinerary, error) {
 		return expectedItineraries, nil
 	}
 
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
 
-	c.Request, _ = http.NewRequest("GET", "/search?country=France&city=Paris", nil)
+	c.Request, _ = http.NewRequest("GET", "/search?languages=Japanese,English&city=Tokyo&tags=food", nil)
 
 	handlers.SearchItineraries(mockDB)(c)
 
@@ -42,24 +42,33 @@ func TestSearchItineraries(t *testing.T) {
 	assert.Equal(t, expectedItineraries, response)
 }
 
-func TestSearchItineraries_MissingParams(t *testing.T) {
+func TestSearchItineraries_NoParams(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockDB := &sql.DB{}
 
+	expectedItineraries := []db.Itinerary{
+		{ItineraryId: 1, City: "Tokyo", Country: "Japan", Title: "Food Tour"},
+		{ItineraryId: 2, City: "Paris", Country: "France", Title: "Romantic Getaway"},
+	}
+
+	db.GetScoredItineraries = func(dbConn *sql.DB, params map[string]interface{}) ([]db.Itinerary, error) {
+		return expectedItineraries, nil
+	}
+
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
 
-	c.Request, _ = http.NewRequest("GET", "/search?country=France", nil)
+	c.Request, _ = http.NewRequest("GET", "/search", nil)
 
 	handlers.SearchItineraries(mockDB)(c)
 
-	assert.Equal(t, http.StatusBadRequest, w.Code)
+	assert.Equal(t, http.StatusOK, w.Code)
 
-	var response map[string]string
+	var response []db.Itinerary
 	err := json.Unmarshal(w.Body.Bytes(), &response)
 	assert.NoError(t, err)
-	assert.Equal(t, "Missing query parameters", response["error"])
+	assert.Equal(t, expectedItineraries, response)
 }
 
 func TestSearchItineraries_DatabaseError(t *testing.T) {
@@ -67,14 +76,14 @@ func TestSearchItineraries_DatabaseError(t *testing.T) {
 
 	mockDB := &sql.DB{}
 
-	db.QueryItinerariesByLocation = func(dbConn *sql.DB, country, city string) ([]db.Itinerary, error) {
+	db.GetScoredItineraries = func(dbConn *sql.DB, params map[string]interface{}) ([]db.Itinerary, error) {
 		return nil, sql.ErrConnDone
 	}
 
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
 
-	c.Request, _ = http.NewRequest("GET", "/search?country=France&city=Paris", nil)
+	c.Request, _ = http.NewRequest("GET", "/search?languages=Japanese,English&price=200", nil)
 
 	handlers.SearchItineraries(mockDB)(c)
 
