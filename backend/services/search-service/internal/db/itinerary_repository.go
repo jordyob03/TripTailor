@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"strings"
 
 	"github.com/jordyob03/TripTailor/backend/services/search-service/internal/models" // Import the models package
@@ -43,6 +44,8 @@ func QueryItinerariesByLocation(db *sql.DB, country, city string) ([]models.Itin
 			&itinerary.Title, &itinerary.Description, &itinerary.Price,
 			&languages, &tags, &events, &itinerary.PostId, &itinerary.Username,
 		); err != nil {
+			// print error
+			fmt.Println(err)
 			return nil, err
 		}
 

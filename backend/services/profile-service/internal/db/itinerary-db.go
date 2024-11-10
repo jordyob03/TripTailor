@@ -46,6 +46,18 @@ func AddItinerary(DB *sql.DB, itinerary Itinerary) (int, error) {
 	INSERT INTO itineraries (city, country, title, description, price, languages, tags, events, postId, username)
 	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING itineraryId;`
 
+	if itinerary.Languages == nil {
+		itinerary.Languages = []string{}
+	}
+
+	if itinerary.Tags == nil {
+		itinerary.Tags = []string{}
+	}
+
+	if itinerary.Events == nil {
+		itinerary.Events = []string{}
+	}
+
 	var itineraryID int
 	err := DB.QueryRow(
 		insertItinerarySQL, itinerary.City, itinerary.Country,

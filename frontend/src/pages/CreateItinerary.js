@@ -78,12 +78,14 @@ function CreateItinerary() {
       setBasicErrorMessage('');
     } else {
       setBasicErrorMessage('Please fill out all basic info fields.');
+      return;
     }
   
     if (selectedTags.length >= 3) {
       setTagErrorMessage('');
     } else {
       setTagErrorMessage('Please select at least 3 tags.');
+      return;
     }
   
     const hasValidEvent = filteredEvents.length > 0;
@@ -91,6 +93,7 @@ function CreateItinerary() {
     if (!hasValidEvent) {
       setEventErrorMessage('At least one complete event is required.');
       console.log({ itineraryDetails, selectedTags, events: filteredEvents });
+      return;
     }
   
     const hasIncompleteEvent = filteredEvents.some((event) => {
@@ -110,6 +113,7 @@ function CreateItinerary() {
 
     if (hasIncompleteEvent) {
       setEventErrorMessage('Please complete all fields for incomplete events or delete them.');
+      return;
     }
 
     if (!hasIncompleteEvent && hasValidEvent) {
