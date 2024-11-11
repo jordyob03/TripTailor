@@ -65,6 +65,20 @@ func AddPost(DB *sql.DB, post Post) (int, error) {
 		return 0, fmt.Errorf("failed to add post: %w", err)
 	}
 
+	IntBoards, err := StringsToInts(post.Boards)
+	if err != nil {
+		log.Printf("Error converting board posts to integers: %v\n", err)
+		return 0, err
+	}
+
+	for _, boardId := range IntBoards {
+		err = AddBoardPost(DB, boardId, postId, false)
+		if err != nil {
+			log.Printf("Error adding post %d to board %d: %v\n", postId, boardId, err)
+			return 0, err
+		}
+	}
+
 	log.Printf("Post with ID %d successfully added.\n", postId)
 	return postId, AddUserPost(DB, post.Username, postId)
 }
