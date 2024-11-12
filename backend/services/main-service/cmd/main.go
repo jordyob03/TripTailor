@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	db "github.com/jordyob03/TripTailor/backend/services/main-service/internal/db/models"
+	pack "github.com/jordyob03/TripTailor/backend/services/main-service/utils"
 )
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
@@ -38,6 +39,12 @@ func main() {
 	if err := db.InitializeImageTable(DB); err != nil {
 		log.Fatal("Error initializing image table:", err)
 	}
+
+	pack.PackImagesFromLocal("utils/packed_data/images", DB)
+	pack.PackUsersFromJSON("utils/packed_data/users.json", DB)
+	pack.PackEventFromJSON("utils/packed_data/events.json", DB)
+	pack.PackItinsAndPostFromJSON("utils/packed_data/itineraries.json", DB)
+	pack.PackBoardsFromJSON("utils/packed_data/boards.json", DB)
 
 	http.HandleFunc("/images/", db.ImageHandler(DB))
 	http.HandleFunc("/hello", helloHandler)
