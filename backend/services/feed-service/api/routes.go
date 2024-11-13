@@ -9,7 +9,10 @@ import (
 )
 
 // SetupRoutes initializes the routes for the service, passing the database connection
-func SetupRoutes(router *gin.Engine, db *sql.DB) {
+func SetupRoutes(router *gin.Engine, dbConn *sql.DB) {
 	// Define the /search route and pass the database connection
-	router.GET("/feed", handlers.FeedService(db))
+	router.GET("/feed", handlers.FeedService(dbConn))
+	router.GET("/itinerary", handlers.GetItinerary(dbConn))
+	router.GET("/posts", handlers.GetPost(dbConn))
+	router.GET("/events", handlers.GetEvent(dbConn))
 }

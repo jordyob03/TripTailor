@@ -6,13 +6,13 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	db "github.com/jordyob03/TripTailor/backend/services/feed-service/internal/db" 
+	db "github.com/jordyob03/TripTailor/backend/services/feed-service/internal/db"
 )
 
-//FeedService handles feed requests based on tags
+// FeedService handles feed requests based on tags
 func FeedService(database *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		
+
 		//Extract and parse tags from query parameters
 		tagsParameters := c.Query("tags")
 		if tagsParameters == "" {
@@ -35,8 +35,8 @@ func FeedService(database *sql.DB) gin.HandlerFunc {
 
 		//Return the itineraries
 		c.JSON(http.StatusOK, gin.H{
-			"message":		"Itineraries retrieved successfully",
-			"itineraries":	itineraries,
+			"message":     "Itineraries retrieved successfully",
+			"itineraries": itineraries,
 		})
 	}
 }

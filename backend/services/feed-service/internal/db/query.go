@@ -1,19 +1,20 @@
 package db
+
 import (
 	"database/sql"
 	"fmt"
 	"log"
-	"github.com/lib/pq"
-	"github.com/jordyob03/TripTailor/backend/services/feed-service/internal/models" 
 
+	"github.com/jordyob03/TripTailor/backend/services/feed-service/internal/models"
+	"github.com/lib/pq"
 )
 
-//QueryItinerariesByTags fetches itinerareis that contain any of the inputted tags
+// QueryItinerariesByTags fetches itinerareis that contain any of the inputted tags
 func QueryItinerariesByTags(database *sql.DB, tags []string) ([]models.Itinerary, error) {
 	query := `
 	SELECT itineraryId, name, city, country, title, description, price, languages, tags, events, postId, username
 	FROM itineraries
-	WHERE tags && $1;` 
+	WHERE tags && $1;`
 
 	var itineraries []models.Itinerary
 	rows, err := database.Query(query, pq.Array(tags))
