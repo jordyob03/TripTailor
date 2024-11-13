@@ -86,3 +86,30 @@ func GetItinerary(DB *sql.DB, itineraryID int) (Itinerary, error) {
 	log.Printf("Itinerary retrieved successfully: %+v\n", itinerary)
 	return itinerary, nil
 }
+
+func UpdateItineraryPrice(DB *sql.DB, itineraryId int) error {
+	var price = 0.0
+	itinerary, err := GetItinerary(DB, itineraryId)
+	if err != nil {
+		log.Printf("Error getting events for itinerary ID %d: %v\n", itineraryId, err)
+		return fmt.Errorf("failed to get events for itinerary: %w", err)
+	}
+
+	itineraryEvents, err := StringsToInts(itinerary.Events)
+	if err != nil {
+		log.Printf("Error converting event IDs to integers: %v\n", err)
+		return fmt.Errorf("failed to convert event IDs to integers: %w", err)
+	}
+
+	for _, eventID := range itineraryEvents {
+		temp, err := GetEvent(DB, eventID)
+		if err != nil {
+			log.Printf("Error getting event ID %d: %v\n", eventID, err)
+			return fmt.Errorf("failed to get event ID: %w", err)
+		}
+
+		price += temp.Cost
+	}
+
+	return UpdateAttribute(DB, "itineraries", "itineraryId", itineraryId, "price", price)
+}

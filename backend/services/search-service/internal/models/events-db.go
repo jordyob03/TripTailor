@@ -54,6 +54,10 @@ func GetEvent(DB *sql.DB, eventID int) (Event, error) {
 		return Event{}, fmt.Errorf("failed to retrieve event: %w", err)
 	}
 
+	if event.EventImages == nil {
+		event.EventImages = []string{}
+	}
+
 	log.Printf("Event with ID %d successfully retrieved.\n", eventID)
 	return event, nil
 }
