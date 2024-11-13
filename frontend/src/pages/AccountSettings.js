@@ -1,37 +1,42 @@
 import React from 'react';
 import '../styles/styles.css'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faLock, faBell, faShieldAlt, faGlobe, faBars } from '@fortawesome/free-solid-svg-icons'; // Import all needed icons
+import { faUser, faLock, faBell, faShieldAlt, faGlobe } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 
 function AccountSettings() {
+  const navigate = useNavigate();
 
+  // Updated sections with paths for navigation
   const sections = [
-    { title: 'Personal Info', description: 'Provide personal details and how we can reach you', icon: faUser },
-    { title: 'Login & Security', description: 'Update your password and secure your account', icon: faLock },
-    { title: 'Notifications', description: 'Choose notification preferences', icon: faBell },
-    { title: 'Privacy & Sharing', description: 'Manage your personal data and sharing settings', icon: faShieldAlt },
-    { title: 'Global Preferences', description: 'Default language, currency, and time zone', icon: faGlobe },
+    { title: 'Personal Info', description: 'Provide or update personal details', icon: faUser, path: '/personal-info' },
+    { title: 'Login & Security', description: 'Update your password and secure your account', icon: faLock, path: '/login-security' },
+    { title: 'Notifications', description: 'Choose notification preferences', icon: faBell, path: '/notifications' },
+    { title: 'Privacy & Sharing', description: 'Manage your personal data and sharing settings', icon: faShieldAlt, path: '/privacy-sharing' },
+    { title: 'Global Preferences', description: 'Default language, currency, and time zone', icon: faGlobe, path: '/global-preferences' },
   ];
 
   return (
-    <>
-      {/* Main Container */}
-      <div className="centeredContainer">
-        <div className="gridWrapper">
-          <div className="grid">
-            {sections.map((section) => (
-              <div key={section.title} className="card">
-                <div className="cardContent">
-                  <h3 className="cardTitle">{section.title}</h3>
-                  <p className="cardDescription">{section.description}</p>
-                </div>
-                <FontAwesomeIcon icon={section.icon} className="icon" /> 
+    <div className="centeredContainer">
+      <div className="gridWrapper">
+        <div className="grid">
+          {sections.map((section) => (
+            <div
+              key={section.title}
+              className="card"
+              onClick={() => navigate(section.path)} // Navigate to the path
+              style={{ cursor: 'pointer' }} // Add a pointer cursor for better UX
+            >
+              <div className="cardContent">
+                <h3 className="cardTitle">{section.title}</h3>
+                <p className="cardDescription">{section.description}</p>
               </div>
-            ))}
-          </div>
+              <FontAwesomeIcon icon={section.icon} className="icon" />
+            </div>
+          ))}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

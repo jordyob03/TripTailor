@@ -23,6 +23,8 @@ type User struct {
 	Tags         []string  `json:"tags"`
 	Boards       []string  `json:"boards"`
 	Posts        []string  `json:"posts"`
+	Followers    []string  `json:"followers"`
+	Following    []string  `json:"following"`
 	ProfileImage int       `json:"profileImage"`
 	CoverImage   int       `json:"coverImage"`
 }
@@ -39,8 +41,10 @@ func CreateUserTable(DB *sql.DB) error {
 		country TEXT,
 		languages TEXT[],
 		tags TEXT[],
-		boards INTEGER[],
-		posts INTEGER[],
+		boards TEXT[],
+		posts TEXT[],
+		followers TEXT[],
+		following TEXT[],
 		profileImage INTEGER,
 		coverImage INTEGER
 	);`
@@ -49,9 +53,25 @@ func CreateUserTable(DB *sql.DB) error {
 
 func AddUser(DB *sql.DB, user User) (int, error) {
 	insertUserSQL := `
-	INSERT INTO users (username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, profileImage, coverImage)
-	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+	INSERT INTO users (username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, followers, following, profileImage, coverImage)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
 	RETURNING userId;`
+
+	if user.Followers == nil {
+		user.Followers = []string{}
+	}
+
+	if user.Following == nil {
+		user.Following = []string{}
+	}
+
+	if user.Languages == nil {
+		user.Languages = []string{}
+	}
+
+	if user.Tags == nil {
+		user.Tags = []string{}
+	}
 
 	var userId int
 	err := DB.QueryRow(
@@ -59,6 +79,7 @@ func AddUser(DB *sql.DB, user User) (int, error) {
 		user.DateOfBirth, user.Name, user.Country,
 		pq.Array(user.Languages), pq.Array(user.Tags),
 		pq.Array(user.Boards), pq.Array(user.Posts),
+		pq.Array(user.Followers), pq.Array(user.Following),
 		user.ProfileImage, user.CoverImage).Scan(&userId)
 	if err != nil {
 		fmt.Println("Error adding user:", err)
@@ -69,35 +90,41 @@ func AddUser(DB *sql.DB, user User) (int, error) {
 }
 
 func RemoveUser(DB *sql.DB, username string) error {
-
-	getPostsAndBoardsSQL := `
-	SELECT title, boards 
-	FROM posts 
-	WHERE username = (SELECT email FROM users WHERE username = $1);
-	`
-
-	var Stringposts []string
-	var Stringboards []string
-
-	err := DB.QueryRow(getPostsAndBoardsSQL, username).Scan(pq.Array(&Stringposts), pq.Array(&Stringboards))
+	user, err := GetUser(DB, username)
 	if err != nil {
-		log.Printf("Error retrieving posts and boards for user ID %s: %v\n", username, err)
+		log.Printf("Error retrieving user: %v\n", err)
 		return err
 	}
 
-	posts, err := StringsToInts(Stringposts)
+	IntPosts, err := StringsToInts(user.Posts)
 	if err != nil {
-		log.Printf("Error converting post IDs to integers: %v\n", err)
+		log.Printf("Error converting post IDs to strings: %v\n", err)
 		return err
 	}
 
-	boards, err := StringsToInts(Stringboards)
+	IntBoards, err := StringsToInts(user.Boards)
 	if err != nil {
-		log.Printf("Error converting board IDs to integers: %v\n", err)
+		log.Printf("Error converting board IDs to strings: %v\n", err)
 		return err
 	}
 
-	for _, post := range posts {
+	for _, follower := range user.Followers {
+		err := RemoveUserFollowing(DB, follower, username)
+		if err != nil {
+			log.Printf("Error removing follower %s: %v\n", follower, err)
+			return err
+		}
+	}
+
+	for _, following := range user.Following {
+		err := RemoveUserFollower(DB, following, username)
+		if err != nil {
+			log.Printf("Error removing following %s: %v\n", following, err)
+			return err
+		}
+	}
+
+	for _, post := range IntPosts {
 		err := RemovePost(DB, post)
 		if err != nil {
 			log.Printf("Error removing post %d: %v\n", post, err)
@@ -105,7 +132,7 @@ func RemoveUser(DB *sql.DB, username string) error {
 		}
 	}
 
-	for _, board := range boards {
+	for _, board := range IntBoards {
 		err := RemoveBoard(DB, board)
 		if err != nil {
 			log.Printf("Error removing board %d: %v\n", board, err)
@@ -114,7 +141,6 @@ func RemoveUser(DB *sql.DB, username string) error {
 	}
 
 	deleteUserSQL := `DELETE FROM users WHERE username = $1;`
-
 	_, err = DB.Exec(deleteUserSQL, username)
 	if err != nil {
 		log.Printf("Error removing user: %v\n", err)
@@ -126,7 +152,7 @@ func RemoveUser(DB *sql.DB, username string) error {
 
 func GetUser(DB *sql.DB, username string) (User, error) {
 	query := `
-    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, profileImage, coverImage
+    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, followers, following, profileImage, coverImage
     FROM users 
     WHERE username = $1`
 
@@ -139,6 +165,8 @@ func GetUser(DB *sql.DB, username string) (User, error) {
 		pq.Array(&user.Tags),
 		pq.Array(&user.Boards),
 		pq.Array(&user.Posts),
+		pq.Array(&user.Followers),
+		pq.Array(&user.Following),
 		&user.ProfileImage,
 		&user.CoverImage,
 	)
@@ -166,12 +194,20 @@ func GetUser(DB *sql.DB, username string) (User, error) {
 		user.Posts = []string{}
 	}
 
+	if user.Followers == nil {
+		user.Followers = []string{}
+	}
+
+	if user.Following == nil {
+		user.Following = []string{}
+	}
+
 	return user, nil
 }
 
 func GetAllUsers(DB *sql.DB) ([]User, error) {
 	query := `
-    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, profileImage, coverImage
+    SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, followers, following, profileImage, coverImage
     FROM users`
 
 	rows, err := DB.Query(query)
@@ -191,6 +227,8 @@ func GetAllUsers(DB *sql.DB) ([]User, error) {
 			pq.Array(&user.Tags),
 			pq.Array(&user.Boards),
 			pq.Array(&user.Posts),
+			pq.Array(&user.Followers),
+			pq.Array(&user.Following),
 			&user.ProfileImage,
 			&user.CoverImage,
 		); err != nil {
@@ -212,6 +250,14 @@ func GetAllUsers(DB *sql.DB) ([]User, error) {
 
 		if user.Posts == nil {
 			user.Posts = []string{}
+		}
+
+		if user.Followers == nil {
+			user.Followers = []string{}
+		}
+
+		if user.Following == nil {
+			user.Following = []string{}
 		}
 
 		users = append(users, user)
@@ -323,6 +369,22 @@ func RemoveUserPost(DB *sql.DB, username string, postId int) error {
 	}
 
 	return nil
+}
+
+func AddUserFollower(DB *sql.DB, username string, follower string) error {
+	return AddArrayAttribute(DB, "users", "username", username, "followers", []string{follower})
+}
+
+func RemoveUserFollower(DB *sql.DB, username string, follower string) error {
+	return RemoveArrayAttribute(DB, "users", "username", username, "followers", []string{follower})
+}
+
+func AddUserFollowing(DB *sql.DB, username string, following string) error {
+	return AddArrayAttribute(DB, "users", "username", username, "following", []string{following})
+}
+
+func RemoveUserFollowing(DB *sql.DB, username string, following string) error {
+	return RemoveArrayAttribute(DB, "users", "username", username, "following", []string{following})
 }
 
 func UpdateUserProfileImage(DB *sql.DB, username string, imageId int) error {

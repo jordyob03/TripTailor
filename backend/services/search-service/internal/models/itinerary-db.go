@@ -10,7 +10,6 @@ import (
 
 type Itinerary struct {
 	ItineraryId int      `json:"itineraryId"`
-	Name        string   `json:"name"`
 	City        string   `json:"city"`
 	Country     string   `json:"country"`
 	Title       string   `json:"title"`
@@ -27,7 +26,6 @@ func CreateItineraryTable(DB *sql.DB) error {
 	createTableSQL := `
 	CREATE TABLE IF NOT EXISTS itineraries (
 		itineraryId SERIAL PRIMARY KEY,
-		name TEXT NOT NULL,
 		city TEXT NOT NULL,
 		country TEXT NOT NULL,
 		title TEXT,
@@ -45,7 +43,7 @@ func CreateItineraryTable(DB *sql.DB) error {
 
 func GetItinerary(DB *sql.DB, itineraryID int) (Itinerary, error) {
 	getItinerarySQL := `
-	SELECT itineraries (name, city, country, title, description, price, languages, tags, events, postId, username)
+	SELECT *
 	FROM itineraries
 	WHERE itineraryId = $1;`
 
@@ -53,7 +51,6 @@ func GetItinerary(DB *sql.DB, itineraryID int) (Itinerary, error) {
 
 	err := DB.QueryRow(getItinerarySQL, itineraryID).Scan(
 		&itinerary.ItineraryId,
-		&itinerary.Name,
 		&itinerary.City,
 		&itinerary.Country,
 		&itinerary.Title,
@@ -88,4 +85,31 @@ func GetItinerary(DB *sql.DB, itineraryID int) (Itinerary, error) {
 
 	log.Printf("Itinerary retrieved successfully: %+v\n", itinerary)
 	return itinerary, nil
+}
+
+func UpdateItineraryPrice(DB *sql.DB, itineraryId int) error {
+	var price = 0.0
+	itinerary, err := GetItinerary(DB, itineraryId)
+	if err != nil {
+		log.Printf("Error getting events for itinerary ID %d: %v\n", itineraryId, err)
+		return fmt.Errorf("failed to get events for itinerary: %w", err)
+	}
+
+	itineraryEvents, err := StringsToInts(itinerary.Events)
+	if err != nil {
+		log.Printf("Error converting event IDs to integers: %v\n", err)
+		return fmt.Errorf("failed to convert event IDs to integers: %w", err)
+	}
+
+	for _, eventID := range itineraryEvents {
+		temp, err := GetEvent(DB, eventID)
+		if err != nil {
+			log.Printf("Error getting event ID %d: %v\n", eventID, err)
+			return fmt.Errorf("failed to get event ID: %w", err)
+		}
+
+		price += temp.Cost
+	}
+
+	return UpdateAttribute(DB, "itineraries", "itineraryId", itineraryId, "price", price)
 }

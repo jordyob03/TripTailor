@@ -10,7 +10,8 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:password@db:5432/database
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     command: ["/wait-for-it.sh", "db:5432", "--strict", "--", "/auth-service-container"]
     networks:
       - backend-network
@@ -30,6 +31,9 @@ services:
       context: ./backend/services/search-service
       dockerfile: Dockerfile
     container_name: search-service-container
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - "8084:8084"
     command: ["/wait-for-it.sh", "db:5432", "--strict", "--", "/search-service-container"]
@@ -46,12 +50,13 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:password@db:5432/database
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     command: ["/wait-for-it.sh", "db:5432", "--strict", "--", "/profile-service-container"]
     networks:
       - backend-network
 
-  intinerary-service:
+  itinerary-service:
     build:
       context: ./backend/services/itinerary-service
       dockerfile: Dockerfile
@@ -61,8 +66,25 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:password@db:5432/database
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     command: ["/wait-for-it.sh", "db:5432", "--strict", "--", "/itinerary-service-container"]
+    networks:
+      - backend-network
+
+  save-service:
+    build:
+      context: ./backend/services/save-service
+      dockerfile: Dockerfile
+    container_name: save-service-container
+    ports:
+      - "8086:8086"
+    environment:
+      - DATABASE_URL=postgres://postgres:password@db:5432/database
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["/wait-for-it.sh", "db:5432", "--strict", "--", "/save-service-container"]
     networks:
       - backend-network
 
@@ -76,8 +98,8 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:password@db:5432/database
     depends_on:
-      - db
-    command: ["/wait-for-it.sh", "db:5432", "--strict", "--", "/backend-container"]
+      db:
+        condition: service_healthy
     networks:
       - backend-network
 
@@ -90,6 +112,11 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: database
+    healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U postgres"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
     volumes:
       - db_data:/var/lib/postgresql/data  
     networks:
@@ -104,7 +131,8 @@ services:
     ports:
       - "8082:80" 
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - backend-network
 
