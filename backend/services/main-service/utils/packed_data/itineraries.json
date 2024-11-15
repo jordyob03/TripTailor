@@ -1,7 +1,6 @@
 [
   {
     "itineraryId": 1,
-    "name": "European Getaway",
     "city": "Paris",
     "country": "France",
     "title": "Best of Europe",
@@ -15,7 +14,6 @@
   },
   {
     "itineraryId": 2,
-    "name": "Paris Highlights",
     "city": "Paris",
     "country": "France",
     "title": "Explore Iconic Paris",
@@ -29,7 +27,6 @@
   },
   {
     "itineraryId": 3,
-    "name": "Nightlife in Paris",
     "city": "Paris",
     "country": "France",
     "title": "Paris After Dark",
@@ -40,5 +37,44 @@
     "events": ["10"],
     "postId": 3,
     "username": "testuser"
+  },
+  {
+    "itineraryId": 4,
+    "city": "The End",
+    "country": "Minecraft",
+    "title": "Exploring the End City",
+    "description": "My friends and I embarked on a thrilling journey to the End Dimension to conquer an End City. We braved the dangerous void, battled Shulkers, and gathered precious loot. We finished the expedition with a victory celebration back at our home base.",
+    "price": 0.00,
+    "languages": ["English", "Swedish"],
+    "tags": ["Adventure", "Exploration", "Gaming", "Looting", "Combat"],
+    "events": ["11", "12", "13", "14", "15"],
+    "postId": 4,
+    "username": "herobrine"
+  },
+  {
+    "itineraryId": 5,
+    "city": "Niagara Falls",
+    "country": "Canada",
+    "title": "Visiting Niagara Falls",
+    "description": "My friends and I spent the day at Niagara Falls, taking in the scenic views and enjoying a few local attractions. We finished off the day with dinner and a walk around Clifton Hill.",
+    "price": 0.00,
+    "languages": ["English", "French"],
+    "tags": ["Young Adults", "City", "Nature", "Sightseeing", "Walks", "Vegetarian"],
+    "events": ["16", "17", "18"],
+    "postId": 5,
+    "username": "herobrine"
+  },
+  {
+    "itineraryId": 6,
+    "city": "Lahore",
+    "country": "Pakistan",
+    "title": "Exploring Lahore's Old City",
+    "description": "My friends and I spent an unforgettable day exploring the rich history and vibrant culture of Lahore's Old City. We wandered through bustling bazaars, admired Mughal architecture, and finished the day with a traditional dinner and a stroll around the iconic Badshahi Mosque.",
+    "price": 0.00,
+    "languages": ["Urdu", "Punjabi"],
+    "tags": ["Young Adults", "History", "Culture", "Architecture", "Local Cuisine", "Walking Tour"],
+    "events": ["19", "20", "21", "22"],
+    "postId": 6,
+    "username": "herobrine"
   }
 ]

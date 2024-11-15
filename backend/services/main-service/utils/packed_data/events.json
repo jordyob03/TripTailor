@@ -8,7 +8,7 @@
     "startTime": "2024-06-01T10:00:00Z",
     "endTime": "2024-06-01T12:00:00Z",
     "itineraryId": 1,
-    "eventImages": ["2"]
+    "eventImages": ["3"]
   },
   {
     "eventId": 2,
@@ -19,7 +19,7 @@
     "startTime": "2024-06-02T09:00:00Z",
     "endTime": "2024-06-02T11:30:00Z",
     "itineraryId": 1,
-    "eventImages": ["2"]
+    "eventImages": ["4"]
   },
   {
     "eventId": 3,
@@ -30,7 +30,7 @@
     "startTime": "2024-06-02T15:00:00Z",
     "endTime": "2024-06-02T16:00:00Z",
     "itineraryId": 1,
-    "eventImages": ["2"]
+    "eventImages": ["5"]
   },
   {
     "eventId": 4,
@@ -41,7 +41,7 @@
     "startTime": "2024-06-03T10:00:00Z",
     "endTime": "2024-06-03T12:00:00Z",
     "itineraryId": 1,
-    "eventImages": ["3"]
+    "eventImages": ["6"]
   },
   {
     "eventId": 5,
@@ -52,7 +52,7 @@
     "startTime": "2024-06-04T09:00:00Z",
     "endTime": "2024-06-04T17:00:00Z",
     "itineraryId": 2,
-    "eventImages": ["4"]
+    "eventImages": ["7"]
   },
   {
     "eventId": 6,
@@ -63,7 +63,7 @@
     "startTime": "2024-06-05T10:00:00Z",
     "endTime": "2024-06-05T12:30:00Z",
     "itineraryId": 2,
-    "eventImages": ["5"]
+    "eventImages": ["8"]
   },
   {
     "eventId": 7,
@@ -74,7 +74,7 @@
     "startTime": "2024-06-06T14:00:00Z",
     "endTime": "2024-06-06T15:30:00Z",
     "itineraryId": 2,
-    "eventImages": ["6"]
+    "eventImages": ["9"]
   },
   {
     "eventId": 8,
@@ -85,7 +85,7 @@
     "startTime": "2024-06-07T10:00:00Z",
     "endTime": "2024-06-07T12:30:00Z",
     "itineraryId": 2,
-    "eventImages": ["7"]
+    "eventImages": ["10"]
   },
   {
     "eventId": 9,
@@ -96,7 +96,7 @@
     "startTime": "2024-06-07T14:00:00Z",
     "endTime": "2024-06-07T17:00:00Z",
     "itineraryId": 2,
-    "eventImages": ["8"]
+    "eventImages": ["11"]
   },
   {
     "eventId": 10,
@@ -107,6 +107,138 @@
     "startTime": "2024-06-08T21:00:00Z",
     "endTime": "2024-06-08T23:30:00Z",
     "itineraryId": 3,
-    "eventImages": ["9"]
-  }
+    "eventImages": ["12"]
+  },
+  {
+    "eventId": 11,
+    "name": "Preparing for the End City Expedition",
+    "cost": 100.00,
+    "address": "Plains Biome, Overworld",
+    "description": "We spent an hour gearing up with enchanted diamond armor, potions, ender pearls, and plenty of food. We double-checked our gear to ensure we had what we needed to survive and make it back safely with the loot!",
+    "startTime": "2018-05-08T10:00:00Z",
+    "endTime": "2018-05-08T11:00:00Z",
+    "itineraryId": 4,
+    "eventImages": ["13"]
+  },
+  {
+    "eventId": 12,
+    "name": "Journey Through the End Dimension",
+    "cost": 15.00,
+    "address": "End Island, The End",
+    "description": "After defeating the Ender Dragon, we used ender pearls to reach the End Gateway and teleported to the End Islands. We spent time searching for an End City while carefully navigating the floating islands to avoid falling into the void.",
+    "startTime": "2018-05-08T11:00:00Z",
+    "endTime": "2018-05-08T12:00:00Z",
+    "itineraryId": 4,
+    "eventImages": ["14"]
+  },
+  {
+    "eventId": 13,
+    "name": "Raid on the End City",
+    "cost": 0.00,
+    "address": "End City Tower, The End",
+    "description": "We finally located an End City and climbed the towers, battling Shulkers along the way. The Shulkers’ levitation attacks were tricky to avoid, but we managed to grab some valuable loot, including Shulker Shells, enchanted items, and diamond armor. At the top, we claimed the prized Elytra wings from the End Ship!",
+    "startTime": "2024-06-08T12:00:00Z",
+    "endTime": "2024-06-08T13:30:00Z",
+    "itineraryId": 4,
+    "eventImages": ["15"]
+  },
+  {
+    "eventId": 14,
+    "name": "Return to the Overworld",
+    "cost": 50.00,
+    "address": "End City Tower, The End",
+    "description": "After gathering our spoils, we made our way back to the End Gateway portal, using ender pearls to teleport back to the End Fountain. We returned to the Overworld, excited to use our new items and display our loot!",
+    "startTime": "2024-06-08T13:30:00Z",
+    "endTime": "2024-06-08T13:05:00Z",
+    "itineraryId": 4,
+    "eventImages": ["16"]
+  },
+  {
+    "eventId": 15,
+    "name": "Raid on the End City",
+    "cost": 5.00,
+    "address": "End City Tower, The End",
+    "description": "We ended the adventure with a victory feast, sharing stories of the End City raid and our close calls with the void. We showcased our new Shulker Boxes, enchanted gear, and Elytra wings before planning our next Minecraft adventure.",
+    "startTime": "2024-06-08T13:05:00Z",
+    "endTime": "2024-06-08T15:00:00Z",
+    "itineraryId": 4,
+    "eventImages": ["17"]
+  },
+  {
+    "eventId": 16,
+    "name": "Niagara Falls Sightseeing",
+    "cost": 50.00,
+    "address": "Niagara Falls, ON",
+    "description": "We spent around 5 hours exploring the Falls area. We visited various viewpoints, including the Skylon Tower, and took lots of photos. We grabbed lunch at a nearby café with vegetarian options. The $50 covers entry fees for Skylon Tower and lunch.",
+    "startTime": "2018-05-08T10:00:00Z",
+    "endTime": "2018-05-08T15:00:00Z",
+    "itineraryId": 4,
+    "eventImages": ["18"]
+  },
+  {
+    "eventId": 17,
+    "name": "Dinner at The Keg Steakhouse",
+    "cost": 45.00,
+    "address": "5950 Victoria Ave, Niagara Falls, ON",
+    "description": "We had a fantastic dinner overlooking the Falls at The Keg. The $45 includes a shared appetizer, my main course, and a 20% tip. They had a few good vegetarian options.",
+    "startTime": "2018-05-08T18:00:00Z",
+    "endTime": "2018-05-08T19:30:00Z",
+    "itineraryId": 4,
+    "eventImages": ["19"]
+  },
+  {
+    "eventId": 18,
+    "name": "Evening Stroll Around Clifton Hill",
+    "cost": 0.00,
+    "address": "Clifton Hill, Niagara Falls, ON",
+    "description": "After dinner, we walked along Clifton Hill, enjoying the vibrant lights and attractions. We visited a few souvenir shops and took more pictures with the Falls illuminated in the background.",
+    "startTime": "2018-05-08T19:30:00Z",
+    "endTime": "2018-05-08T20:30:00Z",
+    "itineraryId": 4,
+    "eventImages": ["20"]
+  },
+  {
+    "eventId": 19,
+    "name": "Guided Tour of Lahore Fort and Badshahi Mosque",
+    "cost": 10.00,
+    "address": "Fort Road, Lahore, Pakistan",
+    "description": "We spent the morning exploring Lahore Fort and Badshahi Mosque, two incredible examples of Mughal architecture. Our guide shared fascinating historical stories, and we marveled at the intricate tilework and grand courtyards. The $10 covers the guided tour and entry fees.",
+    "startTime": "2018-05-08T10:00:00Z",
+    "endTime": "2018-05-08T13:00:00Z",
+    "itineraryId": 5,
+    "eventImages": ["21"]
+  },
+  {
+    "eventId": 20,
+    "name": "Lunch at Andaaz Restaurant",
+    "cost": 25.00,
+    "address": "Fort Road, Lahore, Pakistan",
+    "description": "We enjoyed lunch with a rooftop view of the Badshahi Mosque at Andaaz Restaurant, which offers a variety of traditional Pakistani dishes. The $25 includes an appetizer, a main course, and a drink. They had some excellent vegetarian options as well.",
+    "startTime": "2018-05-08T13:00:00Z",
+    "endTime": "2018-05-08T15:00:00Z",
+    "itineraryId": 5,
+    "eventImages": ["22"]
+  },
+  {
+    "eventId": 21,
+    "name": "Walk Through Walled City’s Bazaars",
+    "cost": 0.00,
+    "address": "Walled City, Lahore, Pakistan",
+    "description": "After lunch, we wandered through the Walled City’s colorful bazaars, including the famous Anarkali areas. We explored stalls filled with spices, textiles, jewelry, and handmade crafts, taking in the vibrant sights and sounds of local market life.",
+    "startTime": "2018-05-08T15:30:00Z",
+    "endTime": "2018-05-08T19:30:00Z",
+    "itineraryId": 5,
+    "eventImages": ["23"]
+  },
+  {
+    "eventId": 22,
+    "name": "Night Walk Around Badshahi Mosque and Minar-e-Pakistan",
+    "cost": 0.00,
+    "address": "Greater Iqbal Park, Lahore, Pakistan",
+    "description": "We wrapped up the day with a serene evening walk around the Badshahi Mosque and Minar-e-Pakistan. The area was beautifully lit, and we enjoyed the peaceful ambiance as we reflected on our day in Lahore’s historic Old City.",
+    "startTime": "2018-05-08T19:30:00Z",
+    "endTime": "2018-05-08T20:30:00Z",
+    "itineraryId": 5,
+    "eventImages": ["24"]
+  }         
 ]
