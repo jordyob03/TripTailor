@@ -1,31 +1,50 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import itineraryAPI from '../api/itineraryAPI.js';
+import boardAPI from '../api/boardAPI.js';
 import '../styles/styles.css';
 
 const username = localStorage.getItem('username');
 
 function Itineraries() {
   const [itineraries, setItineraries] = useState([]);
+  const [itineraryEvents, setItineraryEvents] = useState([]); // 2D array for itineraries and events
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
-
-
   const fetchItins = async () => {
-    
       try {
         const data = {
           Username: localStorage.getItem('username'),
         };
         const response = await itineraryAPI.post('/get-user-itins', data);
         console.log('Received', response.data);
-        setItineraries(response.data.itineraries);
+        const fetchedItineraries = response.data.itineraries;
+        setItineraries(fetchedItineraries);
+
+        const eventsData = await Promise.all(
+          fetchedItineraries.map(async (itinerary) => {
+            const events = await fetchevents(itinerary.itineraryId);
+            return { itinerary, events };
+          })
+        );
+        setItineraryEvents(eventsData);
       } catch (error) {
         console.error('Error fetching itineraries:', error);
       }
-    
+    };
+
+  const fetchevents = async (itineraryId) => {
+    try {
+      const response = await boardAPI.get('/events', { params: { itineraryId: itineraryId } }); 
+      return response.data.Events;
+    } catch (error) {
+      console.error("Error fetching events:", error);
+      setErrorMessage("Failed to fetch events");
+      return [];
+    }
   };
+
   const handleItinClick = (id) => {
     navigate(`/itinerary/${id}`);
   };
@@ -52,12 +71,21 @@ function Itineraries() {
 
   return (
     <div className="results">
-      {Array.isArray(itineraries) && itineraries.length > 0 ? (
-        // Render the results grid only when itineraries are present
+      {Array.isArray(itineraryEvents) && itineraryEvents.length > 0 ? (
         <div className="resultsGrid">
-          {itineraries.map((itinerary) => (
-            <div key={itinerary.itineraryID} className="resultCard" onClick={() => handleItinClick(itinerary.itineraryID)} style={{ cursor: 'pointer' }}>
-              <img src={getRandomImage()} alt={itinerary.title} className="resultCardImage" />
+          {itineraryEvents.map(({ itinerary, events }) => {
+            const eventImages = events.flatMap(event => event.eventImages || []);
+            const randomImageNumber = eventImages.length > 0 
+              ? eventImages[Math.floor(Math.random() * eventImages.length)] 
+              : null;
+          
+            const imageUrl = randomImageNumber 
+              ? `http://localhost:8080/images/${randomImageNumber}` 
+              : getRandomImage();
+            
+            return (
+            <div key={itinerary.itineraryId} className="resultCard" onClick={() => handleItinClick(itinerary.itineraryId)} style={{ cursor: 'pointer' }}>
+              <img src={imageUrl} alt={itinerary.title} className="resultCardImage" />
               <div className="resultCardContent">
                 <h4 className="cardLocation">{itinerary.city + ', ' + itinerary.country}</h4>
                 <h3 className="cardTitle">{itinerary.title}</h3>
@@ -69,7 +97,7 @@ function Itineraries() {
                 </div>
               </div>
             </div>
-          ))}
+          )})}
         </div>
       ) : (
         // Render the centered message container when no itineraries are found
