@@ -7,7 +7,6 @@ import '../styles/styles.css';
 const username = localStorage.getItem('username');
 
 function Itineraries() {
-  const [itineraries, setItineraries] = useState([]);
   const [itineraryEvents, setItineraryEvents] = useState([]); // 2D array for itineraries and events
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
@@ -28,6 +27,7 @@ function Itineraries() {
             return { itinerary, events };
           })
         );
+
         setItineraryEvents(eventsData);
       } catch (error) {
         console.error('Error fetching itineraries:', error);
@@ -100,7 +100,6 @@ function Itineraries() {
           )})}
         </div>
       ) : (
-        // Render the centered message container when no itineraries are found
         <div className="centeredMessageContainer">
           <div className="noItinerariesMessage">No itineraries found. Create a new one to get started!</div>
         </div>
