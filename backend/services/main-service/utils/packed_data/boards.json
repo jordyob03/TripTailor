@@ -1,0 +1,11 @@
+[
+  {
+    "boardId": 1,
+    "name": "Paris Must-Do's",
+    "dateOfCreation": "2024-01-01T12:00:00Z",
+    "description": "Paris Vacation Collection",
+    "username": "testuser",
+    "posts": ["1", "2", "3"],
+    "tags": ["travel", "adventure"]
+  }
+]

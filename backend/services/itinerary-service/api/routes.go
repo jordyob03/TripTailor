@@ -23,4 +23,5 @@ import (
 
 func RegisterRoutes(r *gin.Engine, dbConn *sql.DB) {
 	r.POST("/itin-creation", handlers.CreateItin(dbConn))
+	r.POST("/get-user-itins", handlers.GetItins(dbConn))
 }

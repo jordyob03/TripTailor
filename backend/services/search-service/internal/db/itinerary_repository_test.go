@@ -18,13 +18,13 @@ func TestQueryItinerariesByLocation(t *testing.T) {
 	city := "Tokyo"
 
 	query := `
-        SELECT itineraryid, name, city, country, title, description, price, languages, tags, events, postid, username
+        SELECT itineraryid, city, country, title, description, price, languages, tags, events, postid, username
         FROM itineraries
         WHERE country = \$1 AND city = \$2`
 
-	rows := sqlmock.NewRows([]string{"itineraryid", "name", "city", "country", "title", "description", "price", "languages", "tags", "events", "postid", "username"}).
-		AddRow(1, "Tokyo Forest Exploration", "Tokyo", "Japan", "Forest Adventure", "Explore the forests of Tokyo", 150.00, "English,Japanese", "Nature,Adventure", "1,2", 1, "johndoe").
-		AddRow(2, "Tokyo Nerd Convention", "Tokyo", "Japan", "Anime Expo", "A convention for anime lovers", 50.00, "English", "Anime,Convention", "3", 2, "janedoe")
+	rows := sqlmock.NewRows([]string{"itineraryid", "city", "country", "title", "description", "price", "languages", "tags", "events", "postid", "username"}).
+		AddRow(1, "Tokyo", "Japan", "Forest Adventure", "Explore the forests of Tokyo", 150.00, "English,Japanese", "Nature,Adventure", "1,2", 1, "johndoe").
+		AddRow(2, "Tokyo", "Japan", "Anime Expo", "A convention for anime lovers", 50.00, "English", "Anime,Convention", "3", 2, "janedoe")
 
 	mock.ExpectQuery(query).WithArgs(country, city).WillReturnRows(rows)
 
@@ -35,7 +35,6 @@ func TestQueryItinerariesByLocation(t *testing.T) {
 
 	// Assert for the first itinerary
 	assert.Equal(t, 1, itineraries[0].ItineraryId)
-	assert.Equal(t, "Tokyo Forest Exploration", itineraries[0].Name)
 	assert.Equal(t, "Tokyo", itineraries[0].City)
 	assert.Equal(t, "Japan", itineraries[0].Country)
 	assert.Equal(t, "Forest Adventure", itineraries[0].Title)
@@ -49,7 +48,6 @@ func TestQueryItinerariesByLocation(t *testing.T) {
 
 	// Assert for the second itinerary
 	assert.Equal(t, 2, itineraries[1].ItineraryId)
-	assert.Equal(t, "Tokyo Nerd Convention", itineraries[1].Name)
 	assert.Equal(t, "Tokyo", itineraries[1].City)
 	assert.Equal(t, "Japan", itineraries[1].Country)
 	assert.Equal(t, "Anime Expo", itineraries[1].Title)
