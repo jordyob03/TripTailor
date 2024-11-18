@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"strings"
 
 	"github.com/jordyob03/TripTailor/backend/services/search-service/internal/models" // Import the models package
@@ -9,7 +10,6 @@ import (
 
 type Itinerary struct {
 	ItineraryId int      `json:"itineraryId"`
-	Name        string   `json:"name"`
 	City        string   `json:"city"`
 	Country     string   `json:"country"`
 	Title       string   `json:"title"`
@@ -25,7 +25,7 @@ type Itinerary struct {
 // QueryItinerariesByLocation queries the database for itineraries based on country and city
 func QueryItinerariesByLocation(db *sql.DB, country, city string) ([]models.Itinerary, error) {
 	rows, err := db.Query(`
-		SELECT itineraryid, name, city, country, title, description, price, languages, tags, events, postid, username
+		SELECT itineraryid, city, country, title, description, price, languages, tags, events, postid, username
 		FROM itineraries
 		WHERE country = $1 AND city = $2`, country, city)
 	if err != nil {
@@ -40,10 +40,12 @@ func QueryItinerariesByLocation(db *sql.DB, country, city string) ([]models.Itin
 
 		// Scan each row into the itinerary struct
 		if err := rows.Scan(
-			&itinerary.ItineraryId, &itinerary.Name, &itinerary.City, &itinerary.Country,
+			&itinerary.ItineraryId, &itinerary.City, &itinerary.Country,
 			&itinerary.Title, &itinerary.Description, &itinerary.Price,
 			&languages, &tags, &events, &itinerary.PostId, &itinerary.Username,
 		); err != nil {
+			// print error
+			fmt.Println(err)
 			return nil, err
 		}
 

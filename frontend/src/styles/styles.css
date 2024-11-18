@@ -208,10 +208,11 @@
   }
   
   .cardTitle {
-    font-size: 18px;
-    color: #002f6c;
+    font-size: 22px;
+    color: #000000;
     font-family: 'Red Hat Display', sans-serif;
     margin-bottom: 5px;
+    margin-top: 0px;
   }
   
   .cardDescription {
@@ -525,8 +526,11 @@
   padding: 20px;
 }
 
-.resultCard {
+.resultCard,
+.boardsCard {
   background-color: white;
+  width: 23%; 
+  height: 10%; 
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   overflow: hidden;
@@ -535,8 +539,15 @@
 
 .resultCardImage {
   width: 100%;
-  height: 180px;
+  height: 250px;
   object-fit: cover;
+}
+
+.boardCardImage {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 30px
 }
 
 .resultCardContent {
@@ -639,7 +650,7 @@
 }
 
 .itinerariesList,
-.tripsList {
+.boardsList {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -647,7 +658,7 @@
 }
 
 .noItinerariesMessage,
-.noTripsMessage {
+.noBoardsMessage {
   background-color: #f0f8ff;
   padding: 15px 25px;
   border-radius: 20px;
@@ -656,6 +667,9 @@
   font-weight: bold;
   color: #00509e;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .createItineraryButton {
@@ -669,11 +683,36 @@
   border: none;
   cursor: pointer;
 }
+
 .resultsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  display: flex;
+  gap: 2%;
+  flex-wrap: wrap;
   margin-top: 20px;
+  margin: 20px;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 95%;
+}
+
+.results {
+  display: flex;
+  gap: 2%;
+  flex-wrap: wrap;
+  margin: 20px auto; /* Centers the .results container horizontally */
+  justify-content: center; /* Centers the contents inside .results */
+  align-items: flex-start;
+  width: 95%;
+}
+
+.boardsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2%;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 95%;
+  padding: 0 60px;
 }
 
 .resultCard {
@@ -682,12 +721,6 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   overflow: hidden;
   position: relative;
-}
-
-.resultCardImage {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
 }
 
 .resultCardContent {
@@ -722,18 +755,22 @@
   margin-top: 20px;
 }
 
-.cardLocation {
+.cardPostCount {
   color: #000000;
   margin: 0 0;
   font-family: 'Red Hat Display', sans-serif;
   font-size: 14px;
+  margin-top: 10px;
+  margin-right: 20px;
+  margin-bottom: 12px;
 } 
 
-.cardTitle {
+.cardLocation{
   color: #000000;
-  margin-top: 10px;
+  margin: 0 0;
   font-family: 'Red Hat Display', sans-serif;
-  font-size: 18px;
+  font-size: 14px;
+  margin-bottom: 5px;
 } 
 
 .cardDescription {
@@ -965,3 +1002,172 @@
 
 
 
+
+.boardPostsContainer {
+  padding: 20px;
+  background-color: #f4f7fa;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding-top: 60px;
+}
+
+.boardPostsContainer h2{
+  padding: 20px;
+  background-color: #f4f7fa;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding-top: 10px;
+}
+
+.boardDetails {
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.boardDetails h2 {
+  color: #002f6c;
+  margin-top: 35px;
+  margin-bottom: 0px;
+  font-family: 'Red Hat Display', sans-serif;
+  font-size: 45px;
+}
+
+.boardDetails p {
+  color: #002f6c;
+  margin: 0px 0;
+  font-family: 'Red Hat Display', sans-serif;
+  font-size: 15px;
+}
+
+.postsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 10px;
+  justify-items: stretch;
+  max-width: 100%;
+}
+
+@media (min-width: 600px) {
+  .postsGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.postCard {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.post-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: filter 0.3s ease;
+}
+
+.postCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.postInfo {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.postInfo h3 {
+  margin-bottom: -10px;
+  text-align: center;
+  margin: 0;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.postInfo p {
+  margin-bottom: -10px;
+  color: #666;
+  font-size: 0.9em;
+}
+
+.postInfo span {
+  margin-top: 10px;
+  color: #888;
+  font-size: 0.9em;
+}
+
+.postStats {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 0.9em;
+  color: #555;
+  margin-top: 15px;
+}
+
+.postStats span {
+  margin-right: 10px;
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: filter 0.3s ease;
+}
+
+.deleteButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  color: rgb(255, 255, 255);
+  font-size: 25px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.deleteButton:hover + .imageContainer .post-image {
+  filter: blur(5px);
+}
+
+.deleteButton:hover ~ .postInfo h3,
+.deleteButton:hover ~ .postInfo p,
+.deleteButton:hover ~ .postStats span {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.deleteButton:hover ~ .board-card h3,
+.deleteButton:hover ~ .board-card p,
+.deleteButton:hover ~ .board-card span {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.countAndDate {
+  display: flex;
+  justify-content: left;
+  align-items: top;
+  margin-top: 0px;
+}
+
+.centeredMessageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}

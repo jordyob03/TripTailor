@@ -19,8 +19,8 @@ func TestSearchItineraries(t *testing.T) {
 	mockDB := &sql.DB{}
 
 	expectedItineraries := []db.Itinerary{
-		{ItineraryId: 1, Country: "France", City: "Paris", Name: "Eiffel Tower Tour"},
-		{ItineraryId: 2, Country: "France", City: "Paris", Name: "Louvre Museum Visit"},
+		{ItineraryId: 1, Country: "France", City: "Paris", Title: "Eiffel Tower Tour"},
+		{ItineraryId: 2, Country: "France", City: "Paris", Title: "Louvre Museum Visit"},
 	}
 
 	db.QueryItinerariesByLocation = func(dbConn *sql.DB, country, city string) ([]db.Itinerary, error) {

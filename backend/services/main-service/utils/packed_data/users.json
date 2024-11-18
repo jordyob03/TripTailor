@@ -1,0 +1,17 @@
+[
+  {
+    "userId": 1,
+    "username": "testuser",
+    "email": "user@user.com",
+    "password": "$2a$10$57733FILr3PDsducmSSKz.C.ZTbrz5o02pNpoEuF9GzqYFCa/1HhS",
+    "dateOfBirth": "1990-05-21T00:00:00Z",
+    "name": "Alice Smith",
+    "country": "Canada",
+    "languages": ["English", "Spanish"],
+    "tags": ["traveler", "photographer"],
+    "boards": ["1"],
+    "posts": ["1", "2", "3"],
+    "profileImage": 1,
+    "coverImage": 2
+  }
+]

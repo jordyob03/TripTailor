@@ -63,6 +63,10 @@ func AddImage(DB *sql.DB, image Image) (int, error) {
 	VALUES ($1, $2)
 	RETURNING imageId;`
 
+	if image.Metadata == nil {
+		image.Metadata = []string{}
+	}
+
 	var imageId int
 	err := DB.QueryRow(
 		insertImageSQL, image.ImageData, pq.Array(image.Metadata),
@@ -80,6 +84,10 @@ func GetImage(DB *sql.DB, imageId int) (Image, error) {
 	err := DB.QueryRow(getImageSQL, imageId).Scan(
 		&image.ImageId, &image.ImageData, pq.Array(&image.Metadata),
 	)
+
+	if image.Metadata == nil {
+		image.Metadata = []string{}
+	}
 
 	return image, err
 }

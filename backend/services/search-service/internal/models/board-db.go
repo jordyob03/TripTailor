@@ -56,6 +56,14 @@ func GetBoard(DB *sql.DB, boardId int) (Board, error) {
 		return Board{}, err
 	}
 
+	if board.Posts == nil {
+		board.Posts = []string{}
+	}
+
+	if board.Tags == nil {
+		board.Tags = []string{}
+	}
+
 	log.Printf("Board with ID %d retrieved successfully.\n", boardId)
 	return board, nil
 }
