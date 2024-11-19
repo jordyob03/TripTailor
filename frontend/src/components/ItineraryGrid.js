@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/styles.css'; // Ensure this includes the correct styling
 import boardAPI from '../api/boardAPI'; // Assuming boardAPI is used to fetch events
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Import FontAwesome
+import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons'; // Import the location icon
 
 const ItineraryGrid = ({ itineraries, getFallbackImage }) => {
   const navigate = useNavigate();
@@ -17,7 +19,7 @@ const ItineraryGrid = ({ itineraries, getFallbackImage }) => {
     "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Mining_800x800.jpg",
     "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Winter-Celebration_800x800.jpg",
     "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Media-Block-Image_Java-Keyart_800x450.jpg",
-    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Media-Block-Image_PC-Bundle-Keyart_800x450.jpg",
+    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_PC-Bundle-Keyart_800x450.jpg",
     "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Updates-Carousel_Tricky-Trials_800x450.jpg",
     "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Updates-Carousel_Wild-Update_800x450.jpg",
   ];
@@ -72,6 +74,7 @@ const ItineraryGrid = ({ itineraries, getFallbackImage }) => {
               />
               <div className="resultCardContent">
                 <h4 className="cardLocation">
+                  <FontAwesomeIcon icon={faMapMarkerAlt} style={{ marginRight: '8px', color: '#00509e' }} />
                   {`${itinerary.city}, ${itinerary.country}`}
                 </h4>
                 <h3 className="cardTitle">{itinerary.title}</h3>

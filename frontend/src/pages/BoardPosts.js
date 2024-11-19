@@ -60,7 +60,7 @@ function BoardPosts() {
       {selectedBoard && (
         <div className="boardDetails">
           <h2>{selectedBoard.name}</h2>
-          <p><em>{selectedBoard.description}</em></p>
+          <p>{selectedBoard.description}</p>
           <p>
             Created by {selectedBoard.username} on{' '}
             {new Date(selectedBoard.dateOfCreation).toLocaleDateString('en-GB', {

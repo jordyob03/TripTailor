@@ -4,6 +4,7 @@ import Tags from '../config/tags.json';
 import iconMap from '../config/iconMap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ItineraryGrid from '../components/ItineraryGrid.js'; 
+import boardAPI from '../api/boardAPI'; // Assuming boardAPI is used to fetch itineraries
 
 function HomePage() {
   const [selectedTags, setSelectedTags] = useState([]);
@@ -15,7 +16,17 @@ function HomePage() {
   const tagContainerRef = useRef(null);
 
   useEffect(() => {
-    // Fetch itineraries from your backend here
+    // Fetch itineraries from the backend
+    const fetchItineraries = async () => {
+      try {
+        const response = await boardAPI.get('/itineraries'); // Adjust endpoint as necessary
+        setItineraries(response.data.Itineraries); // Update with the correct key from your API response
+      } catch (error) {
+        console.error("Error fetching itineraries:", error);
+      }
+    };
+
+    fetchItineraries();
   }, []);
 
   const handleSave = (itineraryId) => {
