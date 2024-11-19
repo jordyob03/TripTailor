@@ -84,11 +84,6 @@ function Boards() {
                       {new Date(board.dateOfCreation).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
                     </p>
                   </div>
-                  <div className="resultTags">
-                    {board.tags.map((tag, i) => (
-                      <span key={i} className="resultCardTag">{tag}</span>
-                    ))}
-                  </div>
                 </div>
               </div>
             );

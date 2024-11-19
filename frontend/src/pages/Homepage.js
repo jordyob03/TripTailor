@@ -3,6 +3,7 @@ import '../styles/styles.css';
 import Tags from '../config/tags.json';
 import iconMap from '../config/iconMap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import ItineraryGrid from '../components/ItineraryGrid.js'; 
 
 function HomePage() {
   const [selectedTags, setSelectedTags] = useState([]);
@@ -15,12 +16,6 @@ function HomePage() {
 
   useEffect(() => {
     // Fetch itineraries from your backend here
-   
-  }, []);
-
-  useEffect(() => {
-    // Fetch user's boards from your backend here
-    
   }, []);
 
   const handleSave = (itineraryId) => {

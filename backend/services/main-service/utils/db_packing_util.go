@@ -4,10 +4,14 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	db "github.com/jordyob03/TripTailor/backend/services/main-service/internal/db/models"
 	"log"
 	"os"
+	"sort"
+	"strconv"
+	"strings"
 	"time"
+
+	db "github.com/jordyob03/TripTailor/backend/services/main-service/internal/db/models"
 )
 
 func PackImagesFromLocal(dirPath string, DB *sql.DB) (image_ids []int, count int, err error) {
@@ -16,6 +20,13 @@ func PackImagesFromLocal(dirPath string, DB *sql.DB) (image_ids []int, count int
 		log.Fatal("Error reading directory:", err)
 		return nil, 0, err
 	}
+
+	// Sort files numerically based on the numeric part of the filename
+	sort.Slice(files, func(i, j int) bool {
+		num1 := extractNumber(files[i].Name())
+		num2 := extractNumber(files[j].Name())
+		return num1 < num2
+	})
 
 	image_ids = make([]int, 0, len(files))
 
@@ -47,6 +58,18 @@ func PackImagesFromLocal(dirPath string, DB *sql.DB) (image_ids []int, count int
 
 	return image_ids, count, nil
 }
+
+// Helper function to extract the numeric portion from a filename
+func extractNumber(filename string) int {
+	nameWithoutExt := strings.TrimSuffix(filename, ".png")
+	num, err := strconv.Atoi(nameWithoutExt)
+	if err != nil {
+		log.Printf("Error extracting number from filename %s: %v", filename, err)
+		return -1
+	}
+	return num
+}
+
 func PackUsersFromJSON(fp string, DB *sql.DB) (user_ids []int, count int) {
 	data, err := os.ReadFile(fp)
 	if err != nil {

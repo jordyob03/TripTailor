@@ -1,7 +1,6 @@
 [
   {
     "itineraryId": 1,
-    "name": "European Getaway",
     "city": "Paris",
     "country": "France",
     "title": "Best of Europe",
@@ -15,7 +14,6 @@
   },
   {
     "itineraryId": 2,
-    "name": "Paris Highlights",
     "city": "Paris",
     "country": "France",
     "title": "Explore Iconic Paris",
@@ -29,7 +27,6 @@
   },
   {
     "itineraryId": 3,
-    "name": "Nightlife in Paris",
     "city": "Paris",
     "country": "France",
     "title": "Paris After Dark",
@@ -39,6 +36,110 @@
     "tags": ["nightlife", "entertainment"],
     "events": ["10"],
     "postId": 3,
+    "username": "testuser"
+  },
+  {
+    "itineraryId": 4,
+    "city": "The End",
+    "country": "Minecraft",
+    "title": "Exploring the End City",
+    "description": "My friends and I embarked on a thrilling journey to the End Dimension to conquer an End City. We braved the dangerous void, battled Shulkers, and gathered precious loot. We finished the expedition with a victory celebration back at our home base.",
+    "price": 0.00,
+    "languages": ["English", "Swedish"],
+    "tags": ["Adventure", "Exploration", "Gaming", "Looting", "Combat"],
+    "events": ["11", "12", "13", "14", "15"],
+    "postId": 4,
+    "username": "herobrine"
+  },
+  {
+    "itineraryId": 5,
+    "city": "Niagara Falls",
+    "country": "Canada",
+    "title": "Visiting Niagara Falls",
+    "description": "My friends and I spent the day at Niagara Falls, taking in the scenic views and enjoying a few local attractions. We finished off the day with dinner and a walk around Clifton Hill.",
+    "price": 0.00,
+    "languages": ["English", "French"],
+    "tags": ["Young Adults", "City", "Nature", "Sightseeing", "Walks", "Vegetarian"],
+    "events": ["16", "17", "18"],
+    "postId": 5,
+    "username": "herobrine"
+  },
+  {
+    "itineraryId": 6,
+    "city": "Lahore",
+    "country": "Pakistan",
+    "title": "Exploring Lahore's Old City",
+    "description": "My friends and I spent an unforgettable day exploring the rich history and vibrant culture of Lahore's Old City. We wandered through bustling bazaars, admired Mughal architecture, and finished the day with a traditional dinner and a stroll around the iconic Badshahi Mosque.",
+    "price": 0.00,
+    "languages": ["Urdu", "Punjabi"],
+    "tags": ["Young Adults", "History", "Culture", "Architecture", "Local Cuisine", "Walking Tour"],
+    "events": ["19", "20", "21", "22"],
+    "postId": 6,
+    "username": "herobrine"
+  },
+  {
+    "itineraryId": 7,
+    "city": "Toronto",
+    "country": "Canada",
+    "title": "Exploring Downtown Toronto",
+    "description": "Visit top attractions like the CN Tower and Ripley’s Aquarium, stroll the waterfront, and enjoy great city views.",
+    "price": 0.00,
+    "languages": [],
+    "tags": ["Solo","City","Short Walks","Local Cuisine","Family Friendly","Historical Sites","Leisure Activities","Shopping","Vegetarian","Couples", "Nightlife"],
+    "events": ["23", "24", "25", "26", "27", "28", "29"],
+    "postId": 7,
+    "username": "testuser"
+  },
+  {
+    "itineraryId": 8,
+    "city": "Toronto",
+    "country": "Canada",
+    "title": "Arts & Culture in Toronto",
+    "description": "Explore the AGO, ROM, Kensington Market, and Graffiti Alley. End with a live show.",
+    "price": 0.00,
+    "languages": [],
+    "tags": ["Solo","City","Short Walks","Museum Visits","Couples","Historical Sites","Leisure Activities","Photography Tours","Cultural Explorers","Nightlife"],
+    "events": ["30", "31", "32", "33", "34", "35", "36"],
+    "postId": 8,
+    "username": "testuser"
+  },
+  {
+    "itineraryId": 9,
+    "city": "Toronto",
+    "country": "Canada",
+    "title": "Nature & Neighborhoods Tour in Toronto",
+    "description": "Relax in High Park, visit Toronto Islands, and explore the Distillery District.",
+    "price": 0.00,
+    "languages": [],
+    "tags": ["Solo","City","Short Walks","Museum Visits","Couples","Historical Sites","Leisure Activities","Photography Tours","Cultural Explorers","Wildlife Watching"],
+    "events": ["37", "38", "39", "40", "41", "42"],
+    "postId": 9,
+    "username": "testuser"
+  },
+  {
+    "itineraryId": 10,
+    "city": "Toronto",
+    "country": "Canada",
+    "title": "Shopping in Toronto",
+    "description": "Shop Queen Street West, tour Casa Loma, and enjoy a farewell rooftop dinner.",
+    "price": 0.00,
+    "languages": [],
+    "tags": ["Solo","City","Short Walks","Museum Visits","Couples","Historical Sites","Leisure Activities","Photography Tours","Cultural Explorers","Nightlife"],
+    "events": ["43", "44", "45", "46", "47"],
+    "postId": 10,
+    "username": "testuser"
+  },
+  {
+    "itineraryId": 11,
+    "city": "Gander",
+    "country": "Canada",
+    "title": "A Day in Gander",
+    "description": "Explore the amazing beautiful wonderful town of Gander :)",
+    "price": 0.00,
+    "languages": [],
+    "tags": ["Solo","City","Short Walks","Museum Visits","Couples","Historical Sites","Leisure Activities","Photography Tours","Cultural Explorers","Nightlife"],
+    "events": ["48", "49", "50", "51"],
+    "postId": 11,
     "username": "testuser"
   }
 ]
