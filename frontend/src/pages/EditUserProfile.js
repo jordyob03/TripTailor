@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Tags from '../config/tags.json';
 import '../styles/styles.css';  
 import { useNavigate } from 'react-router';
-import profileAPI from '../api/profileAPI.js';
+import profileAPI from '../api/profileAPI';
 
 function EditUserProfile() {
   const allTags = Object.values(Tags.categories).flat();
@@ -30,7 +30,7 @@ function EditUserProfile() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await profileAPI.get(`/user`, { params: { username } }); // Idk if this endpoint exists
+        const response = await profileAPI.get("/user", { params: { username } });
         const userData = response.data;
         setName(userData.name || '');
         setSelectedTags(userData.tags || []);
@@ -79,14 +79,15 @@ function EditUserProfile() {
   
     if (name && selectedTags.length >= 3 && country.length >= 1 && languages.length >= 1) {
       const profileData = {
-        name,
-        country,
-        languages,
+        languages: languages,
+        country: country, 
         tags: selectedTags,
+        name: name, 
+        username: username, 
       };
   
       try {
-        await profileAPI.put(`/user`, profileData, { params: { username } });
+        await profileAPI.post(`/create`, profileData, { params: { username } });
         navigate('/home-page');
       } catch (error) {
         console.error("Failed to save profile:", error);

@@ -133,6 +133,7 @@ func RemoveUser(DB *sql.DB, username string) error {
 }
 
 func GetUser(DB *sql.DB, username string) (User, error) {
+	fmt.Println("Fetching user with username:", username)
 	query := `
     SELECT userId, username, email, password, dateOfBirth, name, country, languages, tags, boards, posts, followers, following, profileImage, coverImage
     FROM users 
