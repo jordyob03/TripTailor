@@ -5,7 +5,7 @@ import boardAPI from '../api/boardAPI'; // Assuming boardAPI is used to fetch ev
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Import FontAwesome
 import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons'; // Import the location icon
 
-const ItineraryGrid = ({ itineraries, getFallbackImage }) => {
+const ItineraryGrid = ({ itineraries, onSave }) => {
   const navigate = useNavigate();
   const [eventImages, setEventImages] = useState({}); // Store first event image by itineraryId
 
@@ -58,15 +58,24 @@ const ItineraryGrid = ({ itineraries, getFallbackImage }) => {
     <div className="resultsGrid">
       {Array.isArray(itineraries) && itineraries.length > 0 ? (
         itineraries.map((itinerary) => {
-          const imageUrl = eventImages[itinerary.itineraryId] || getFallbackImage?.() || getRandomImage();
+          const imageUrl = eventImages[itinerary.itineraryId] || getRandomImage();
 
           return (
             <div
               key={itinerary.itineraryId}
               className="resultCard"
               onClick={() => handleItinClick(itinerary.itineraryId)}
-              style={{ cursor: 'pointer' }}
+              style={{ position: 'relative' }}
             >
+            {/* Save Button */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onSave) onSave(itinerary);
+              }}
+              className="saveButton">
+              Save
+            </button>
               <img
                 src={imageUrl}
                 alt={itinerary.title}
@@ -94,7 +103,7 @@ const ItineraryGrid = ({ itineraries, getFallbackImage }) => {
       ) : (
         <div className="centeredMessageContainer">
           <div className="noItinerariesMessage">
-            No itineraries found. Create a new one to get started!
+            No itineraries found. 
           </div>
         </div>
       )}

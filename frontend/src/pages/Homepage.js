@@ -3,65 +3,150 @@ import '../styles/styles.css';
 import Tags from '../config/tags.json';
 import iconMap from '../config/iconMap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import ItineraryGrid from '../components/ItineraryGrid.js'; 
-import boardAPI from '../api/boardAPI'; // Assuming boardAPI is used to fetch itineraries
+import ItineraryGrid from '../components/ItineraryGrid.js';
+import searchAPI from '../api/searchAPI';
+import boardAPI from '../api/boardAPI.js';
+import { faImage } from '@fortawesome/free-solid-svg-icons'; // Add this import at the top
+
+const username = localStorage.getItem('username');
 
 function HomePage() {
   const [selectedTags, setSelectedTags] = useState([]);
-  const [itineraries, setItineraries] = useState([]); // Itineraries will be fetched from backend
-  const [boards, setBoards] = useState([]); // Boards will be fetched or updated from backend
+  const [itineraries, setItineraries] = useState([]);
+  const [filteredItineraries, setFilteredItineraries] = useState([]);
+  const [boards, setBoards] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [selectedItinerary, setSelectedItinerary] = useState(null);
   const [newBoardName, setNewBoardName] = useState('');
   const [newBoardImage, setNewBoardImage] = useState(null);
   const tagContainerRef = useRef(null);
+  const [images, setImages] = useState({});
+  const [errorMessage, setErrorMessage] = useState('');
 
+  // Fetch itineraries from the backend
   useEffect(() => {
-    // Fetch itineraries from the backend
+    // Fetch itineraries
     const fetchItineraries = async () => {
+      const searchData = { country: 'Canada', city: 'Toronto' };
       try {
-        const response = await boardAPI.get('/itineraries'); // Adjust endpoint as necessary
-        setItineraries(response.data.Itineraries); // Update with the correct key from your API response
+        console.log("Search API sent:", searchData);
+        const response = await searchAPI.get('/search', {
+          params: searchData,
+        });
+        console.log('API response:', response.data.Itineraries);
+        setItineraries(response.data || []);
+        setFilteredItineraries(response.data || []);
       } catch (error) {
         console.error("Error fetching itineraries:", error);
       }
     };
-
+  
+    // Fetch boards
+    const fetchBoardsAndImages = async () => {
+      await fetchBoards();
+    };
+  
     fetchItineraries();
+    fetchBoardsAndImages();
   }, []);
 
-  const handleSave = (itineraryId) => {
-    setShowModal(true); 
+  // Handle tag filtering
+  useEffect(() => {
+    if (selectedTags.length > 0) {
+      const filtered = itineraries.filter((itinerary) =>
+        itinerary.tags.some((tag) => selectedTags.includes(tag))
+      );
+      setFilteredItineraries(filtered);
+    } else {
+      setFilteredItineraries(itineraries);
+    }
+  }, [selectedTags, itineraries]);
+
+  const fetchEvents = async (itineraryId) => {
+    try {
+      const response = await boardAPI.get('/events', { params: { itineraryId } });
+      return response.data.Events;
+    } catch (error) {
+      console.error("Error fetching events:", error);
+      return [];
+    }
+  };
+
+  const fetchBoards = async () => {
+    const userData = { username };
+    const imagesMap = {};
+    try {
+      const response = await boardAPI.get('/boards', { params: userData });
+      const boardsData = response.data.boards;
+      setBoards(boardsData);
+  
+      const imagePromises = boardsData.map(async (board) => {
+        try {
+          const postsResponse = await boardAPI.get('/posts', { params: { boardId: board.boardId } });
+          const firstPostId = postsResponse.data.Posts?.[0]?.postId;
+  
+          if (firstPostId) {
+            const itinerary = await boardAPI.get('/itineraries', { params: { postId: firstPostId } });
+            const events = await fetchEvents(itinerary.data.Itinerary?.itineraryId);
+  
+            if (events.length > 0 && events[0].eventImages?.length > 0) {
+              // Use the first image ID from the event
+              const imageId = events[0].eventImages[0];
+              imagesMap[board.boardId] = imageId; // Store imageId for the board
+            }
+          }
+        } catch (error) {
+          console.error(`Error fetching data for board ${board.boardId}:`, error);
+        }
+        return { boardId: board.boardId, image: null };
+      });
+  
+      await Promise.all(imagePromises);
+      setImages(imagesMap);
+    } catch (error) {
+      console.error('Error fetching boards:', error);
+      setErrorMessage(error.message || "An error occurred. Please try again.");
+    }
+  };
+
+  const handleSave = (itinerary) => {
+    console.log(itinerary); 
+    console.log(showModal); 
+    setSelectedItinerary(itinerary);
+    setShowModal(true);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setNewBoardName(''); 
-    setNewBoardImage(null); 
+    setSelectedItinerary(null);
+    setNewBoardName('');
+    setNewBoardImage(null);
   };
 
   const handleSelectBoard = (boardId) => {
-    // Save itinerary to the selected board by sending a request to your backend
+    // SAVE ITINERARY TO BOARD BACKEND INTEGRATION HERE
     console.log(`Itinerary saved to board ${boardId}`);
-    handleCloseModal(); 
+    handleCloseModal();
   };
 
   const handleCreateNewBoard = () => {
     if (newBoardName.trim()) {
       const newBoard = {
-        id: boards.length + 1, // ID should ideally be generated by the backend
+        id: boards.length + 1, // Mock ID
         name: newBoardName,
-        coverImage: newBoardImage, 
+        coverImage: newBoardImage, // Add the new board image
       };
-      setBoards([...boards, newBoard]); // Update locally, sync with backend
-      setNewBoardName(''); 
-      setNewBoardImage(null); 
+      // CREATE NEW BOARD BACKEND INTEGRATION HERE
+      setBoards([...boards, newBoard]); // Update boards with the new board
+      setNewBoardName(''); // Reset new board name
+      setNewBoardImage(null); // Reset the image
     }
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setNewBoardImage(URL.createObjectURL(file)); 
+      setNewBoardImage(URL.createObjectURL(file));
     }
   };
 
@@ -84,12 +169,6 @@ function HomePage() {
         : [...prevSelectedTags, tag]
     );
   };
-
-  const filteredItineraries = selectedTags.length
-    ? itineraries.filter((itinerary) =>
-        itinerary.tags.some((tag) => selectedTags.includes(tag))
-      )
-    : itineraries;
 
   return (
     <div>
@@ -114,20 +193,12 @@ function HomePage() {
       </div>
 
       {/* Feed Section: Filtered Itineraries */}
-      <div className="resultsGrid" style={{ marginTop: '200px', padding: '0 70px' }}>
-        {filteredItineraries.map((itinerary) => (
-          <div key={itinerary.id} className="resultCard">
-            <button className="saveButton" onClick={() => handleSave(itinerary.id)}>
-              Save
-            </button>
-            <img src={itinerary.image} alt={itinerary.title} className="resultCardImage" />
-            <div className="resultCardContent">
-              <h3 className="resultCardTitle">{itinerary.title}</h3>
-              <p className="cardLocation">{itinerary.location}</p>
-              <p className="resultCardDescription">{itinerary.description}</p>
-            </div>
-          </div>
-        ))}
+      <div className="pageContainer" style={{ marginTop: '100px' }}>
+        {filteredItineraries.length > 0 ? (
+          <ItineraryGrid itineraries={filteredItineraries} onSave={handleSave} />
+        ) : (
+          <p>No itineraries found.</p>
+        )}
       </div>
 
       {/* Save Modal */}
@@ -135,27 +206,57 @@ function HomePage() {
         <div className="modalOverlay">
           <div className="modalContent">
             <div className="modalHeader">
-              <h2>Save</h2>
+              <h2>Save Itinerary to Board</h2>
               <button className="closeButton" onClick={handleCloseModal}>×</button>
             </div>
             <div className="modalBody">
-              <input
-                type="text"
-                placeholder="Search"
-                className="searchInput"
-              />
+            <div className="boardListContainer">
               <div className="boardList">
-                {boards.map((board) => (
-                  <div key={board.id} className="boardItem" onClick={() => handleSelectBoard(board.id)}>
-                    {board.coverImage ? (
-                      <img src={board.coverImage} alt={board.name} className="boardImage" />
+                {boards.map((board) => {
+                  const eventImage = board.coverImage || `http://localhost:8080/images/${images[board.boardId]}`; // Use coverImage if available
+                  return (
+                    <div key={board.id || board.boardId} className="boardItem" onClick={() => handleSelectBoard(board.id || board.boardId)}>
+                      {eventImage ? (
+                        <img src={eventImage} alt={board.name} className="boardImage" />
+                      ) : (
+                        <div className="boardImagePlaceholder">No Image</div>
+                      )}
+                      <span className="boardName">{board.name}</span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* New Board Input Section */}
+              <div className="newBoardInput">
+                <div className="newBoardInputRow">
+                  <label className="imageInputLabel">
+                    {newBoardImage ? (
+                      <img
+                        src={newBoardImage}
+                        alt="Selected preview"
+                        style={{
+                          width: 35,
+                          height: 35,
+                          borderRadius: '20%',
+                          objectFit: 'cover',
+                          cursor: 'pointer',
+                        }}
+                      />
                     ) : (
-                      <div className="boardImagePlaceholder">No Image</div>
+                      <FontAwesomeIcon
+                        icon={faImage}
+                        className="imageInputIcon"
+                        style={{ color: 'grey', height: 35 }}
+                      />
                     )}
-                    <span className="boardName">{board.name}</span>
-                  </div>
-                ))}
-                <div className="newBoardInput">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="newBoardFileInput"
+                    />
+                  </label>
                   <input
                     type="text"
                     value={newBoardName}
@@ -163,22 +264,14 @@ function HomePage() {
                     placeholder="New board name"
                     className="newBoardInputField"
                   />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="newBoardFileInput"
-                  />
-                  {newBoardImage && (
-                    <img src={newBoardImage} alt="New board cover preview" className="newBoardPreview" />
-                  )}
-                  <button className="createBoardButton" onClick={handleCreateNewBoard}>
-                    Create
-                  </button>
                 </div>
+                <button className="createBoardButton" onClick={handleCreateNewBoard}>
+                  Create
+                </button>
+              </div>
               </div>
             </div>
-          </div>
+            </div>
         </div>
       )}
     </div>

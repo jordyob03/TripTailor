@@ -962,3 +962,188 @@ justify-content: center;
 align-items: center;
 text-align: center;
 }
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modalContent {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  width: 300px;
+  max-width: 90%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.modalHeader h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+.searchInput {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+.boardList {
+  max-height: 300px; /* Set the maximum height */
+  overflow-y: auto;  /* Enable vertical scrolling */
+  padding: 10px;     /* Optional: Add padding */
+  border-radius: 5px;     /* Optional: Round the corners */
+}
+
+.boardListContainer {
+  margin: 10px 0; /* Optional: Add some spacing */
+}
+
+.boardItem {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+.boardItem:hover {
+  background-color: #f0f0f0;
+}
+.boardImage {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+.boardName {
+  font-size: 16px;
+}
+.newBoardItem {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  background-color: #e0e0e0;
+}
+.newBoardIcon {
+  font-size: 24px;
+  margin-right: 10px;
+  color: #00509e;
+}
+.newBoardInput {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-items: center; /* Centers items horizontally */
+  margin-top: 10px;
+}
+
+.newBoardInput {
+  padding: 10px;
+  border: 1px solid #ccc; /* Optional: Add a border for clarity */
+  border-radius: 5px; /* Optional: Rounded corners */
+  margin-top: 10px;
+}
+
+.newBoardInputRow {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Spacing between inputs */
+}
+
+.newBoardInputField {
+  flex-grow: 1; /* Make the text input take available space */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 200px
+}
+
+.imageInputLabel {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.imageInputIcon {
+  font-size: 1.5rem; /* Adjust the icon size */
+  color: #007bff; /* Optional: Icon color */
+}
+
+.newBoardFileInput {
+  position: absolute;
+  opacity: 0; /* Hide the actual file input */
+  width: 0;
+  height: 0;
+}
+
+.newBoardPreview {
+  display: block;
+  max-width: 100%;
+  margin-top: 10px; /* Space above the preview image */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.createBoardButton {
+  display: block;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #00509e;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.createBoardButton:hover {
+  background-color: #0056b3;
+}
+
+.saveButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #ffffff;
+  color: #003f7f;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  cursor: pointer;
+  z-index: 2;
+  transition: background-color 0.2s ease;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.saveButton:hover {
+  background-color: #003f7f; /* Darker blue on hover */
+  color: #ffffff;
+}
+
+.saveButton:active {
+  background-color: #003f7f; /* Even darker blue on click */
+  color: #ffffff;
+
+}
