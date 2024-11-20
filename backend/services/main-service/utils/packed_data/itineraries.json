@@ -138,8 +138,47 @@
     "price": 0.00,
     "languages": [],
     "tags": ["Solo","City","Short Walks","Museum Visits","Couples","Historical Sites","Leisure Activities","Photography Tours","Cultural Explorers","Nightlife"],
-    "events": ["48", "49", "50", "51"],
+    "events": ["48", "49", "50", "51", "52", "53"],
     "postId": 11,
     "username": "testuser"
+  },
+  {
+    "itineraryId": 12,
+    "city": "Islamabad",
+    "country": "Pakistan",
+    "title": "Visiting the NUST Campus",
+    "description": "We spent the day exploring the beautiful NUST campus. We visited the library, the sports facilities, and the stunning surroundings. We finished the day with a picnic by the lake and a walk around the campus.",
+    "price": 0.00,
+    "languages": [],
+    "tags": ["Solo","City","Short Walks","Museum Visits","Couples","Historical Sites","Leisure Activities","Photography Tours","Cultural Explorers","Wildlife Watching"],
+    "events": ["54", "55"],
+    "postId": 12,
+    "username": "herobrine"
+  },
+  {
+    "itineraryId": 13,
+    "city": "Limerick",
+    "country": "Ireland",
+    "title": "Visiting the University of Limerick Campus",
+    "description": "My friends and I spent the day exploring the beautiful University of Limerick campus. We visited the library, the sports facilities, and the stunning riverfront. We finished the day with a picnic by the river and a walk around the campus.",
+    "price": 0.00,
+    "languages": [],
+    "tags": ["Young Adults", "University", "Campus Tour", "Picnic", "Riverfront", "Walking Tour"],
+    "events": ["56", "57"],
+    "postId": 13,
+    "username": "herobrine"
+  },
+  {
+    "itineraryId": 14,
+    "city": "Islamabad",
+    "country": "Pakistan",
+    "title": "A Day in Islamabad",
+    "description": "Explore the beautiful capital city of Pakistan, Islamabad.",
+    "price": 0.00,
+    "languages": [],
+    "tags": ["City", "Sightseeing", "Culture", "History", "Local Cuisine", "Shopping"],
+    "events": ["58", "59", "60", "61"],
+    "postId": 14,
+    "username": "herobrine"
   }
 ]

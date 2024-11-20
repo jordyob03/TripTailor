@@ -14,7 +14,7 @@
     "dateOfCreation": "2024-02-04T12:00:00Z",
     "description": "A Collection of Waleed's favorite places to visit and things to do",
     "username": "herobrine",
-    "posts": ["4", "5", "6"],
+    "posts": ["4", "5", "6", "12", "13", "14"],
     "tags": ["travel", "adventure"]
   },
   {
@@ -24,6 +24,15 @@
     "description": "Potential plans for Toronto 2024 trip",
     "username": "testuser",
     "posts": ["7", "8", "9", "10"],
+    "tags": []
+  },
+  {
+    "boardId": 4,
+    "name": "Ally's Gander Trip",
+    "dateOfCreation": "2024-04-08T12:00:00Z",
+    "description": "Potential plans for Toronto 2024 trip",
+    "username": "testuser",
+    "posts": ["11"],
     "tags": []
   }
 ]
