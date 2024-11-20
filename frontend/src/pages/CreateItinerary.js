@@ -34,16 +34,30 @@ function CreateItinerary() {
     setEvents(updatedEvents);
   };
 
-  const handleMultipleFileChange = async (e) => {
+  // const handleMultipleFileChange = async (e) => {
+  //   const files = Array.from(e.target.files);
+
+  //   const convertedImages = await Promise.all(files.map(async (file) => {
+  //       const previewUrl = URL.createObjectURL(file);
+  //       const base64String = await convertFileToBase64(file); 
+  //       return { file, previewUrl, base64String };
+  //   }));
+
+  //   setItineraryImages([...itineraryImages, ...convertedImages]);
+  // };
+
+
+  const handleEventImagesChange = async (index, e) => {
     const files = Array.from(e.target.files);
 
     const convertedImages = await Promise.all(files.map(async (file) => {
-        const previewUrl = URL.createObjectURL(file);
-        const base64String = await convertFileToBase64(file); 
-        return { file, previewUrl, base64String };
+        const base64String = await convertFileToBase64(file);
+        return base64String;
     }));
 
-    setItineraryImages([...itineraryImages, ...convertedImages]);
+    const updatedEvents = [...events];
+    updatedEvents[index].images = [...updatedEvents[index].images, ...convertedImages];
+    setEvents(updatedEvents);
 };
 
 
@@ -104,8 +118,12 @@ function CreateItinerary() {
       console.log({ itineraryDetails, selectedTags, events: filteredEvents });
       return;
     }
-  
-    const hasIncompleteEvent = filteredEvents.some((event) => {
+    const eventsWithImages = filteredEvents.map((event) => ({
+      ...event,
+      images: event.images || [] 
+  }));
+    
+    const hasIncompleteEvent = eventsWithImages.some((event) => {
       const fields = [
         event.name.trim(),
         event.startTime,
@@ -116,7 +134,8 @@ function CreateItinerary() {
       ];
 
       if (name && city && country && description && selectedTags.length >= 3 && hasValidEvent) {
-        window.location.href = '/my-travels/itineraries';
+        // ADD BACK THE NAV
+        console.log("maybe")
       }
     });
 
@@ -137,8 +156,7 @@ function CreateItinerary() {
       Country: itineraryDetails.country,
       Description: itineraryDetails.description,
       Tags: selectedTags,
-      Events: filteredEvents,
-      Images: itineraryImages.map(img => img.base64String)
+      Events: eventsWithImages,
     }
 
     try {
@@ -343,7 +361,7 @@ function CreateItinerary() {
                       <div className="imagePreview">
                         {event.images.map((image, imgIndex) => (
                           <div key={imgIndex} className="imageContainer">
-                            <img src={URL.createObjectURL(image)} alt={`Event ${index + 1} Preview ${imgIndex + 1}`} className="previewImage" />
+                            <img src={`data:image/jpeg;base64,${image}`} alt={`Event ${index + 1} Preview ${imgIndex + 1}`} className="previewImage" />
                             <button className="removeButton" onClick={() => removeEventImage(index, imgIndex)}>x</button>
                           </div>
                         ))}
