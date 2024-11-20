@@ -13,21 +13,5 @@
     "posts": ["1", "2", "3"],
     "profileImage": 1,
     "coverImage": 2
-  },
-  {
-    "userId": 2,
-    "username": "herobrine",
-    "email": "herobrine@mojang.com",
-    "password": "$2a$10$r0k9GVtqsGnMqYGNNRwVDOvRephGOl45R723FFWnAFcE04qr3CvLe",
-    "dateOfBirth": "2004-02-04T00:00:00Z",
-    "name": "Herobrine Notch",
-    "country": "Sweden",
-    "languages": ["English"],
-    "tags": ["gamer", "developer"],
-    "boards": ["2"],
-    "posts": ["4", "5", "6"],
-    "profileImage": 1,
-    "coverImage": 2
   }
-  
 ]

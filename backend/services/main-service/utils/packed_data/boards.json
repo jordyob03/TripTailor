@@ -7,23 +7,5 @@
     "username": "testuser",
     "posts": ["1", "2", "3"],
     "tags": ["travel", "adventure"]
-  },
-  {
-    "boardId": 2,
-    "name": "Waleed's things to do",
-    "dateOfCreation": "2024-02-04T12:00:00Z",
-    "description": "A Collection of Waleed's favorite places to visit and things to do",
-    "username": "herobrine",
-    "posts": ["4", "5", "6"],
-    "tags": ["travel", "adventure"]
-  },
-  {
-    "boardId": 3,
-    "name": "Toronto 2024",
-    "dateOfCreation": "2024-04-08T12:00:00Z",
-    "description": "Potential plans for Toronto 2024 trip",
-    "username": "testuser",
-    "posts": ["7", "8", "9", "10"],
-    "tags": []
   }
 ]
