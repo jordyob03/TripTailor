@@ -195,85 +195,11 @@ function HomePage() {
       {/* Feed Section: Filtered Itineraries */}
       <div className="pageContainer" style={{ marginTop: '100px' }}>
         {filteredItineraries.length > 0 ? (
-          <ItineraryGrid itineraries={filteredItineraries} onSave={handleSave} />
+          <ItineraryGrid itineraries={filteredItineraries} showSaveButton={true} />
         ) : (
           <p>No itineraries found.</p>
         )}
       </div>
-
-      {/* Save Modal */}
-      {showModal && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-            <div className="modalHeader">
-              <h2>Save Itinerary to Board</h2>
-              <button className="closeButton" onClick={handleCloseModal}>×</button>
-            </div>
-            <div className="modalBody">
-            <div className="boardListContainer">
-              <div className="boardList">
-                {boards.map((board) => {
-                  const eventImage = board.coverImage || `http://localhost:8080/images/${images[board.boardId]}`; // Use coverImage if available
-                  return (
-                    <div key={board.id || board.boardId} className="boardItem" onClick={() => handleSelectBoard(board.id || board.boardId)}>
-                      {eventImage ? (
-                        <img src={eventImage} alt={board.name} className="boardImage" />
-                      ) : (
-                        <div className="boardImagePlaceholder">No Image</div>
-                      )}
-                      <span className="boardName">{board.name}</span>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* New Board Input Section */}
-              <div className="newBoardInput">
-                <div className="newBoardInputRow">
-                  <label className="imageInputLabel">
-                    {newBoardImage ? (
-                      <img
-                        src={newBoardImage}
-                        alt="Selected preview"
-                        style={{
-                          width: 35,
-                          height: 35,
-                          borderRadius: '20%',
-                          objectFit: 'cover',
-                          cursor: 'pointer',
-                        }}
-                      />
-                    ) : (
-                      <FontAwesomeIcon
-                        icon={faImage}
-                        className="imageInputIcon"
-                        style={{ color: 'grey', height: 35 }}
-                      />
-                    )}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="newBoardFileInput"
-                    />
-                  </label>
-                  <input
-                    type="text"
-                    value={newBoardName}
-                    onChange={(e) => setNewBoardName(e.target.value)}
-                    placeholder="New board name"
-                    className="newBoardInputField"
-                  />
-                </div>
-                <button className="createBoardButton" onClick={handleCreateNewBoard}>
-                  Create
-                </button>
-              </div>
-              </div>
-            </div>
-            </div>
-        </div>
-      )}
     </div>
   );
 }

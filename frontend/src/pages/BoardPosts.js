@@ -74,7 +74,7 @@ function BoardPosts() {
 
       <div className="results">
         {itineraries.length > 0 ? (
-          <ItineraryGrid itineraries={itineraries} />
+          <ItineraryGrid itineraries={itineraries} showSaveButton={false} />
         ) : errorMessage ? (
           <p className="message">{errorMessage}</p>
         ) : (

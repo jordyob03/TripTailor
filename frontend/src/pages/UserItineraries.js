@@ -27,7 +27,7 @@ function Itineraries() {
 
   return (
     <div className="results">
-      <ItineraryGrid itineraries={itineraries} />
+      <ItineraryGrid itineraries={itineraries} showSaveButton={true} />
     </div>
   );
 }
