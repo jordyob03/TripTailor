@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import navBarLogo from '../assets/logo-long-transparent.png';
 import '../styles/styles.css';
 import { faSearch, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useLocation } from 'react-router-dom';
 import searchAPI from '../api/searchAPI'; 
 
 function NavBar({ onSearch }) {
@@ -23,7 +22,14 @@ function NavBar({ onSearch }) {
   const noCreateItinerary = ['/', '/sign-up'];
   const noSearchBar = ['/', '/sign-up', '/profile-creation'];
 
-  const toggleMenu = () => setMenuOpen(!menuOpen);
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
+
+  const closeMenu = () => setMenuOpen(false);
+
+  useEffect(() => {
+    // Close menu on route change
+    closeMenu();
+  }, [location.pathname]);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -31,7 +37,7 @@ function NavBar({ onSearch }) {
   };
 
   const handleSearch = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     let hasError = false;
 
     setCountryErrorMessage('');
@@ -61,7 +67,7 @@ function NavBar({ onSearch }) {
           onSearch(response.data, country, city);
         }
 
-        navigate('/search-results'); // Navigate to the search results page
+        navigate('/search-results'); 
       } catch (error) {
         if (error.response && error.response.data) {
           setErrorMessage(error.response.data.error);
@@ -74,7 +80,13 @@ function NavBar({ onSearch }) {
 
   return (
     <nav className="navBar">
-      <img src={navBarLogo} alt="Trip Tailor Logo" className="navBarLogo" />
+      <img
+        src={navBarLogo}
+        alt="Trip Tailor Logo"
+        className="navBarLogo"
+        onClick={() => navigate('/home-page')}
+        style={{ cursor: 'pointer' }}
+      />
       {!noSearchBar.includes(location.pathname) && (
         <div className="searchBarContainer">
           <div className="inputGroupNav">
@@ -131,9 +143,9 @@ function NavBar({ onSearch }) {
       {menuOpen && (
         <div className="dropdownMenu">
           <ul>
-            <li onClick={() => navigate('/account-settings')}>Account Settings</li>
-            <li onClick={() => navigate('/my-travels/itineraries')}>My Travels</li>
-            <li onClick={() => navigate('/home-page')}>Home</li>
+            <li onClick={() => { navigate('/home-page'); closeMenu(); }}>Home</li>
+            <li onClick={() => { navigate('/my-travels/itineraries'); closeMenu(); }}>My Travels</li>
+            <li onClick={() => { navigate('/account-settings'); closeMenu(); }}>Account Settings</li>
           </ul>
         </div>
       )}

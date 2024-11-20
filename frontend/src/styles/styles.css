@@ -460,10 +460,11 @@ border-radius: 30px;
 cursor: pointer;
 padding: 10px 20px;
 font-size: 18px;
-font-weight: 500;
+font-family: 'Red Hat Display';
+font-weight: 400;
 display: flex;
 align-items: center;
-gap: 5px;
+gap: 10px;
 }
 
 /* Tag Filters */
@@ -689,7 +690,7 @@ color: #ffffff;
 border-radius: 25px;
 padding: 10px 20px;
 font-size: 16px;
-font-weight: bold;
+font-weight: 600;
 box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
 border: none;
 cursor: pointer;
@@ -1146,4 +1147,19 @@ text-align: center;
   background-color: #003f7f; /* Even darker blue on click */
   color: #ffffff;
 
+}
+
+.backButton {
+  margin-bottom: 0px;
+  margin-top: 40px;
+  padding: 10px 15px;
+  font-size: 20px;
+  color: #003f7f;
+  background-color: #ffffff;
+  border: #000000 ;
+  cursor: pointer;
+}
+
+.backButton:hover {
+  color: #000000
 }

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import boardAPI from '../api/boardAPI.js';
 import ItineraryGrid from '../components/ItineraryGrid.js';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/styles.css';
 
 function BoardPosts() {
   const location = useLocation();
+  const navigate = useNavigate();
+
   const boardId = parseInt(location.pathname.split("/").pop(), 10);
 
   const [selectedBoard, setSelectedBoard] = useState(null);
@@ -57,9 +59,15 @@ function BoardPosts() {
 
   return (
     <div className="pageContainer">
+      <button
+        className="backButton"
+        onClick={() => navigate('/my-travels/boards')} 
+      >
+        {"< Back to My Travels"}
+      </button>
       {selectedBoard && (
         <div className="boardDetails">
-          <h2>{selectedBoard.name}</h2>
+          <h2 style={{ marginTop: '0px' }}>{selectedBoard.name}</h2>
           <p>{selectedBoard.description}</p>
           <p>
             Created by {selectedBoard.username} on{' '}
