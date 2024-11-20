@@ -13,6 +13,8 @@ function BoardPosts() {
   const [selectedBoard, setSelectedBoard] = useState(null);
   const [itineraries, setItineraries] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
+  const [editMode, setEditMode] = useState(false); // Tracks edit mode
+  const [editedDescription, setEditedDescription] = useState(''); // For editing description
 
   const fetchBoardData = async () => {
     try {
@@ -31,6 +33,7 @@ function BoardPosts() {
         username: board.username,
         dateOfCreation: board.dateOfCreation,
       });
+      setEditedDescription(board.description); // Set initial description
 
       const postsResponse = await boardAPI.get('/posts', { params: { boardId } });
       const postIds = postsResponse.data.Posts.map((post) => post.postId);
@@ -48,6 +51,32 @@ function BoardPosts() {
     }
   };
 
+  const handleDeletePost = async (postId) => {
+    try {
+      //  DELETE ITINERARY FROM BOARD ENDPOINT HERE
+      setItineraries((prevItineraries) =>
+        prevItineraries.filter((itinerary) => itinerary.postId !== postId)
+      ); // Remove post from UI
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      setErrorMessage('Failed to delete post.');
+    }
+  };
+
+  const handleSaveChanges = async () => {
+    try {
+     // UPDATE BOARD ENDPOINT HERE
+      setSelectedBoard((prev) => ({
+        ...prev,
+        description: editedDescription,
+      }));
+      setEditMode(false); // Exit edit mode
+    } catch (error) {
+      console.error('Error saving changes:', error);
+      setErrorMessage('Failed to save changes.');
+    }
+  };
+
   useEffect(() => {
     if (isNaN(boardId)) {
       setErrorMessage('Invalid board ID.');
@@ -61,14 +90,22 @@ function BoardPosts() {
     <div className="pageContainer">
       <button
         className="backButton"
-        onClick={() => navigate('/my-travels/boards')} 
+        onClick={() => navigate('/my-travels/boards')}
       >
         {"< Back to My Travels"}
       </button>
       {selectedBoard && (
         <div className="boardDetails">
           <h2 style={{ marginTop: '0px' }}>{selectedBoard.name}</h2>
-          <p>{selectedBoard.description}</p>
+          {editMode ? (
+            <textarea
+              className="editDescriptionField"
+              value={editedDescription}
+              onChange={(e) => setEditedDescription(e.target.value)}
+            />
+          ) : (
+            <p>{selectedBoard.description}</p>
+          )}
           <p>
             Created by {selectedBoard.username} on{' '}
             {new Date(selectedBoard.dateOfCreation).toLocaleDateString('en-GB', {
@@ -77,12 +114,34 @@ function BoardPosts() {
               year: 'numeric',
             })}
           </p>
+          {editMode ? (
+            <>
+              <button className="editButton" onClick={handleSaveChanges}>
+                Save
+              </button>
+              <button
+                className="editButton"
+                onClick={() => setEditMode(false)}
+              >
+                Cancel
+              </button>
+            </>
+          ) : (
+            <button className="editButton" onClick={() => setEditMode(true)}>
+              Edit
+            </button>
+          )}
         </div>
       )}
 
       <div className="results">
         {itineraries.length > 0 ? (
-          <ItineraryGrid itineraries={itineraries} showSaveButton={false} />
+          <ItineraryGrid
+            itineraries={itineraries}
+            showSaveButton={false}
+            editMode={editMode} // Pass edit mode to ItineraryGrid
+            onDeletePost={handleDeletePost} // Pass delete handler
+          />
         ) : errorMessage ? (
           <p className="message">{errorMessage}</p>
         ) : (

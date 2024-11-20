@@ -15,10 +15,6 @@ function HomePage() {
   const [itineraries, setItineraries] = useState([]);
   const [filteredItineraries, setFilteredItineraries] = useState([]);
   const [boards, setBoards] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedItinerary, setSelectedItinerary] = useState(null);
-  const [newBoardName, setNewBoardName] = useState('');
-  const [newBoardImage, setNewBoardImage] = useState(null);
   const tagContainerRef = useRef(null);
   const [images, setImages] = useState({});
   const [errorMessage, setErrorMessage] = useState('');
@@ -27,7 +23,7 @@ function HomePage() {
   useEffect(() => {
     // Fetch itineraries
     const fetchItineraries = async () => {
-      const searchData = { country: 'Canada', city: 'Toronto' };
+      const searchData = { country: 'France', city: 'Paris' };
       try {
         console.log("Search API sent:", searchData);
         const response = await searchAPI.get('/search', {
@@ -106,47 +102,6 @@ function HomePage() {
     } catch (error) {
       console.error('Error fetching boards:', error);
       setErrorMessage(error.message || "An error occurred. Please try again.");
-    }
-  };
-
-  const handleSave = (itinerary) => {
-    console.log(itinerary); 
-    console.log(showModal); 
-    setSelectedItinerary(itinerary);
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setSelectedItinerary(null);
-    setNewBoardName('');
-    setNewBoardImage(null);
-  };
-
-  const handleSelectBoard = (boardId) => {
-    // SAVE ITINERARY TO BOARD BACKEND INTEGRATION HERE
-    console.log(`Itinerary saved to board ${boardId}`);
-    handleCloseModal();
-  };
-
-  const handleCreateNewBoard = () => {
-    if (newBoardName.trim()) {
-      const newBoard = {
-        id: boards.length + 1, // Mock ID
-        name: newBoardName,
-        coverImage: newBoardImage, // Add the new board image
-      };
-      // CREATE NEW BOARD BACKEND INTEGRATION HERE
-      setBoards([...boards, newBoard]); // Update boards with the new board
-      setNewBoardName(''); // Reset new board name
-      setNewBoardImage(null); // Reset the image
-    }
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setNewBoardImage(URL.createObjectURL(file));
     }
   };
 

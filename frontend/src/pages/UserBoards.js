@@ -79,28 +79,14 @@ function Boards() {
     fetchBoards();
   }, []);
 
-  const fallbackImages = [
-    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Boat-Trip_800x800.jpg",
-    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Beach-Cabin_800x800.jpg",
-    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Mining_800x800.jpg",
-    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Winter-Celebration_800x800.jpg",
-    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Media-Block-Image_Java-Keyart_800x450.jpg",
-    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Media-Block-Image_PC-Bundle-Keyart_800x450.jpg",
-    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Updates-Carousel_Tricky-Trials_800x450.jpg",
-    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Updates-Carousel_Wild-Update_800x450.jpg",
-  ];
-
-  const getRandomImage = () => {
-    const randomIndex = Math.floor(Math.random() * fallbackImages.length);
-    return fallbackImages[randomIndex];
-  };
+  const fallbackImage = "https://t4.ftcdn.net/jpg/08/34/00/03/360_F_834000314_tLfhX7N7wnZpMkPIy02pqbRt8JFKiUuG.jpg";
 
   return (
     <div className="results">
       {boards.length > 0 ? (
         <div className="resultsGrid">
           {boards.map((board) => {
-            const eventImage = `http://localhost:8080/images/${images[board.boardId] || getRandomImage()}`
+            const eventImage = `http://localhost:8080/images/${images[board.boardId] || fallbackImage}`
             return (
               <div key={board.boardId} className="boardsCard" onClick={() => handleBoardClick(board.boardId)}>
                 <img src={eventImage} alt={board.name} className="resultCardImage" />

@@ -8,7 +8,7 @@ import { faImage } from '@fortawesome/free-solid-svg-icons'; // Add this import 
 
 const username = localStorage.getItem('username');
 
-const ItineraryGrid = ({ itineraries, showSaveButton }) => {
+const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost}) => {
   const [selectedTags, setSelectedTags] = useState([]);
   const [filteredItineraries, setFilteredItineraries] = useState([]);
   const [boards, setBoards] = useState([]);
@@ -26,14 +26,7 @@ const ItineraryGrid = ({ itineraries, showSaveButton }) => {
     navigate(`/itinerary/${itineraryId}`);
   };
 
-  const fallbackImages = [
-    "https://t4.ftcdn.net/jpg/08/34/00/03/360_F_834000314_tLfhX7N7wnZpMkPIy02pqbRt8JFKiUuG.jpg"
-  ];
-
-  const getRandomImage = () => {
-    const randomIndex = Math.floor(Math.random() * fallbackImages.length);
-    return fallbackImages[randomIndex];
-  };
+  const fallbackImage = "https://t4.ftcdn.net/jpg/08/34/00/03/360_F_834000314_tLfhX7N7wnZpMkPIy02pqbRt8JFKiUuG.jpg";
 
   const fetchEvents = async (itineraryId) => {
     try {
@@ -146,7 +139,7 @@ const ItineraryGrid = ({ itineraries, showSaveButton }) => {
     <div className="resultsGrid">
       {Array.isArray(itineraries) && itineraries.length > 0 ? (
         itineraries.map((itinerary) => {
-          const imageUrl = eventImages[itinerary.itineraryId] || getRandomImage();
+          const imageUrl = eventImages[itinerary.itineraryId] || fallbackImage;
           return (
             <div
               key={itinerary.itineraryId}
@@ -188,6 +181,17 @@ const ItineraryGrid = ({ itineraries, showSaveButton }) => {
                       </span>
                     ))}
                 </div>
+                {editMode && (
+                  <button
+                    className="deleteButton"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDeletePost(itinerary.postId);
+                    }}
+                  >
+                    X
+                  </button>
+                )}
               </div>
             </div>
           );
@@ -197,7 +201,6 @@ const ItineraryGrid = ({ itineraries, showSaveButton }) => {
           <div className="noItinerariesMessage">No itineraries found.</div>
         </div>
       )}
-  
       {/* Save Modal */}
       {showModal && (
         <div className="modalOverlay">
