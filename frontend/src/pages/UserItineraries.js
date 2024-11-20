@@ -19,8 +19,6 @@ function Itineraries() {
         const response = await itineraryAPI.post('/get-user-itins', data);
         console.log('Received', response.data);
         const fetchedItineraries = response.data.itineraries;
-        setItineraries(fetchedItineraries);
-
         const eventsData = await Promise.all(
           fetchedItineraries.map(async (itinerary) => {
             const events = await fetchevents(itinerary.itineraryId);
