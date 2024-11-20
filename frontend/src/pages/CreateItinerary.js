@@ -68,7 +68,8 @@ function CreateItinerary() {
     e.preventDefault();
   
     const filteredEvents = events.filter(
-      (event) => event.description.trim() !== '' || event.location.trim() !== ''
+      (event) => event.description.trim() !== '' && event.location.trim() !== ''
+      && event.name.trim() !== '' && event.cost >= 0 
     );
 
   
@@ -107,7 +108,7 @@ function CreateItinerary() {
       ];
 
       if (name && city && country && description && selectedTags.length >= 3 && hasValidEvent) {
-        navigate('/my-travels');
+        window.location.href = '/my-travels/itineraries';
       }
     });
 
@@ -122,7 +123,7 @@ function CreateItinerary() {
     
 
     const Data = {
-      Name: itineraryDetails.name,
+      Title: itineraryDetails.name,
       Username: localStorage.getItem('username'),
       City: itineraryDetails.city,
       Country: itineraryDetails.country,

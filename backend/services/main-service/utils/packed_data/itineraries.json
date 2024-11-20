@@ -1,0 +1,44 @@
+[
+  {
+    "itineraryId": 1,
+    "name": "European Getaway",
+    "city": "Paris",
+    "country": "France",
+    "title": "Best of Europe",
+    "description": "A week-long adventure through the beautiful cities of Europe.",
+    "price": 1200.50,
+    "languages": ["English", "French"],
+    "tags": ["sightseeing", "culture"],
+    "events": ["1", "2", "3", "4"],
+    "postId": 1,
+    "username": "testuser"
+  },
+  {
+    "itineraryId": 2,
+    "name": "Paris Highlights",
+    "city": "Paris",
+    "country": "France",
+    "title": "Explore Iconic Paris",
+    "description": "An itinerary to experience the must-see attractions in Paris.",
+    "price": 850.00,
+    "languages": ["English", "French"],
+    "tags": ["art", "history"],
+    "events": ["5", "6", "7", "8", "9"],
+    "postId": 2,
+    "username": "testuser"
+  },
+  {
+    "itineraryId": 3,
+    "name": "Nightlife in Paris",
+    "city": "Paris",
+    "country": "France",
+    "title": "Paris After Dark",
+    "description": "Discover the best of Paris nightlife.",
+    "price": 400.00,
+    "languages": ["English", "French"],
+    "tags": ["nightlife", "entertainment"],
+    "events": ["10"],
+    "postId": 3,
+    "username": "testuser"
+  }
+]
