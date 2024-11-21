@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/lib/pq"
 )
@@ -63,6 +64,10 @@ func AddImage(DB *sql.DB, image Image) (int, error) {
 	VALUES ($1, $2)
 	RETURNING imageId;`
 
+	if image.Metadata == nil {
+		image.Metadata = []string{}
+	}
+
 	var imageId int
 	err := DB.QueryRow(
 		insertImageSQL, image.ImageData, pq.Array(image.Metadata),
@@ -80,6 +85,10 @@ func GetImage(DB *sql.DB, imageId int) (Image, error) {
 	err := DB.QueryRow(getImageSQL, imageId).Scan(
 		&image.ImageId, &image.ImageData, pq.Array(&image.Metadata),
 	)
+
+	if image.Metadata == nil {
+		image.Metadata = []string{}
+	}
 
 	return image, err
 }
@@ -147,4 +156,28 @@ func ByteToImage(imageData []byte, outputPath string) error {
 	fmt.Printf("Image saved to %s\n", outputPath)
 
 	return nil
+}
+
+func ImageHandler(DB *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		idStr := r.URL.Path[len("/images/"):]
+		imageID, err := strconv.Atoi(idStr)
+		if err != nil {
+			http.Error(w, "Invalid image ID", http.StatusBadRequest)
+			return
+		}
+
+		image, err := GetImage(DB, imageID)
+		if err != nil {
+			http.Error(w, "Image not found", http.StatusNotFound)
+			fmt.Printf("Error getting image: %s\n", err)
+			return
+		}
+
+		w.Header().Set("Content-Type", "image/png")
+		w.Header().Set("Content-Disposition", fmt.Sprintf("inline; filename=\"%d.png\"", imageID))
+		w.WriteHeader(http.StatusOK)
+
+		w.Write(image.ImageData)
+	}
 }

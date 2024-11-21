@@ -53,6 +53,7 @@ func DeleteAllTables(DB *sql.DB) error {
 
 	return nil
 }
+
 func CloseDB(DB *sql.DB) {
 	if DB != nil {
 		DB.Close()

@@ -3,6 +3,23 @@ import '../styles/styles.css';
 import Tags from '../config/tags.json';
 import iconMap from '../config/iconMap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import feedAPI from '../api/feedAPI.js';
+
+const fetchfeed = async (tags) => {
+  try {
+    const username = localStorage.getItem('username'); // Get username directly
+    console.log(tags, username);
+    const response = await feedAPI.get('/feed', { params: { tags, username } });
+    if (response && response.data) {
+      console.log(response.data);
+    } else {
+      console.log("No data received in response.");
+    }
+  } catch (error) {
+    console.log(error.message || "An error occurred. Please try again.");
+  }
+};
+
 
 function HomePage() {
   const [selectedTags, setSelectedTags] = useState([]); // Manage selected tags state
@@ -22,7 +39,10 @@ function HomePage() {
     }
   };
 
+
+
   const handleTagClick = (tag) => {
+    fetchfeed(tag);
     // Toggle the selection of the tag
     if (selectedTags.includes(tag)) {
       setSelectedTags(selectedTags.filter((t) => t !== tag));

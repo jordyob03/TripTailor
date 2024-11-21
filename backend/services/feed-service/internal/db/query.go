@@ -10,14 +10,16 @@ import (
 )
 
 // QueryItinerariesByTags fetches itinerareis that contain any of the inputted tags
-func QueryItinerariesByTags(database *sql.DB, tags []string) ([]models.Itinerary, error) {
+func QueryItinerariesByTags(database *sql.DB, tags []string, username string) ([]models.Itinerary, error) {
 	query := `
-	SELECT itineraryId, name, city, country, title, description, price, languages, tags, events, postId, username
+	SELECT itineraryId, city, country, title, description, price, languages, tags, events, postId, username
 	FROM itineraries
-	WHERE tags && $1;`
+	WHERE tags && $1
+	AND username = $2;
+`
 
 	var itineraries []models.Itinerary
-	rows, err := database.Query(query, pq.Array(tags))
+	rows, err := database.Query(query, pq.Array(tags), username)
 	if err != nil {
 		log.Printf("Error querying itineraries by tags: %v\n", err)
 		return nil, fmt.Errorf("failed to query itineraries by tags: %w", err)
@@ -28,7 +30,6 @@ func QueryItinerariesByTags(database *sql.DB, tags []string) ([]models.Itinerary
 		var itinerary models.Itinerary
 		if err := rows.Scan(
 			&itinerary.ItineraryId,
-			&itinerary.Name,
 			&itinerary.City,
 			&itinerary.Country,
 			&itinerary.Title,
@@ -50,6 +51,8 @@ func QueryItinerariesByTags(database *sql.DB, tags []string) ([]models.Itinerary
 		log.Printf("Error iterating over itineraries: %v\n", err)
 		return nil, err
 	}
+
+	fmt.Println(itineraries)
 
 	return itineraries, nil
 }
