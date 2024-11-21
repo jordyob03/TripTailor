@@ -134,8 +134,7 @@ function CreateItinerary() {
       ];
 
       if (name && city && country && description && selectedTags.length >= 3 && hasValidEvent) {
-        // ADD BACK THE NAV
-        console.log("maybe")
+        window.location.href = '/my-travels/itineraries';
       }
     });
 

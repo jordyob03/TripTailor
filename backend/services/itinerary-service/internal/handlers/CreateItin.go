@@ -53,8 +53,8 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 			Country:     req.Country,
 			Description: req.Description,
 			Tags:        req.Tags,
-			Events:      eventNames,
-			Username:    req.Username,
+			// Events:      eventNames,
+			Username: req.Username,
 		}
 
 		// Add itin to db without events
