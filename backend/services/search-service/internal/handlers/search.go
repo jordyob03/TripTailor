@@ -5,27 +5,27 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
-
-	"github.com/jordyob03/TripTailor/backend/services/search-service/internal/db"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jordyob03/TripTailor/backend/services/search-service/internal/db"
 )
 
-// SearchItineraries handles the search request
+// SearchItineraries handles the search request from a single search bar
 func SearchItineraries(dbConn *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		params := map[string]interface{}{
-			"city":      c.Query("city"),
-			"country":   c.Query("country"),
-			"title":     c.Query("title"),
-			"price":     parseFloatParam(c.Query("price")),
-			"languages": parseArrayParam(c.Query("languages")),
-			"tags":      parseArrayParam(c.Query("tags")),
-			"username":  c.Query("username"),
+		searchString := c.Query("q")
+		if searchString == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Search string cannot be empty"})
+			return
 		}
 
-		itineraries, err := db.GetScoredItineraries(dbConn, params)
+		priceParam := c.Query("price")
+		var maxPrice float64
+		if priceParam != "" {
+			maxPrice, _ = strconv.ParseFloat(priceParam, 64)
+		}
+
+		itineraries, err := db.GetScoredItineraries(dbConn, searchString, maxPrice)
 		if err != nil {
 			fmt.Printf("Query error: %v\n", err) // Log the actual error
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve itineraries", "details": err.Error()})
@@ -34,19 +34,4 @@ func SearchItineraries(dbConn *sql.DB) gin.HandlerFunc {
 
 		c.JSON(http.StatusOK, itineraries)
 	}
-}
-
-func parseArrayParam(param string) []string {
-	if param == "" {
-		return nil // Pass nil for NULL parameters
-	}
-	return strings.Split(param, ",")
-}
-
-func parseFloatParam(param string) float64 {
-	if param == "" {
-		return 0
-	}
-	value, _ := strconv.ParseFloat(param, 64)
-	return value
 }
