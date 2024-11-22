@@ -28,6 +28,21 @@
     "posts": ["4", "5", "6", "12", "13", "14"],
     "profileImage": 1,
     "coverImage": 2
+  },
+  {
+    "userId": 3,
+    "username": "jordy_ob",
+    "email": "test@gmail.com",
+    "password": "$2a$10$ki0UslqH.bw0fN/98gOCuulNVlS4NDXg1gNqFHJibbMTQoxyihUrO",
+    "dateOfBirth": "2004-02-04T00:00:00Z",
+    "name": "Jordyn",
+    "country": "Canada",
+    "languages": ["English", "French"],
+    "tags": ["Young Adults", "Cities", "Vegetarian"],
+    "boards": [],
+    "posts": ["15", "16"],
+    "profileImage": 1,
+    "coverImage": 2
   }
   
 ]
