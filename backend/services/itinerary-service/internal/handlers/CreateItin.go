@@ -40,6 +40,12 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 
 		fmt.Printf("Received Itinerary: %+v\n", req)
 
+		user, err := models.GetUser(dbConn, req.Username)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to find user"})
+			return
+		}
+
 		itin := models.Itinerary{
 			Title:       req.Title,
 			City:        req.City,
@@ -47,6 +53,7 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 			Description: req.Description,
 			Tags:        req.Tags,
 			Username:    req.Username,
+			Languages:   user.Languages,
 		}
 
 		// Add itin to db without events
