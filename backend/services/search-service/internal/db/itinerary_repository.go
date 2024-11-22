@@ -20,13 +20,14 @@ func BuildQuery(params map[string]interface{}) (string, []interface{}) {
 	// City as a filter
 	if city, ok := params["city"].(string); ok && city != "" {
 		filterConditions = append(filterConditions, fmt.Sprintf("city ILIKE '%%' || $%d || '%%'", argIndex))
+		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN city ILIKE '%%' || $%d || '%%' THEN 1 ELSE 0 END)", argIndex))
 		args = append(args, city)
 		argIndex++
 	}
 
-	// Country as a filter
 	if country, ok := params["country"].(string); ok && country != "" {
 		filterConditions = append(filterConditions, fmt.Sprintf("country ILIKE '%%' || $%d || '%%'", argIndex))
+		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN country ILIKE '%%' || $%d || '%%' THEN 1 ELSE 0 END)", argIndex))
 		args = append(args, country)
 		argIndex++
 	}
