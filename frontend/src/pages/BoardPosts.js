@@ -53,7 +53,7 @@ function BoardPosts() {
 
   const handleDeletePost = async (postId) => {
     try {
-      //  DELETE ITINERARY FROM BOARD ENDPOINT HERE
+      await boardAPI.delete('/posts', { data: { postId } });
       setItineraries((prevItineraries) =>
         prevItineraries.filter((itinerary) => itinerary.postId !== postId)
       ); // Remove post from UI
