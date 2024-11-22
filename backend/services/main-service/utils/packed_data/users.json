@@ -43,6 +43,20 @@
     "posts": ["15", "16"],
     "profileImage": 1,
     "coverImage": 2
+  },
+  {
+    "userId": 6,
+    "username": "mitchro",
+    "email": "test@mun.ca",
+    "password": "$2a$10$CHx628f1KIs0gAjgSbzyTeuCG/yi1pOqSnrIj4vzf.VRl04RS46PC",
+    "dateOfBirth": "2003-09-23T00:00:00Z",
+    "name": "Mitch",
+    "country": "Canada",
+    "languages": ["English", "French"],
+    "tags": ["Hot Springs", "Nightlife", "Shopping"],
+    "boards": [],
+    "posts": ["17", "18", "19"],
+    "profileImage": 1,
+    "coverImage": 2
   }
-  
 ]
