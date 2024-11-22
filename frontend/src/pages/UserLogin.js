@@ -43,7 +43,6 @@ function UserLogin() {
     navigate('/sign-up');
   };
 
-
   return (
     <>
       {/* Main Container */}
@@ -53,6 +52,7 @@ function UserLogin() {
           <h5 className="heading">Welcome to Trip Tailor</h5>
           <hr className="separatorLine" />
           <h6 className="subheading">Log in</h6>
+          {errorMessage && <p className="errorMessage">{errorMessage}</p>} {/* Error Message */}
           <form onSubmit={handleSubmit} className="form">
             <input
               type="text"
@@ -91,7 +91,7 @@ function UserLogin() {
         </div>
       </div>
     </>
-  );
+  );  
 }
 
 export default UserLogin;

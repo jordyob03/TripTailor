@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import navBarLogo from '../assets/logo-long-transparent.png';
 import '../styles/styles.css';
 import { faSearch, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useLocation } from 'react-router-dom';
 import searchAPI from '../api/searchAPI'; 
 
 function NavBar({ onSearch }) {
@@ -14,17 +13,23 @@ function NavBar({ onSearch }) {
   const [cityErrorMessage, setCityErrorMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const noProfile = ['/', '/sign-up'];
   const noLogOut = ['/', '/sign-up'];
   const noCreateItinerary = ['/', '/sign-up'];
   const noSearchBar = ['/', '/sign-up', '/profile-creation'];
-  const location = useLocation();
 
-  const navigate = useNavigate();
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
+  const closeMenu = () => setMenuOpen(false);
+
+  useEffect(() => {
+    // Close menu on route change
+    closeMenu();
+  }, [location.pathname]);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -32,32 +37,25 @@ function NavBar({ onSearch }) {
   };
 
   const handleSearch = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     let hasError = false;
-  
-    // Clear previous error messages
+
     setCountryErrorMessage('');
     setCityErrorMessage('');
     setErrorMessage('');
-  
-    // Validate input fields
+
     if (!country) {
       setCountryErrorMessage('Please enter a country.');
       hasError = true;
     }
-  
     if (!city) {
       setCityErrorMessage('Please enter a city.');
       hasError = true;
     }
-  
-    // Proceed with the search if there are no validation errors
+
     if (!hasError) {
-      const searchData = {
-        country: country,
-        city: city,
-      };
-  
+      const searchData = { country, city };
+
       try {
         console.log("Search API sent:", searchData);
         const response = await searchAPI.get('/search', {
@@ -65,20 +63,11 @@ function NavBar({ onSearch }) {
         });
         console.log('API response:', response);
 
-        const formattedResults = response.data.map(itinerary => ({
-          location: `${itinerary.city}, ${itinerary.country}`,
-          title: itinerary.title,
-          description: `Itinerary by ${itinerary.username}. Tags: ${itinerary.tags.map(tag => tag.replace(/[{}]/g, '')).join(', ')}`,
-          tags: itinerary.tags.map(tag => tag.replace(/[{}]/g, '')),
-          image: 'https://via.placeholder.com/300x180', 
-        }));
-  
-        // Call the onSearch function passed as a prop, if available
         if (onSearch) {
-          onSearch(formattedResults, country, city);
+          onSearch(response.data, country, city);
         }
-  
-        navigate('/search-results');
+
+        navigate('/search-results'); 
       } catch (error) {
         if (error.response && error.response.data) {
           setErrorMessage(error.response.data.error);
@@ -91,7 +80,13 @@ function NavBar({ onSearch }) {
 
   return (
     <nav className="navBar">
-      <img src={navBarLogo} alt="Trip Tailor Logo" className="navBarLogo" />
+      <img
+        src={navBarLogo}
+        alt="Trip Tailor Logo"
+        className="navBarLogo"
+        onClick={() => navigate('/home-page')}
+        style={{ cursor: 'pointer' }}
+      />
       {!noSearchBar.includes(location.pathname) && (
         <div className="searchBarContainer">
           <div className="inputGroupNav">
@@ -119,7 +114,6 @@ function NavBar({ onSearch }) {
               <FontAwesomeIcon icon={faSearch} /> Search
             </button>
           </div>
-          {/* Error Messages Below the Input Fields */}
           <div className="errorMessagesContainer">
             {countryErrorMessage && <div className="errorMessageSB">{countryErrorMessage}</div>}
             {cityErrorMessage && <div className="errorMessageSB">{cityErrorMessage}</div>}
@@ -146,13 +140,12 @@ function NavBar({ onSearch }) {
         )}
       </div>
 
-      {/* Dropdown Menu */}
       {menuOpen && (
         <div className="dropdownMenu">
           <ul>
-            <li onClick={() => navigate('/account-settings')}>Account Settings</li>
-            <li onClick={() => navigate('/my-travels/itineraries')}>My Travels</li>
-            <li onClick={() => navigate('/home-page')}>Home</li>
+            <li onClick={() => { navigate('/home-page'); closeMenu(); }}>Home</li>
+            <li onClick={() => { navigate('/my-travels/itineraries'); closeMenu(); }}>My Travels</li>
+            <li onClick={() => { navigate('/account-settings'); closeMenu(); }}>Account Settings</li>
           </ul>
         </div>
       )}
