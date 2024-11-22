@@ -735,5 +735,71 @@
     "endTime": "2024-11-20T21:00:00Z",
     "itineraryId": 16,
     "eventImages": ["69"]
+  },
+  {
+    "eventId": 90,
+    "name": "Morning at the Grippy Distillery District",
+    "cost": 20.00,
+    "address": "Toronto, ON",
+    "description": "Explore the historic Distillery District with its gripping blend of art, food, and culture.",
+    "startTime": "2024-12-01T09:00:00Z",
+    "endTime": "2024-12-01T11:00:00Z",
+    "itineraryId": 90,
+    "eventImages": ["90"]
+  },
+  {
+    "eventId": 91,
+    "name": "Evening on Toronto's Waterfront",
+    "cost": 0.00,
+    "address": "Toronto Waterfront",
+    "description": "Take a serene stroll along the Toronto waterfront to soak in stunning views of Lake Ontario.",
+    "startTime": "2024-12-01T18:00:00Z",
+    "endTime": "2024-12-01T20:00:00Z",
+    "itineraryId": 90,
+    "eventImages": ["91"]
+  },
+  {
+    "eventId": 92,
+    "name": "Sunrise at the Eiffel Tower",
+    "cost": 50.00,
+    "address": "Champ de Mars, Paris",
+    "description": "Start your day with a breathtaking sunrise view from the Eiffel Tower.",
+    "startTime": "2024-12-02T06:00:00Z",
+    "endTime": "2024-12-02T08:00:00Z",
+    "itineraryId": 91,
+    "eventImages": ["92"]
+  },
+  {
+    "eventId": 93,
+    "name": "Slay Your Night at the Moulin Rouge",
+    "cost": 200.00,
+    "address": "Paris, France",
+    "description": "Experience the glamorous and captivating show at the iconic Moulin Rouge.",
+    "startTime": "2024-12-02T20:00:00Z",
+    "endTime": "2024-12-02T23:00:00Z",
+    "itineraryId": 91,
+    "eventImages": ["93"]
+  },
+  {
+    "eventId": 94,
+    "name": "Morning Surf at Bondi Beach",
+    "cost": 100.00,
+    "address": "Bondi Beach, Sydney",
+    "description": "Catch the waves at the iconic Bondi Beach and kickstart your day with adventure.",
+    "startTime": "2024-12-03T07:00:00Z",
+    "endTime": "2024-12-03T09:00:00Z",
+    "itineraryId": 92,
+    "eventImages": ["94"]
+  },
+  {
+    "eventId": 95,
+    "name": "Stroke of Sunset at Sydney Harbour",
+    "cost": 0.00,
+    "address": "Sydney Harbour",
+    "description": "Enjoy a picturesque sunset by Sydney Harbour with views of the Opera House and Harbour Bridge.",
+    "startTime": "2024-12-03T19:00:00Z",
+    "endTime": "2024-12-03T21:00:00Z",
+    "itineraryId": 92,
+    "eventImages": ["95"]
   }
 ]

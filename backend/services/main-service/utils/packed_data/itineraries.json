@@ -206,5 +206,44 @@
     "events": ["65", "66", "67"],
     "postId": 16,
     "username": "jordy_ob"
+  },
+  {
+    "itineraryId": 90,
+    "city": "Toronto",
+    "country": "Canada",
+    "title": "Grippy Adventures in Toronto",
+    "description": "Explore the vibrant city of Toronto, with its gripping urban culture and stunning waterfront.",
+    "price": 750.00,
+    "languages": ["English", "French"],
+    "tags": ["adventure", "city", "culture"],
+    "events": ["90", "91"],
+    "postId": 90,
+    "username": "urban_explorer"
+  },
+  {
+    "itineraryId": 91,
+    "city": "Paris",
+    "country": "France",
+    "title": "Slay the Day in Paris",
+    "description": "Conquer the iconic sights of Paris in style, from the Eiffel Tower to the Champs-Élysées.",
+    "price": 1500.00,
+    "languages": ["English", "French"],
+    "tags": ["sightseeing", "luxury", "culture"],
+    "events": ["92", "93"],
+    "postId": 91,
+    "username": "fancy_traveler"
+  },
+  {
+    "itineraryId": 92,
+    "city": "Sydney",
+    "country": "Australia",
+    "title": "A Stroke of Adventure in Sydney",
+    "description": "Experience the thrilling coastal adventures and cultural highlights of Sydney.",
+    "price": 1200.00,
+    "languages": ["English"],
+    "tags": ["adventure", "coast", "wildlife"],
+    "events": ["94", "95"],
+    "postId": 92,
+    "username": "aussie_explorer"
   }
 ]
