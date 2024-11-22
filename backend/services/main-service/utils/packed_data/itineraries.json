@@ -180,5 +180,31 @@
     "events": ["58", "59", "60", "61"],
     "postId": 14,
     "username": "herobrine"
+  },
+  {
+    "itineraryId": 15,
+    "city": "Toronto",
+    "country": "Canada",
+    "title": "A trip to Canada's Wonderland",
+    "description": "Spend the day at Canada's Wonderland and the evening downtown Toronto",
+    "price": 0.00,
+    "languages": [],
+    "tags": ["City", "Young Adults", "Theme Park"],
+    "events": ["62", "63", "64"],
+    "postId": 15,
+    "username": "jordy_ob"
+  },
+  {
+    "itineraryId": 16,
+    "city": "San Diego",
+    "country": "USA",
+    "title": "A day in San Diego",
+    "description": "Explore the city and Cornado Island",
+    "price": 0.00,
+    "languages": [],
+    "tags": ["City", "Young Adults", "Couples", "Vegetarian"],
+    "events": ["65", "66", "67"],
+    "postId": 16,
+    "username": "jordy_ob"
   }
 ]
