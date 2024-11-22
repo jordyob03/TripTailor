@@ -1,0 +1,101 @@
+[
+  {
+    "commentId": 1,
+    "postId": 5,
+    "itineraryId": 5,
+    "title": "Amazing place!",
+    "description": "Had a wonderful time visiting this location. Highly recommend!",
+    "likes": 10,
+    "username": "user456"
+  },
+  {
+    "commentId": 2,
+    "postId": 4,
+    "itineraryId": 4,
+    "title": "Breathtaking views!",
+    "description": "The scenery was absolutely stunning. I couldn't stop taking photos!",
+    "likes": 15,
+    "username": "nature_lover23"
+  },
+  {
+    "commentId": 3,
+    "postId": 6,
+    "itineraryId": 6,
+    "title": "Great for families",
+    "description": "Visited with my family, and everyone enjoyed it. Lots of activities for all ages!",
+    "likes": 12,
+    "username": "family_travels"
+  },
+  {
+    "commentId": 4,
+    "postId": 5,
+    "itineraryId": 5,
+    "title": "Unforgettable experience",
+    "description": "The whole trip was an adventure. Highly recommend taking the guided tour.",
+    "likes": 8,
+    "username": "wanderlust89"
+  },
+  {
+    "commentId": 5,
+    "postId": 4,
+    "itineraryId": 4,
+    "title": "Perfect getaway",
+    "description": "A great spot to relax and enjoy nature. Can't wait to return!",
+    "likes": 20,
+    "username": "travelbug12"
+  },
+  {
+    "commentId": 6,
+    "postId": 6,
+    "itineraryId": 6,
+    "title": "Very well organized",
+    "description": "The itinerary was spot on. Everything was smooth and stress-free.",
+    "likes": 14,
+    "username": "planner_guru"
+  },
+  {
+    "commentId": 7,
+    "postId": 5,
+    "itineraryId": 5,
+    "title": "Not what I expected",
+    "description": "The place was okay, but it didn't live up to the hype for me.",
+    "likes": 3,
+    "username": "honest_reviewer"
+  },
+  {
+    "commentId": 8,
+    "postId": 4,
+    "itineraryId": 4,
+    "title": "Loved the food options",
+    "description": "The local cafés and restaurants were amazing! So many great vegetarian dishes.",
+    "likes": 11,
+    "username": "foodie_jane"
+  },
+  {
+    "commentId": 9,
+    "postId": 6,
+    "itineraryId": 6,
+    "title": "A bit crowded",
+    "description": "The location was beautiful, but it was really crowded when we went.",
+    "likes": 6,
+    "username": "peace_seeker"
+  },
+  {
+    "commentId": 10,
+    "postId": 5,
+    "itineraryId": 5,
+    "title": "Well worth the cost",
+    "description": "Every penny was worth it. The views, the activities, and the food were fantastic!",
+    "likes": 17,
+    "username": "adventure_alex"
+  },
+  {
+    "commentId": 11,
+    "postId": 4,
+    "itineraryId": 4,
+    "title": "Will visit again!",
+    "description": "This was one of the best trips I've ever had. Already planning to go back.",
+    "likes": 22,
+    "username": "returning_traveler"
+  }             
+]

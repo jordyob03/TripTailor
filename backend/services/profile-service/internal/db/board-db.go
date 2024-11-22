@@ -39,6 +39,14 @@ func AddBoard(DB *sql.DB, board Board) (int, error) {
     INSERT INTO boards (name, description, username, posts, tags) 
     VALUES ($1, $2, $3, $4, $5) RETURNING boardId;`
 
+	if board.Posts == nil {
+		board.Posts = []string{}
+	}
+
+	if board.Tags == nil {
+		board.Tags = []string{}
+	}
+
 	var boardID int
 	err := DB.QueryRow(
 		insertBoardSQL, board.Name, board.Description,
@@ -48,7 +56,19 @@ func AddBoard(DB *sql.DB, board Board) (int, error) {
 		return 0, fmt.Errorf("error adding board: %v", err)
 	}
 
-	AddUserBoard(DB, board.Username, boardID)
+	IntPosts, err := StringsToInts(board.Posts)
+	if err != nil {
+		log.Printf("Error converting board posts to integers: %v\n", err)
+		return 0, err
+	}
+
+	for _, postId := range IntPosts {
+		err = AddPostBoard(DB, postId, boardID, false)
+		if err != nil {
+			log.Printf("Error adding post %d to board %d: %v\n", postId, boardID, err)
+			return 0, err
+		}
+	}
 
 	log.Printf("Board added successfully with ID: %d\n", boardID)
 	return boardID, AddUserBoard(DB, board.Username, boardID)
@@ -106,6 +126,14 @@ func GetBoard(DB *sql.DB, boardId int) (Board, error) {
 	if err != nil {
 		log.Printf("Error fetching board with ID %d: %v\n", boardId, err)
 		return Board{}, err
+	}
+
+	if board.Posts == nil {
+		board.Posts = []string{}
+	}
+
+	if board.Tags == nil {
+		board.Tags = []string{}
 	}
 
 	log.Printf("Board with ID %d retrieved successfully.\n", boardId)
