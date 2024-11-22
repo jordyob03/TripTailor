@@ -245,5 +245,44 @@
     "events": ["72", "73"],
     "postId": 19,
     "username": "mitchro"
+  },
+  {
+    "itineraryId": 20,
+    "city": "Toronto",
+    "country": "Canada",
+    "title": "Day in Toronto",
+    "description": "Went to various places in GTA",
+    "price": 405.00,
+    "languages": ["English"],
+    "tags": ["Teenagers", "Young Adults", "Solo", "Nightlife"],
+    "events": ["74", "75", "76", "77"],
+    "postId": 120,
+    "username": "johndoe"
+  },
+  {
+    "itineraryId": 21,
+    "city": "Toronto",
+    "country": "Canada",
+    "title": "Visited the touristy sides of Toronto",
+    "description": "Went the usual tourist destanations of Toronto",
+    "price": 125.00,
+    "languages": ["English"],
+    "tags": ["Teenagers", "Young Adults", "Solo", "Nightlife", "Wheelchair Accessible"],
+    "events": ["78", "79", "80"],
+    "postId": 21,
+    "username": "johndoe"
+  },
+  {
+    "itineraryId": 22,
+    "city": "Tokyo",
+    "country": "Japan",
+    "title": "Day in Tokyo",
+    "description": "Went to Akihabara and Shibuya",
+    "price": 800.00,
+    "languages": ["English"],
+    "tags": ["Teenagers", "Young Adults", "Solo", "Nightlife", "Wheelchair Accessible"],
+    "events": ["81", "82"],
+    "postId": 22,
+    "username": "johndoe"
   }
 ]

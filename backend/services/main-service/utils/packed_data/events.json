@@ -801,5 +801,107 @@
     "endTime": "2024-01-01T22:45:00Z",
     "itineraryId": 19,
     "eventImages": ["6"]
+},
+{
+  "eventId": 74,
+  "name": "Visit to the Pacific Mall",
+  "cost": 30.00,
+  "address": "4300 Steeles Ave E, Markham",
+  "description": "Went to the Pacific Mall, an all asian mall. It was cool to see different cultures from asia sell products, eating variety of different asian cuisnes in the food court was tasty, recommend taro smoothie.",
+  "startTime": "2024-01-01T10:00:00Z",
+  "endTime": "2024-01-01T11:45:00Z",
+  "itineraryId": 20,
+  "eventImages": ["70"]
+},
+{
+  "eventId": 75,
+  "name": "Activate",
+  "cost": 25.00,
+  "address": "30 Weston Rd c202, York",
+  "description": "Activate was really fun to go with friends. Always wanted to know how I would fare in one of those lazer alarm rooms in bank heist movies. Warning come in active clothes as you will be sweating",
+  "startTime": "2024-01-01T12:30:00Z",
+  "endTime": "2024-01-01T13:30:00Z",
+  "itineraryId": 20,
+  "eventImages": ["71"]
+},
+{
+  "eventId": 76,
+  "name": "Shopping at Eaton Centre",
+  "cost": 200.00,
+  "address": "220 Yonge St, Toronto",
+  "description": "Went to the Eaton Centre, loved the variaty of stores. Uniqlo number 1. ",
+  "startTime": "2024-01-01T16:00:00Z",
+  "endTime": "2024-01-01T18:45:00Z",
+  "itineraryId": 20,
+  "eventImages": ["72"]
+},
+{
+  "eventId": 77,
+  "name": "ToyBox",
+  "cost": 150.00,
+  "address": "473 Adelaide St W, Toronto",
+  "description": "WARNING wear pants and bring women, otherwise they will not let you in.",
+  "startTime": "2024-01-01T22:00:00Z",
+  "endTime": "2024-01-01T23:45:00Z",
+  "itineraryId": 20,
+  "eventImages": ["73"]
+},
+{
+  "eventId": 78,
+  "name": "Royal Ontario Museum (ROM)",
+  "cost": 25.00,
+  "address": "100 Queens Park, Toronto",
+  "description": "Explored the Royal Ontario Museum, be warned there is a lot to see, it was cool to see the different era and world history section, from the greaks to modern day Canada",
+  "startTime": "2024-01-01T10:00:00Z",
+  "endTime": "2024-01-01T11:45:00Z",
+  "itineraryId": 21,
+  "eventImages": ["74"]
+},
+{
+  "eventId": 79,
+  "name": "Ripley’s Aquarium of Canada",
+  "cost": 50.00,
+  "address": " 288 Bremner Blvd, Toronto",
+  "description": "Visited the famous Riplys aquarium, it was cool to see the different facets of the aquatic life",
+  "startTime": "2024-01-01T12:30:00Z",
+  "endTime": "2024-01-01T13:30:00Z",
+  "itineraryId": 21,
+  "eventImages": ["75"]
+},
+
+{
+  "eventId": 80,
+  "name": "Chinatown Festival",
+  "cost": 50.00,
+  "address": "Chinatown, Toronto",
+  "description": "There was a festival happening in chinatown during my visit, the food stalls were yummy, saw a kpop dance ",
+  "startTime": "2024-01-01T16:00:00Z",
+  "endTime": "2024-01-01T18:45:00Z",
+  "itineraryId": 21,
+  "eventImages": ["76"]
+},
+{
+  "eventId": 81,
+  "name": "Akihabara",
+  "cost": 290.00,
+  "address": " Akihabara, Tokyo",
+  "description": "Went to Akihabara, saw anime shops",
+  "startTime": "2024-01-01T12:30:00Z",
+  "endTime": "2024-01-01T13:30:00Z",
+  "itineraryId": 22,
+  "eventImages": ["77"]
+},
+{
+  "eventId": 82,
+  "name": "Shibuya",
+  "cost": 510.00,
+  "address": "Shibuya, Tokyo",
+  "description": "Do not visit when Sukuna is there",
+  "startTime": "2024-01-01T16:00:00Z",
+  "endTime": "2024-01-01T18:45:00Z",
+  "itineraryId": 22,
+  "eventImages": ["78"]
 }
+
+
 ]
