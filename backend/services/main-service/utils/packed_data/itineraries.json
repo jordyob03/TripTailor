@@ -206,5 +206,44 @@
     "events": ["65", "66", "67"],
     "postId": 16,
     "username": "jordy_ob"
+  },
+  {
+    "itineraryId": 17,
+    "city": "Vaughan",
+    "country": "Canada",
+    "title": "A Trip to Canada's Wonderland",
+    "description": "Spend the day at Canada's Wonderland and the evening downtown Toronto.",
+    "price": 130.00,
+    "languages": ["English"],
+    "tags": ["Teenagers", "Young Kids", "Family Friendly", "Theme Park", "Street Food"],
+    "events": ["68", "69"],
+    "postId": 17,
+    "username": "mitchro"
+  },
+  {
+    "itineraryId": 18,
+    "city": "Toronto",
+    "country": "Canada",
+    "title": "Family Day at The Zoo",
+    "description": "Spend a fun-filled day exploring the Toronto Zoo with your family.",
+    "price": 190.00,
+    "languages": ["English", "French"],
+    "tags": ["Family Friendly", "Young Kids", "Teenagers", "Young Adults", "Photography Tours", "Wildlife Watching"],
+    "events": ["70", "71"],
+    "postId": 18,
+    "username": "mitchro"
+  },
+  {
+    "itineraryId": 19,
+    "city": "Toronto",
+    "country": "Canada",
+    "title": "Toronto Sports Experience",
+    "description": "Catch a Raptors game and explore Toronto's rich sports culture.",
+    "price": 120.00,
+    "languages": ["English"],
+    "tags": ["Teenagers", "Young Adults", "Wheelchair Accessible", "Couples", "Solo", "Family Friendly"],
+    "events": ["72", "73"],
+    "postId": 19,
+    "username": "mitchro"
   }
 ]

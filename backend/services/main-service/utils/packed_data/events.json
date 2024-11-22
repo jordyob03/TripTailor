@@ -735,5 +735,71 @@
     "endTime": "2024-11-20T21:00:00Z",
     "itineraryId": 16,
     "eventImages": ["69"]
-  }
+  },
+  {
+    "eventId": 68,
+    "name": "Canada's Wonderland Rides",
+    "cost": 100.00,
+    "address": "Vaughan, Ontario",
+    "description": "Enjoy thrilling rides within Canada's Wonderland.",
+    "startTime": "2024-11-22T10:30:00Z",
+    "endTime": "2024-01-22T14:30:00Z",
+    "itineraryId": 17,
+    "eventImages": ["1"]
+},
+{
+    "eventId": 69,
+    "name": "Food for the Family",
+    "cost": 30.00,
+    "address": "Vaughan, Ontario",
+    "description": "Dine at a local family-friendly restaurant in the park.",
+    "startTime": "2024-11-22T09:00:00Z",
+    "endTime": "2024-11-22T12:00:00Z",
+    "itineraryId": 17,
+    "eventImages": ["2"]
+},
+{
+    "eventId": 70,
+    "name": "Zoo Safari Adventure",
+    "cost": 150.00,
+    "address": "Ontario, Toronto",
+    "description": "Tour around the zoo park and enjoy wildlife exhibits.",
+    "startTime": "2024-11-22T09:45:00Z",
+    "endTime": "2024-11-22T14:45:00Z",
+    "itineraryId": 18,
+    "eventImages": ["3"]
+},
+{
+    "eventId": 71,
+    "name": "Picnic at Rouge Park",
+    "cost": 40.00,
+    "address": "Ontario, Toronto",
+    "description": "Grab food at a local restaurant and enjoy it in the park.",
+    "startTime": "2024-11-22T15:15:00Z",
+    "endTime": "2024-11-22T18:00:00Z",
+    "itineraryId": 18,
+    "eventImages": ["4"]
+},
+{
+    "eventId": 72,
+    "name": "Toronto Raptors Game",
+    "cost": 100.00,
+    "address": "40 Bay St., Toronto,",
+    "description": "Cheer for the Raptors in a live NBA game at the Scotiabank Arena.",
+    "startTime": "2024-11-22T18:00:00Z",
+    "endTime": "2024-11-22T21:00:00Z",
+    "itineraryId": 19,
+    "eventImages": ["5"]
+},
+{
+    "eventId": 73,
+    "name": "Sports Hall of Fame Tour",
+    "cost": 20.00,
+    "address": "30 Yonge St, Toronto",
+    "description": "Explore the history of Canadian sports at the Sports Hall of Fame.",
+    "startTime": "2024-01-01T21:15:00Z",
+    "endTime": "2024-01-01T22:45:00Z",
+    "itineraryId": 19,
+    "eventImages": ["6"]
+}
 ]
