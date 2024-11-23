@@ -37,10 +37,10 @@
   },
   {
     "boardId": 5,
-    "name": "Two Days in Toronto",
+    "name": "Abdul's International Trip",
     "dateOfCreation": "2024-04-08T12:00:00Z",
-    "description": "Two Days i spend in Toronto",
-    "username": "johndoe",
+    "description": "Travels from Uzbekistan, Japan, and Canada",
+    "username": "abdulaziz",
     "posts": ["20", "21"],
     "tags": []
   }

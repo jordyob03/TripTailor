@@ -248,29 +248,29 @@
   },
   {
     "itineraryId": 20,
-    "city": "Toronto",
-    "country": "Canada",
-    "title": "Day in Toronto",
-    "description": "Went to various places in GTA",
-    "price": 405.00,
-    "languages": ["English"],
-    "tags": ["Teenagers", "Young Adults", "Solo", "Nightlife"],
+    "city": "Tashkent",
+    "country": "Uzbekistan",
+    "title": "Exploring Tashkent",
+    "description": "Visited historical landmarks and enjoyed local cuisine.",
+    "price": 0.00,
+    "languages": ["Uzbek", "Russian", "English"],
+    "tags": ["Culture", "History", "Families", "Food"],
     "events": ["74", "75", "76", "77"],
-    "postId": 120,
-    "username": "johndoe"
+    "postId": 20,
+    "username": "abdulaziz"
   },
   {
     "itineraryId": 21,
     "city": "Toronto",
     "country": "Canada",
     "title": "Visited the touristy sides of Toronto",
-    "description": "Went the usual tourist destanations of Toronto",
-    "price": 125.00,
+    "description": "Went the usual tourist destinations of Toronto",
+    "price": 0.00,
     "languages": ["English"],
     "tags": ["Teenagers", "Young Adults", "Solo", "Nightlife", "Wheelchair Accessible"],
     "events": ["78", "79", "80"],
     "postId": 21,
-    "username": "johndoe"
+    "username": "abdulaziz"
   },
   {
     "itineraryId": 22,
@@ -278,11 +278,11 @@
     "country": "Japan",
     "title": "Day in Tokyo",
     "description": "Went to Akihabara and Shibuya",
-    "price": 800.00,
+    "price": 0.00,
     "languages": ["English"],
     "tags": ["Teenagers", "Young Adults", "Solo", "Nightlife", "Wheelchair Accessible"],
     "events": ["81", "82"],
     "postId": 22,
-    "username": "johndoe"
+    "username": "abdulaziz"
   }
 ]
