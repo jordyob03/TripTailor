@@ -106,16 +106,6 @@ function BoardPosts() {
       {selectedBoard && (
         <div className="boardDetails">
           <h2 style={{ marginTop: '0px' }}>{selectedBoard.name}</h2>
-          {/* {editMode ? (
-            <textarea
-              className="editDescriptionField"
-              value={editedDescription}
-              onChange={(e) => setEditedDescription(e.target.value)}
-            />
-            
-          ) : (
-            <p>{selectedBoard.description}</p>
-          )} */}
           <p>
             Created by {selectedBoard.username} on{' '}
             {new Date(selectedBoard.dateOfCreation).toLocaleDateString('en-GB', {
