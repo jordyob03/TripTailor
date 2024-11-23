@@ -172,7 +172,7 @@
     "description": "We spent around 5 hours exploring the Falls area. We visited various viewpoints, including the Skylon Tower, and took lots of photos. We grabbed lunch at a nearby café with vegetarian options. The $50 covers entry fees for Skylon Tower and lunch.",
     "startTime": "2018-05-08T10:00:00Z",
     "endTime": "2018-05-08T15:00:00Z",
-    "itineraryId": 4,
+    "itineraryId": 5,
     "eventImages": ["18"]
   },
   {
@@ -183,7 +183,7 @@
     "description": "We had a fantastic dinner overlooking the Falls at The Keg. The $45 includes a shared appetizer, my main course, and a 20% tip. They had a few good vegetarian options.",
     "startTime": "2018-05-08T18:00:00Z",
     "endTime": "2018-05-08T19:30:00Z",
-    "itineraryId": 4,
+    "itineraryId": 5,
     "eventImages": ["19"]
   },
   {
@@ -194,7 +194,7 @@
     "description": "After dinner, we walked along Clifton Hill, enjoying the vibrant lights and attractions. We visited a few souvenir shops and took more pictures with the Falls illuminated in the background.",
     "startTime": "2018-05-08T19:30:00Z",
     "endTime": "2018-05-08T20:30:00Z",
-    "itineraryId": 4,
+    "itineraryId": 5,
     "eventImages": ["20"]
   },
   {
@@ -205,7 +205,7 @@
     "description": "We spent the morning exploring Lahore Fort and Badshahi Mosque, two incredible examples of Mughal architecture. Our guide shared fascinating historical stories, and we marveled at the intricate tilework and grand courtyards. The $10 covers the guided tour and entry fees.",
     "startTime": "2018-05-08T10:00:00Z",
     "endTime": "2018-05-08T13:00:00Z",
-    "itineraryId": 5,
+    "itineraryId": 6,
     "eventImages": ["21"]
   },
   {
@@ -216,7 +216,7 @@
     "description": "We enjoyed lunch with a rooftop view of the Badshahi Mosque at Andaaz Restaurant, which offers a variety of traditional Pakistani dishes. The $25 includes an appetizer, a main course, and a drink. They had some excellent vegetarian options as well.",
     "startTime": "2018-05-08T13:00:00Z",
     "endTime": "2018-05-08T15:00:00Z",
-    "itineraryId": 5,
+    "itineraryId": 6,
     "eventImages": ["22"]
   },
   {
@@ -227,7 +227,7 @@
     "description": "After lunch, we wandered through the Walled City’s colorful bazaars, including the famous Anarkali areas. We explored stalls filled with spices, textiles, jewelry, and handmade crafts, taking in the vibrant sights and sounds of local market life.",
     "startTime": "2018-05-08T15:30:00Z",
     "endTime": "2018-05-08T19:30:00Z",
-    "itineraryId": 5,
+    "itineraryId": 6,
     "eventImages": ["23"]
   },
   {
@@ -238,7 +238,7 @@
     "description": "We wrapped up the day with a serene evening walk around the Badshahi Mosque and Minar-e-Pakistan. The area was beautifully lit, and we enjoyed the peaceful ambiance as we reflected on our day in Lahore’s historic Old City.",
     "startTime": "2018-05-08T19:30:00Z",
     "endTime": "2018-05-08T20:30:00Z",
-    "itineraryId": 5,
+    "itineraryId": 6,
     "eventImages": ["24"]
   },
   {
@@ -669,5 +669,137 @@
     "endTime": "2024-11-20T17:00:00Z",
     "itineraryId": 14,
     "eventImages": ["63"]
-  }
+  },
+  {
+    "eventId": 62,
+    "name": "Canada's Wonderland",
+    "cost": 75.00,
+    "address": "Vaughan, Ontario",
+    "description": "Spent the morning and afternoon riding all the rollor coasters at the park. Price includes entry for one adult and lunch",
+    "startTime": "2024-11-20T10:30:00Z",
+    "endTime": "2024-11-20T16:00:00Z",
+    "itineraryId": 15,
+    "eventImages": ["64"]
+  },
+  {
+    "eventId": 63,
+    "name": "Dinner at Milagro Cantina",
+    "cost": 40.00,
+    "address": "5 Mercer St, Toronto, ON",
+    "description": "Highly recommend this place, the food was delicious and cost friendly. The $40 includes an appetizer, a beer, my meal and a 20% tip.",
+    "startTime": "2024-11-20T18:30:00Z",
+    "endTime": "2024-11-20T20:00:00Z",
+    "itineraryId": 15,
+    "eventImages": ["65"]
+  },
+  {
+    "eventId": 64,
+    "name": "Walk around Downtown Toronto",
+    "cost": 0.00,
+    "address": "Downtown",
+    "description": "After dinner we walked around downtown to see the CN tower and the waterfront.",
+    "startTime": "2024-11-20T20:30:00Z",
+    "endTime": "2024-11-20T22:00:00Z",
+    "itineraryId": 15,
+    "eventImages": ["66"]
+  },
+  {
+    "eventId": 65,
+    "name": "Walk around Downtown San Diego",
+    "cost": 0.00,
+    "address": "Downtown",
+    "description": "Spend the afternoon walking around downtown San Diego",
+    "startTime": "2024-11-20T12:30:00Z",
+    "endTime": "2024-11-20T3:30:00Z",
+    "itineraryId": 16,
+    "eventImages": ["67"]
+  },
+  {
+    "eventId": 66,
+    "name": "Early dinner at La Puerta",
+    "cost": 60.00,
+    "address": "560 Fourth Ave",
+    "description": "Enjoy a meal at one of San Dieo's most popular Mexican restaurants, vegetarian friendly, price includes dinner for two",
+    "startTime": "2024-11-20T16:30:00Z",
+    "endTime": "2024-11-20T18:30:00Z",
+    "itineraryId": 16,
+    "eventImages": ["68"]
+  },
+  {
+    "eventId": 67,
+    "name": "Finish the evening with a walk around Cornado Island",
+    "cost": 0.00,
+    "address": "Cornado Island",
+    "description": "Spend the rest of the evening walking around Cornado Island and enjoy views of the whole city",
+    "startTime": "2024-11-20T19:30:00Z",
+    "endTime": "2024-11-20T21:00:00Z",
+    "itineraryId": 16,
+    "eventImages": ["69"]
+  },
+  {
+    "eventId": 68,
+    "name": "Canada's Wonderland Rides",
+    "cost": 100.00,
+    "address": "Vaughan, Ontario",
+    "description": "Enjoy thrilling rides within Canada's Wonderland.",
+    "startTime": "2024-11-22T10:30:00Z",
+    "endTime": "2024-01-22T14:30:00Z",
+    "itineraryId": 17,
+    "eventImages": ["1"]
+},
+{
+    "eventId": 69,
+    "name": "Food for the Family",
+    "cost": 30.00,
+    "address": "Vaughan, Ontario",
+    "description": "Dine at a local family-friendly restaurant in the park.",
+    "startTime": "2024-11-22T09:00:00Z",
+    "endTime": "2024-11-22T12:00:00Z",
+    "itineraryId": 17,
+    "eventImages": ["2"]
+},
+{
+    "eventId": 70,
+    "name": "Zoo Safari Adventure",
+    "cost": 150.00,
+    "address": "Ontario, Toronto",
+    "description": "Tour around the zoo park and enjoy wildlife exhibits.",
+    "startTime": "2024-11-22T09:45:00Z",
+    "endTime": "2024-11-22T14:45:00Z",
+    "itineraryId": 18,
+    "eventImages": ["3"]
+},
+{
+    "eventId": 71,
+    "name": "Picnic at Rouge Park",
+    "cost": 40.00,
+    "address": "Ontario, Toronto",
+    "description": "Grab food at a local restaurant and enjoy it in the park.",
+    "startTime": "2024-11-22T15:15:00Z",
+    "endTime": "2024-11-22T18:00:00Z",
+    "itineraryId": 18,
+    "eventImages": ["4"]
+},
+{
+    "eventId": 72,
+    "name": "Toronto Raptors Game",
+    "cost": 100.00,
+    "address": "40 Bay St., Toronto,",
+    "description": "Cheer for the Raptors in a live NBA game at the Scotiabank Arena.",
+    "startTime": "2024-11-22T18:00:00Z",
+    "endTime": "2024-11-22T21:00:00Z",
+    "itineraryId": 19,
+    "eventImages": ["5"]
+},
+{
+    "eventId": 73,
+    "name": "Sports Hall of Fame Tour",
+    "cost": 20.00,
+    "address": "30 Yonge St, Toronto",
+    "description": "Explore the history of Canadian sports at the Sports Hall of Fame.",
+    "startTime": "2024-01-01T21:15:00Z",
+    "endTime": "2024-01-01T22:45:00Z",
+    "itineraryId": 19,
+    "eventImages": ["6"]
+}
 ]

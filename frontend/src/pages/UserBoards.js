@@ -9,6 +9,7 @@ const username = localStorage.getItem('username');
 
 function Boards() {
   const [boards, setBoards] = useState([]);
+  const [images, setImages] = useState({});
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
@@ -23,16 +24,53 @@ function Boards() {
     }
   };
 
-  const fetchBoards = async () => {
-    const userData = { username: username };
+  const fetchEvents = async (itineraryId) => {
     try {
-      const response = await boardAPI.get('/boards', { params: userData });
-      setBoards(response.data.boards);
+      const response = await boardAPI.get('/events', { params: { itineraryId } });
+      return response.data.Events;
     } catch (error) {
-      setErrorMessage(error.message || "An error occurred. Please try again.");
+      console.error("Error fetching events:", error);
+      return [];
     }
   };
 
+  const fetchBoards = async () => {
+    const userData = { username };
+    const imagesMap = {};
+    try {
+      const response = await boardAPI.get('/boards', { params: userData });
+      const boardsData = response.data.boards;
+      setBoards(boardsData);
+  
+      const imagePromises = boardsData.map(async (board) => {
+        try {
+          const postsResponse = await boardAPI.get('/posts', { params: { boardId: board.boardId } });
+          const firstPostId = postsResponse.data.Posts?.[0]?.postId;
+  
+          if (firstPostId) {
+            const itinerary = await boardAPI.get('/itineraries', { params: { postId: firstPostId } });
+            const events = await fetchEvents(itinerary.data.Itinerary?.itineraryId);
+  
+            if (events.length > 0 && events[0].eventImages?.length > 0) {
+              // Use the first image ID from the event
+              const imageId = events[0].eventImages[0];
+              imagesMap[board.boardId] = imageId; // Store imageId for the board
+            }
+          }
+        } catch (error) {
+          console.error(`Error fetching data for board ${board.boardId}:`, error);
+        }
+        return { boardId: board.boardId, image: null };
+      });
+  
+      await Promise.all(imagePromises);
+      setImages(imagesMap);
+    } catch (error) {
+      console.error('Error fetching boards:', error);
+      setErrorMessage(error.message || "An error occurred. Please try again.");
+    }
+  };
+  
   const handleBoardClick = (id) => {
     navigate(`/my-travels/boards/${id}`);
   };
@@ -41,33 +79,19 @@ function Boards() {
     fetchBoards();
   }, []);
 
-  const fallbackImages = [
-    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Boat-Trip_800x800.jpg",
-    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Beach-Cabin_800x800.jpg",
-    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Mining_800x800.jpg",
-    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Block-Column-Image_Winter-Celebration_800x800.jpg",
-    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Media-Block-Image_Java-Keyart_800x450.jpg",
-    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Media-Block-Image_PC-Bundle-Keyart_800x450.jpg",
-    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Updates-Carousel_Tricky-Trials_800x450.jpg",
-    "https://www.minecraft.net/content/dam/games/minecraft/key-art/MC-Vanilla_Updates-Carousel_Wild-Update_800x450.jpg",
-  ];
-
-  const getRandomImage = () => {
-    const randomIndex = Math.floor(Math.random() * fallbackImages.length);
-    return fallbackImages[randomIndex];
-  };
+  const fallbackImage = "https://t4.ftcdn.net/jpg/08/34/00/03/360_F_834000314_tLfhX7N7wnZpMkPIy02pqbRt8JFKiUuG.jpg";
 
   return (
     <div className="results">
       {boards.length > 0 ? (
         <div className="resultsGrid">
           {boards.map((board) => {
-            const eventImage = board.image || getRandomImage();
+            const eventImage = `http://localhost:8080/images/${images[board.boardId] || fallbackImage}`
             return (
               <div key={board.boardId} className="boardsCard" onClick={() => handleBoardClick(board.boardId)}>
                 <img src={eventImage} alt={board.name} className="resultCardImage" />
                 <div className="resultCardContent">
-                <button
+                  <button
                     className="deleteButton"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -83,11 +107,6 @@ function Boards() {
                     <p className="cardDescription">
                       {new Date(board.dateOfCreation).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
                     </p>
-                  </div>
-                  <div className="resultTags">
-                    {board.tags.map((tag, i) => (
-                      <span key={i} className="resultCardTag">{tag}</span>
-                    ))}
                   </div>
                 </div>
               </div>
