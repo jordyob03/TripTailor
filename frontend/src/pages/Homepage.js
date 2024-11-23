@@ -6,16 +6,18 @@ import iconMap from '../config/iconMap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import feedAPI from '../api/feedAPI.js';
 import ItineraryGrid from '../components/ItineraryGrid.js';
-import searchAPI from '../api/searchAPI';
+import itineraryAPI from '../api/itineraryAPI.js';
 import boardAPI from '../api/boardAPI.js';
 
 const fetchfeed = async (tags) => {
   try {
-    const username = localStorage.getItem('username'); // Get username directly
+    // Convert tags array to JSON string and encode it
+    const tagsParam = JSON.stringify(tags);
     console.log(tags, username);
-    const response = await feedAPI.get('/feed', { params: { tags, username } });
+    const response = await feedAPI.get('/feed', { params: { tags: tagsParam } });
     if (response && response.data) {
       console.log(response.data);
+      return response.data.itineraries
     } else {
       console.log("No data received in response.");
     }
@@ -39,20 +41,29 @@ function HomePage() {
   useEffect(() => {
     // Fetch itineraries
     const fetchItineraries = async () => {
-      const searchData = { country: 'France', city: 'Paris' };
+      const response = [];
+      const users = ["testuser", "herobrine", "jordy_ob", "mitchro"];
+      
       try {
-        console.log("Search API sent:", searchData);
-        const response = await searchAPI.get('/search', {
-          params: searchData,
-        });
-        console.log('API response:', response.data.Itineraries);
-        setItineraries(response.data || []);
-        setFilteredItineraries(response.data || []);
+        // Loop through each user and fetch their itineraries
+        for (const user of users) {
+          const data = { Username: user };
+          const tempResponse = await itineraryAPI.post('/get-user-itins', data);
+          if (Array.isArray(tempResponse.data.itineraries)) {
+            response.push(...tempResponse.data.itineraries);
+          } else {
+            console.error(`Itineraries for ${user} is not an array`, tempResponse.data.Itineraries);
+          }
+        }
+        
+        console.log('API response:', response);
+        setItineraries(response);
+        setFilteredItineraries(response);
       } catch (error) {
         console.error("Error fetching itineraries:", error);
       }
     };
-  
+      
     // Fetch boards
     const fetchBoardsAndImages = async () => {
       await fetchBoards();
@@ -135,21 +146,25 @@ function HomePage() {
 
 
 
-  const handleTagClick = (tag) => {
-    fetchfeed(tag);
+  const handleTagClick = async (tag) => {
     // Toggle the selection of the tag
-    if (selectedTags.includes(tag)) {
-      setSelectedTags(selectedTags.filter((t) => t !== tag));
+    const updatedTags = selectedTags.includes(tag)
+      ? selectedTags.filter((t) => t !== tag)
+      : [...selectedTags, tag];
+  
+    setSelectedTags(updatedTags);
+  
+    // Fetch feed with the updated tags and wait for the result
+    const data = await fetchfeed(updatedTags);
+    
+    // Ensure data is an array before setting it
+    if (Array.isArray(data)) {
+      setItineraries(data);
     } else {
-      setSelectedTags([...selectedTags, tag]);
+      setItineraries([]);
     }
-    setTagErrorMessage(''); // Clear error message when a tag is clicked
-    setSelectedTags((prevSelectedTags) =>
-      prevSelectedTags.includes(tag)
-        ? prevSelectedTags.filter((t) => t !== tag)
-        : [...prevSelectedTags, tag]
-    );
-  };
+  }
+  
 
   return (
     <div>
