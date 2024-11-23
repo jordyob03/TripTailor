@@ -65,12 +65,21 @@ function BoardPosts() {
 
   const handleSaveChanges = async () => {
     try {
-     // UPDATE BOARD ENDPOINT HERE
+      const updatedBoard = {
+        boardId: boardId,
+        name: selectedBoard.name,
+        description: editedDescription,
+      };
+
+      await boardAPI.post('/editboard', updatedBoard);
+
       setSelectedBoard((prev) => ({
         ...prev,
         description: editedDescription,
       }));
+
       setEditMode(false); // Exit edit mode
+      
     } catch (error) {
       console.error('Error saving changes:', error);
       setErrorMessage('Failed to save changes.');
@@ -97,15 +106,16 @@ function BoardPosts() {
       {selectedBoard && (
         <div className="boardDetails">
           <h2 style={{ marginTop: '0px' }}>{selectedBoard.name}</h2>
-          {editMode ? (
+          {/* {editMode ? (
             <textarea
               className="editDescriptionField"
               value={editedDescription}
               onChange={(e) => setEditedDescription(e.target.value)}
             />
+            
           ) : (
             <p>{selectedBoard.description}</p>
-          )}
+          )} */}
           <p>
             Created by {selectedBoard.username} on{' '}
             {new Date(selectedBoard.dateOfCreation).toLocaleDateString('en-GB', {
@@ -116,20 +126,23 @@ function BoardPosts() {
           </p>
           {editMode ? (
             <>
-              <button className="editButton" onClick={handleSaveChanges}>
+              <textarea
+                className="editDescriptionField"
+                value={editedDescription}
+                onChange={(e) => setEditedDescription(e.target.value)}
+              />
+              <br />
+              <button className="editButton" onClick={() => handleSaveChanges()}>
                 Save
-              </button>
-              <button
-                className="editButton"
-                onClick={() => setEditMode(false)}
-              >
-                Cancel
               </button>
             </>
           ) : (
-            <button className="editButton" onClick={() => setEditMode(true)}>
-              Edit
-            </button>
+            <>
+              <p>{selectedBoard.description}</p>
+              <button className="editButton" onClick={() => setEditMode(true)}>
+                Edit
+              </button>
+            </>
           )}
         </div>
       )}

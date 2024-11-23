@@ -109,7 +109,7 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost}) =
   };
 
   const handleSelectBoard = (boardId, postId) => {
-    boardAPI.post('/addpost', {boardId, postId})
+    boardAPI.post('/addboardpost', {boardId, postId})
       .then((response) => {
         console.log('Itinerary saved successfully:', response.data);
         handleCloseModal();
@@ -130,7 +130,7 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost}) =
       };
 
       console.log("data: ", data)
-      const response = await boardAPI.post('/boards', data);
+      const response = await boardAPI.post('/addboard', data);
       console.log(response)
       const board = response.data.boardId
       handleSelectBoard(board, itinerary.itineraryId)
