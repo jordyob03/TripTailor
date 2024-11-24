@@ -108,21 +108,34 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost}) =
     setNewBoardImage(null);
   };
 
-  const handleSelectBoard = (boardId) => {
-    // SAVE ITINERARY TO BOARD BACKEND INTEGRATION HERE
-    console.log(`Itinerary saved to board ${boardId}`);
+  const handleSelectBoard = (boardId, postId) => {
+    boardAPI.post('/addboardpost', {boardId, postId})
+      .then((response) => {
+        console.log('Itinerary saved successfully:', response.data);
+        handleCloseModal();
+      })
+      .catch((error) => {
+        console.error('Error saving itinerary to board:', error);
+      });
+    
+    console.log(`Itinerary ${postId} saved to board ${boardId}`);
     handleCloseModal();
   };
 
-  const handleCreateNewBoard = () => {
+  const handleCreateNewBoard = async (itinerary) => {
     if (newBoardName.trim()) {
-      const newBoard = {
-        id: boards.length + 1, // Mock ID
-        name: newBoardName,
-        coverImage: newBoardImage, // Add the new board image
+      const data = {
+        Username: username,
+        BoardName: newBoardName
       };
-      // CREATE NEW BOARD BACKEND INTEGRATION HERE
-      setBoards([...boards, newBoard]); // Update boards with the new board
+
+      console.log("data: ", data)
+      const response = await boardAPI.post('/addboard', data);
+      console.log(response)
+      const board = response.data.boardId
+      handleSelectBoard(board, itinerary.itineraryId)
+      console.log("Itinerary, ", itinerary.itineraryId, " saved to board, ", board)
+      window.location.reload()
       setNewBoardName(''); // Reset new board name
       setNewBoardImage(null); // Reset the image
     }
@@ -223,7 +236,7 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost}) =
                         key={board.id || board.boardId}
                         className="boardItem"
                         onClick={() =>
-                          handleSelectBoard(board.id || board.boardId)
+                          handleSelectBoard(board.id || board.boardId, selectedItinerary.itineraryId)
                         }
                       >
                         {eventImage ? (
@@ -279,7 +292,7 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost}) =
                       className="newBoardInputField"
                     />
                   </div>
-                  <button className="createBoardButton" onClick={handleCreateNewBoard}>
+                  <button className="createBoardButton" onClick={() => handleCreateNewBoard(selectedItinerary)}>
                     Create
                   </button>
                 </div>

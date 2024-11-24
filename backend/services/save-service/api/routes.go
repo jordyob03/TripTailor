@@ -14,4 +14,7 @@ func RegisterRoutes(r *gin.Engine, dbConn *sql.DB) {
 	r.GET("/events", handlers.GetEvent(dbConn))
 	r.DELETE("/boards/:boardId/posts/:postId", handlers.DeleteBoardPost(dbConn))
 	r.DELETE("/boards/:boardId", handlers.DeleteBoard(dbConn))
+	r.POST("/addboard", handlers.AddBoard(dbConn))
+	r.POST("/addboardpost", handlers.AddBoardPost(dbConn))
+	r.POST("/editboard", handlers.EditBoard(dbConn))
 }
