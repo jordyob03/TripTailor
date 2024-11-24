@@ -8,7 +8,7 @@
     "startTime": "2024-06-01T10:00:00Z",
     "endTime": "2024-06-01T12:00:00Z",
     "itineraryId": 1,
-    "eventImages": ["2"]
+    "eventImages": ["3"]
   },
   {
     "eventId": 2,
@@ -19,7 +19,7 @@
     "startTime": "2024-06-02T09:00:00Z",
     "endTime": "2024-06-02T11:30:00Z",
     "itineraryId": 1,
-    "eventImages": ["2"]
+    "eventImages": ["4"]
   },
   {
     "eventId": 3,
@@ -30,7 +30,7 @@
     "startTime": "2024-06-02T15:00:00Z",
     "endTime": "2024-06-02T16:00:00Z",
     "itineraryId": 1,
-    "eventImages": ["2"]
+    "eventImages": ["5"]
   },
   {
     "eventId": 4,
@@ -41,7 +41,7 @@
     "startTime": "2024-06-03T10:00:00Z",
     "endTime": "2024-06-03T12:00:00Z",
     "itineraryId": 1,
-    "eventImages": ["3"]
+    "eventImages": ["6"]
   },
   {
     "eventId": 5,
@@ -52,7 +52,7 @@
     "startTime": "2024-06-04T09:00:00Z",
     "endTime": "2024-06-04T17:00:00Z",
     "itineraryId": 2,
-    "eventImages": ["4"]
+    "eventImages": ["7"]
   },
   {
     "eventId": 6,
@@ -63,7 +63,7 @@
     "startTime": "2024-06-05T10:00:00Z",
     "endTime": "2024-06-05T12:30:00Z",
     "itineraryId": 2,
-    "eventImages": ["5"]
+    "eventImages": ["8"]
   },
   {
     "eventId": 7,
@@ -74,7 +74,7 @@
     "startTime": "2024-06-06T14:00:00Z",
     "endTime": "2024-06-06T15:30:00Z",
     "itineraryId": 2,
-    "eventImages": ["6"]
+    "eventImages": ["9"]
   },
   {
     "eventId": 8,
@@ -85,7 +85,7 @@
     "startTime": "2024-06-07T10:00:00Z",
     "endTime": "2024-06-07T12:30:00Z",
     "itineraryId": 2,
-    "eventImages": ["7"]
+    "eventImages": ["10"]
   },
   {
     "eventId": 9,
@@ -96,7 +96,7 @@
     "startTime": "2024-06-07T14:00:00Z",
     "endTime": "2024-06-07T17:00:00Z",
     "itineraryId": 2,
-    "eventImages": ["8"]
+    "eventImages": ["11"]
   },
   {
     "eventId": 10,
@@ -107,6 +107,865 @@
     "startTime": "2024-06-08T21:00:00Z",
     "endTime": "2024-06-08T23:30:00Z",
     "itineraryId": 3,
-    "eventImages": ["9"]
+    "eventImages": ["12"]
+  },
+  {
+    "eventId": 11,
+    "name": "Preparing for the End City Expedition",
+    "cost": 100.00,
+    "address": "Plains Biome, Overworld",
+    "description": "We spent an hour gearing up with enchanted diamond armor, potions, ender pearls, and plenty of food. We double-checked our gear to ensure we had what we needed to survive and make it back safely with the loot!",
+    "startTime": "2018-05-08T10:00:00Z",
+    "endTime": "2018-05-08T11:00:00Z",
+    "itineraryId": 4,
+    "eventImages": ["13"]
+  },
+  {
+    "eventId": 12,
+    "name": "Journey Through the End Dimension",
+    "cost": 15.00,
+    "address": "End Island, The End",
+    "description": "After defeating the Ender Dragon, we used ender pearls to reach the End Gateway and teleported to the End Islands. We spent time searching for an End City while carefully navigating the floating islands to avoid falling into the void.",
+    "startTime": "2018-05-08T11:00:00Z",
+    "endTime": "2018-05-08T12:00:00Z",
+    "itineraryId": 4,
+    "eventImages": ["14"]
+  },
+  {
+    "eventId": 13,
+    "name": "Raid on the End City",
+    "cost": 0.00,
+    "address": "End City Tower, The End",
+    "description": "We finally located an End City and climbed the towers, battling Shulkers along the way. The Shulkers’ levitation attacks were tricky to avoid, but we managed to grab some valuable loot, including Shulker Shells, enchanted items, and diamond armor. At the top, we claimed the prized Elytra wings from the End Ship!",
+    "startTime": "2024-06-08T12:00:00Z",
+    "endTime": "2024-06-08T13:30:00Z",
+    "itineraryId": 4,
+    "eventImages": ["15"]
+  },
+  {
+    "eventId": 14,
+    "name": "Return to the Overworld",
+    "cost": 50.00,
+    "address": "End City Tower, The End",
+    "description": "After gathering our spoils, we made our way back to the End Gateway portal, using ender pearls to teleport back to the End Fountain. We returned to the Overworld, excited to use our new items and display our loot!",
+    "startTime": "2024-06-08T13:30:00Z",
+    "endTime": "2024-06-08T13:05:00Z",
+    "itineraryId": 4,
+    "eventImages": ["16"]
+  },
+  {
+    "eventId": 15,
+    "name": "Raid on the End City",
+    "cost": 5.00,
+    "address": "End City Tower, The End",
+    "description": "We ended the adventure with a victory feast, sharing stories of the End City raid and our close calls with the void. We showcased our new Shulker Boxes, enchanted gear, and Elytra wings before planning our next Minecraft adventure.",
+    "startTime": "2024-06-08T13:05:00Z",
+    "endTime": "2024-06-08T15:00:00Z",
+    "itineraryId": 4,
+    "eventImages": ["17"]
+  },
+  {
+    "eventId": 16,
+    "name": "Niagara Falls Sightseeing",
+    "cost": 50.00,
+    "address": "Niagara Falls, ON",
+    "description": "We spent around 5 hours exploring the Falls area. We visited various viewpoints, including the Skylon Tower, and took lots of photos. We grabbed lunch at a nearby café with vegetarian options. The $50 covers entry fees for Skylon Tower and lunch.",
+    "startTime": "2018-05-08T10:00:00Z",
+    "endTime": "2018-05-08T15:00:00Z",
+    "itineraryId": 5,
+    "eventImages": ["18"]
+  },
+  {
+    "eventId": 17,
+    "name": "Dinner at The Keg Steakhouse",
+    "cost": 45.00,
+    "address": "5950 Victoria Ave, Niagara Falls, ON",
+    "description": "We had a fantastic dinner overlooking the Falls at The Keg. The $45 includes a shared appetizer, my main course, and a 20% tip. They had a few good vegetarian options.",
+    "startTime": "2018-05-08T18:00:00Z",
+    "endTime": "2018-05-08T19:30:00Z",
+    "itineraryId": 5,
+    "eventImages": ["19"]
+  },
+  {
+    "eventId": 18,
+    "name": "Evening Stroll Around Clifton Hill",
+    "cost": 0.00,
+    "address": "Clifton Hill, Niagara Falls, ON",
+    "description": "After dinner, we walked along Clifton Hill, enjoying the vibrant lights and attractions. We visited a few souvenir shops and took more pictures with the Falls illuminated in the background.",
+    "startTime": "2018-05-08T19:30:00Z",
+    "endTime": "2018-05-08T20:30:00Z",
+    "itineraryId": 5,
+    "eventImages": ["20"]
+  },
+  {
+    "eventId": 19,
+    "name": "Guided Tour of Lahore Fort and Badshahi Mosque",
+    "cost": 10.00,
+    "address": "Fort Road, Lahore, Pakistan",
+    "description": "We spent the morning exploring Lahore Fort and Badshahi Mosque, two incredible examples of Mughal architecture. Our guide shared fascinating historical stories, and we marveled at the intricate tilework and grand courtyards. The $10 covers the guided tour and entry fees.",
+    "startTime": "2018-05-08T10:00:00Z",
+    "endTime": "2018-05-08T13:00:00Z",
+    "itineraryId": 6,
+    "eventImages": ["21"]
+  },
+  {
+    "eventId": 20,
+    "name": "Lunch at Andaaz Restaurant",
+    "cost": 25.00,
+    "address": "Fort Road, Lahore, Pakistan",
+    "description": "We enjoyed lunch with a rooftop view of the Badshahi Mosque at Andaaz Restaurant, which offers a variety of traditional Pakistani dishes. The $25 includes an appetizer, a main course, and a drink. They had some excellent vegetarian options as well.",
+    "startTime": "2018-05-08T13:00:00Z",
+    "endTime": "2018-05-08T15:00:00Z",
+    "itineraryId": 6,
+    "eventImages": ["22"]
+  },
+  {
+    "eventId": 21,
+    "name": "Walk Through Walled City’s Bazaars",
+    "cost": 0.00,
+    "address": "Walled City, Lahore, Pakistan",
+    "description": "After lunch, we wandered through the Walled City’s colorful bazaars, including the famous Anarkali areas. We explored stalls filled with spices, textiles, jewelry, and handmade crafts, taking in the vibrant sights and sounds of local market life.",
+    "startTime": "2018-05-08T15:30:00Z",
+    "endTime": "2018-05-08T19:30:00Z",
+    "itineraryId": 6,
+    "eventImages": ["23"]
+  },
+  {
+    "eventId": 22,
+    "name": "Night Walk Around Badshahi Mosque and Minar-e-Pakistan",
+    "cost": 0.00,
+    "address": "Greater Iqbal Park, Lahore, Pakistan",
+    "description": "We wrapped up the day with a serene evening walk around the Badshahi Mosque and Minar-e-Pakistan. The area was beautifully lit, and we enjoyed the peaceful ambiance as we reflected on our day in Lahore’s historic Old City.",
+    "startTime": "2018-05-08T19:30:00Z",
+    "endTime": "2018-05-08T20:30:00Z",
+    "itineraryId": 6,
+    "eventImages": ["24"]
+  },
+  {
+    "eventId": 23,
+    "name": "Breakfast at St. Lawrence Market",
+    "cost": 15.00,
+    "address": "93 Front St E, Toronto, ON, Canada",
+    "description": "Start your day with a hearty breakfast at Toronto’s historic market, known for its diverse food vendors and local delicacies.",
+    "startTime": "2024-11-17T09:00:00Z",
+    "endTime": "2024-11-17T10:00:00Z",
+    "itineraryId": 7,
+    "eventImages": ["25"]
+  },
+  {
+    "eventId": 24,
+    "name": "CN Tower Visit",
+    "cost": 35.00,
+    "address": "290 Bremner Blvd, Toronto, ON, Canada",
+    "description": "Ascend Toronto's iconic landmark and enjoy panoramic views of the city and Lake Ontario.",
+    "startTime": "2024-11-17T10:30:00Z",
+    "endTime": "2024-11-17T12:00:00Z",
+    "itineraryId": 7,
+    "eventImages": ["26"]
+  },
+  {
+    "eventId": 25,
+    "name": "Lunch at The Rec Room",
+    "cost": 20.00,
+    "address": "255 Bremner Blvd, Toronto, ON, Canada",
+    "description": "Enjoy Canadian comfort food and arcade games in a lively atmosphere.",
+    "startTime": "2024-11-17T13:00:00Z",
+    "endTime": "2024-11-17T14:00:00Z",
+    "itineraryId": 7,
+    "eventImages": ["27"]
+  },
+  {
+    "eventId": 26,
+    "name": "Ripley’s Aquarium of Canada",
+    "cost": 44.00,
+    "address": "288 Bremner Blvd, Toronto, ON, Canada",
+    "description": "Explore an underwater world filled with mesmerizing marine life and interactive exhibits.",
+    "startTime": "2024-11-17T14:30:00Z",
+    "endTime": "2024-11-17T16:00:00Z",
+    "itineraryId": 7,
+    "eventImages": ["28"]
+  },
+  {
+    "eventId": 27,
+    "name": "Stroll Along Toronto Waterfront",
+    "cost": 0.00,
+    "address": "Queens Quay W, Toronto, ON, Canada",
+    "description": "Take a scenic walk along Lake Ontario's waterfront, enjoying public art and cafes.",
+    "startTime": "2024-11-17T16:00:00Z",
+    "endTime": "2024-11-17T17:30:00Z",
+    "itineraryId": 7,
+    "eventImages": ["29"]
+  },
+  {
+    "eventId": 28,
+    "name": "Dinner at Canoe Restaurant",
+    "cost": 100.00,
+    "address": "66 Wellington St W, 54th Floor, Toronto, ON, Canada",
+    "description": "Dine on elevated Canadian cuisine while enjoying stunning views of the city.",
+    "startTime": "2024-11-17T19:00:00Z",
+    "endTime": "2024-11-17T21:00:00Z",
+    "itineraryId": 7,
+    "eventImages": ["30"]
+  },
+  {
+    "eventId": 29,
+    "name": "Nightcap at The Porch Rooftop Bar",
+    "cost": 15.00,
+    "address": "250 Adelaide St W, Toronto, ON, Canada",
+    "description": "Unwind with a drink and enjoy a breathtaking view of the Toronto skyline.",
+    "startTime": "2024-11-17T21:30:00Z",
+    "endTime": "2024-11-17T22:30:00Z",
+    "itineraryId": 7,
+    "eventImages": ["31"]
+  },
+  {
+    "eventId": 30,
+    "name": "Breakfast at Lady Marmalade",
+    "cost": 20.00,
+    "address": "265 Broadview Ave, Toronto, ON, Canada",
+    "description": "Start the day with creative and hearty breakfast dishes in a charming setting.",
+    "startTime": "2024-11-18T08:30:00Z",
+    "endTime": "2024-11-18T09:30:00Z",
+    "itineraryId": 8,
+    "eventImages": ["32"]
+  },
+  {
+    "eventId": 31,
+    "name": "Art Gallery of Ontario (AGO)",
+    "cost": 30.00,
+    "address": "317 Dundas St W, Toronto, ON, Canada",
+    "description": "Explore an impressive collection of Canadian and international art in one of Toronto's premier galleries.",
+    "startTime": "2024-11-18T10:00:00Z",
+    "endTime": "2024-11-18T12:30:00Z",
+    "itineraryId": 8,
+    "eventImages": ["33"]
+  },
+  {
+    "eventId": 32,
+    "name": "Lunch in Kensington Market",
+    "cost": 15.00,
+    "address": "Kensington Market, Toronto, ON, Canada",
+    "description": "Wander through this eclectic neighborhood and choose from a variety of delicious eateries.",
+    "startTime": "2024-11-18T12:30:00Z",
+    "endTime": "2024-11-18T13:30:00Z",
+    "itineraryId": 8,
+    "eventImages": ["34"]
+  },
+  {
+    "eventId": 33,
+    "name": "Graffiti Alley",
+    "cost": 0.00,
+    "address": "Rush Ln, Toronto, ON, Canada",
+    "description": "Admire bold and colorful street art in this vibrant, Instagram-worthy location.",
+    "startTime": "2024-11-18T14:00:00Z",
+    "endTime": "2024-11-18T14:30:00Z",
+    "itineraryId": 8,
+    "eventImages": ["35"]
+  },
+  {
+    "eventId": 34,
+    "name": "Royal Ontario Museum (ROM)",
+    "cost": 26.00,
+    "address": "100 Queens Park, Toronto, ON, Canada",
+    "description": "Discover fascinating exhibits on natural history, world cultures, and art at one of Toronto's top museums.",
+    "startTime": "2024-11-18T15:00:00Z",
+    "endTime": "2024-11-18T17:00:00Z",
+    "itineraryId": 8,
+    "eventImages": ["36"]
+  },
+  {
+    "eventId": 35,
+    "name": "Dinner at Scaramouche Pasta Bar",
+    "cost": 60.00,
+    "address": "1 Benvenuto Pl, Toronto, ON, Canada",
+    "description": "Enjoy refined Italian-inspired cuisine in an upscale dining atmosphere.",
+    "startTime": "2024-11-18T18:30:00Z",
+    "endTime": "2024-11-18T20:30:00Z",
+    "itineraryId": 8,
+    "eventImages": ["37"]
+  },
+  {
+    "eventId": 36,
+    "name": "Evening Show at Ed Mirvish Theatre",
+    "cost": 100.00,
+    "address": "244 Victoria St, Toronto, ON, Canada",
+    "description": "End your day with a spectacular live performance in one of Toronto's historic theaters.",
+    "startTime": "2024-11-18T21:00:00Z",
+    "endTime": "2024-11-18T23:00:00Z",
+    "itineraryId": 8,
+    "eventImages": ["38"]
+  },
+  {
+    "eventId": 37,
+    "name": "Breakfast at Mildred’s Temple Kitchen",
+    "cost": 25.00,
+    "address": "85 Hanna Ave, Suite 104, Toronto, ON, Canada",
+    "description": "Enjoy their famous pancakes and fresh breakfast dishes made with locally-sourced ingredients.",
+    "startTime": "2024-11-19T08:00:00Z",
+    "endTime": "2024-11-19T09:00:00Z",
+    "itineraryId": 9,
+    "eventImages": ["39"]
+  },
+  {
+    "eventId": 38,
+    "name": "High Park",
+    "cost": 0.00,
+    "address": "1873 Bloor St W, Toronto, ON, Canada",
+    "description": "Explore trails, a small zoo, and serene natural landscapes in Toronto's largest park.",
+    "startTime": "2024-11-19T10:00:00Z",
+    "endTime": "2024-11-19T12:00:00Z",
+    "itineraryId": 9,
+    "eventImages": ["40"]
+  },
+  {
+    "eventId": 39,
+    "name": "Lunch at The Good Fork",
+    "cost": 20.00,
+    "address": "1550 Dundas St W, Toronto, ON, Canada",
+    "description": "Enjoy creative brunch dishes in a cozy and trendy setting.",
+    "startTime": "2024-11-19T12:30:00Z",
+    "endTime": "2024-11-19T13:30:00Z",
+    "itineraryId": 9,
+    "eventImages": ["41"]
+  },
+  {
+    "eventId": 40,
+    "name": "Toronto Islands",
+    "cost": 8.70,
+    "address": "Jack Layton Ferry Terminal, 9 Queens Quay W, Toronto, ON, Canada",
+    "description": "Take a ferry to explore scenic trails, beaches, and nature on the Toronto Islands.",
+    "startTime": "2024-11-19T14:30:00Z",
+    "endTime": "2024-11-19T17:00:00Z",
+    "itineraryId": 9,
+    "eventImages": ["42"]
+  },
+  {
+    "eventId": 41,
+    "name": "Dinner at Distillery District",
+    "cost": 50.00,
+    "address": "Distillery District, Toronto, ON, Canada",
+    "description": "Dine at a charming bistro in this historic area with cobblestone streets and boutique shops.",
+    "startTime": "2024-11-19T18:00:00Z",
+    "endTime": "2024-11-19T20:00:00Z",
+    "itineraryId": 9,
+    "eventImages": ["43"]
+  },
+  {
+    "eventId": 42,
+    "name": "Ghost Walk in the Distillery District",
+    "cost": 20.00,
+    "address": "Distillery District, Toronto, ON, Canada",
+    "description": "Learn about the haunted history of this atmospheric neighborhood on a guided ghost tour.",
+    "startTime": "2024-11-19T20:30:00Z",
+    "endTime": "2024-11-19T22:00:00Z",
+    "itineraryId": 9,
+    "eventImages": ["44"]
+  },
+  {
+    "eventId": 43,
+    "name": "Breakfast at The Drake Café",
+    "cost": 20.00,
+    "address": "1150 Queen St W, Toronto, ON, Canada",
+    "description": "Enjoy a casual breakfast in this artsy boutique hotel known for its creative vibe.",
+    "startTime": "2024-11-20T09:00:00Z",
+    "endTime": "2024-11-20T10:00:00Z",
+    "itineraryId": 10,
+    "eventImages": ["45"]
+  },
+  {
+    "eventId": 44,
+    "name": "Shopping at Queen Street West",
+    "cost": 0.00,
+    "address": "Queen St W, Toronto, ON, Canada",
+    "description": "Explore one of Toronto’s trendiest shopping districts with local boutiques and vintage shops.",
+    "startTime": "2024-11-20T10:30:00Z",
+    "endTime": "2024-11-20T12:00:00Z",
+    "itineraryId": 10,
+    "eventImages": ["46"]
+  },
+  {
+    "eventId": 45,
+    "name": "Casa Loma",
+    "cost": 30.00,
+    "address": "1 Austin Terrace, Toronto, ON, Canada",
+    "description": "Tour this historic castle and its beautiful gardens, offering a glimpse into Toronto's past.",
+    "startTime": "2024-11-20T13:00:00Z",
+    "endTime": "2024-11-20T15:00:00Z",
+    "itineraryId": 10,
+    "eventImages": ["47"]
+  },
+  {
+    "eventId": 46,
+    "name": "Coffee Break at Balzac’s Coffee",
+    "cost": 8.00,
+    "address": "1 Trinity St, Toronto, ON, Canada",
+    "description": "Relax with a handcrafted coffee in the cozy ambiance of this charming café.",
+    "startTime": "2024-11-20T15:30:00Z",
+    "endTime": "2024-11-20T16:00:00Z",
+    "itineraryId": 10,
+    "eventImages": ["48"]
+  },
+  {
+    "eventId": 47,
+    "name": "Dinner at The Pilot",
+    "cost": 50.00,
+    "address": "22 Cumberland St, Toronto, ON, Canada",
+    "description": "End your trip with a rooftop dinner, enjoying the city views one last time.",
+    "startTime": "2024-11-20T17:30:00Z",
+    "endTime": "2024-11-20T19:00:00Z",
+    "itineraryId": 10,
+    "eventImages": ["49"]
+  },
+  {
+    "eventId": 48,
+    "name": "Breakfast at the Gander Bread Box",
+    "cost": 20.00,
+    "address": "101 Roe Ave, Gander, NL, Canada",
+    "description": "Start your day with a hearty breakfast featuring locally sourced ingredients in a cozy atmosphere.",
+    "startTime": "2024-11-18T08:30:00Z",
+    "endTime": "2024-11-18T09:30:00Z",
+    "itineraryId": 11,
+    "eventImages": ["50"]
+  },
+  {
+    "eventId": 49,
+    "name": "Visit the North Atlantic Aviation Museum",
+    "cost": 10.00,
+    "address": "135 Trans-Canada Hwy, Gander, NL, Canada",
+    "description": "Discover Gander’s significant role in aviation history and its involvement during 9/11.",
+    "startTime": "2024-11-18T10:00:00Z",
+    "endTime": "2024-11-18T11:30:00Z",
+    "itineraryId": 11,
+    "eventImages": ["51"]
+  },
+  {
+    "eventId": 50,
+    "name": "Walk the Cobb’s Pond Rotary Park Trail",
+    "cost": 0.00,
+    "address": "Magee Rd, Gander, NL, Canada",
+    "description": "Enjoy a peaceful nature walk along the well-maintained trails surrounding the scenic pond.",
+    "startTime": "2024-11-18T12:00:00Z",
+    "endTime": "2024-11-18T13:00:00Z",
+    "itineraryId": 11,
+    "eventImages": ["52"]
+  },
+  {
+    "eventId": 51,
+    "name": "Lunch at Union East",
+    "cost": 25.00,
+    "address": "91 Airport Blvd, Gander, NL, Canada",
+    "description": "Indulge in fresh, locally-sourced ingredients crafted into comforting dishes like gourmet sandwiches, hearty salads, and artisan soups. ",
+    "startTime": "2024-11-18T13:30:00Z",
+    "endTime": "2024-11-18T14:30:00Z",
+    "itineraryId": 11,
+    "eventImages": ["53"]
+  },
+  {
+    "eventId": 52,
+    "name": "Dinner at Shawarma Station",
+    "cost": 25.00,
+    "address": "230 Airport Blvd, Gander, NL, Canada",
+    "description": "End your day with a fun and flavorful dinner featuring a variety of dishes in a casual dining atmosphere.",
+    "startTime": "2024-11-18T18:00:00Z",
+    "endTime": "2024-11-18T19:30:00Z",
+    "itineraryId": 11,
+    "eventImages": ["54"]
+  },
+  {
+    "eventId": 53,
+    "name": "Party at Ally's House",
+    "cost": 0.00,
+    "address": "Yeager St, Gander, NL, Canada",
+    "description": "Party at my place",
+    "startTime": "2024-11-18T20:00:00Z",
+    "endTime": "2024-11-18T23:59:00Z",
+    "itineraryId": 11,
+    "eventImages": ["55"]
+  },
+  {
+    "eventId": 54,
+    "name": "Library Tour at NUST",
+    "cost": 0.00,
+    "address": "National University of Sciences and Technology, H-12, Islamabad, Pakistan",
+    "description": "A guided tour of the NUST library, showcasing its impressive collection of resources and modern facilities.",
+    "startTime": "2024-11-18T10:00:00Z",
+    "endTime": "2024-11-18T12:00:00Z",
+    "itineraryId": 12,
+    "eventImages": ["56"]
+  },  
+  {
+    "eventId": 55,
+    "name": "Picnic by the NUST Lake",
+    "cost": 0.00,
+    "address": "NUST Lake, National University of Sciences and Technology, Islamabad, Pakistan",
+    "description": "A relaxing picnic by the serene lake on the NUST campus, perfect for enjoying the natural beauty of the surroundings.",
+    "startTime": "2024-11-18T15:00:00Z",
+    "endTime": "2024-11-18T18:00:00Z",
+    "itineraryId": 12,
+    "eventImages": ["57"]
+  },
+  {
+    "eventId": 56,
+    "name": "University of Limerick Library Tour",
+    "cost": 0.00,
+    "address": "University of Limerick, Castletroy, Limerick, Ireland",
+    "description": "A guided tour of the University of Limerick's library, showcasing its modern design, extensive collections, and study spaces.",
+    "startTime": "2024-11-19T10:00:00Z",
+    "endTime": "2024-11-19T11:30:00Z",
+    "itineraryId": 13,
+    "eventImages": ["58"]
+  },
+  {
+    "eventId": 57,
+    "name": "Picnic by the River Shannon",
+    "cost": 0.00,
+    "address": "Riverfront, University of Limerick, Castletroy, Limerick, Ireland",
+    "description": "A relaxing picnic by the scenic River Shannon, surrounded by the natural beauty of the campus riverfront.",
+    "startTime": "2024-11-19T14:00:00Z",
+    "endTime": "2024-11-19T16:30:00Z",
+    "itineraryId": 13,
+    "eventImages": ["59"]
+  },
+  {
+    "eventId": 58,
+    "name": "Visit to Faisal Mosque",
+    "cost": 0.00,
+    "address": "Faisal Mosque, Shah Faisal Avenue, Islamabad, Pakistan",
+    "description": "A visit to the iconic Faisal Mosque, the largest mosque in Pakistan, known for its unique architecture and serene surroundings.",
+    "startTime": "2024-11-20T09:00:00Z",
+    "endTime": "2024-11-20T10:30:00Z",
+    "itineraryId": 14,
+    "eventImages": ["60"]
+  },
+  {
+    "eventId": 59,
+    "name": "Exploring Lok Virsa Museum",
+    "cost": 0.00,
+    "address": "Lok Virsa Museum, Garden Avenue, Shakarparian, Islamabad, Pakistan",
+    "description": "A cultural exploration of Pakistan’s heritage through the exhibits at Lok Virsa Museum, featuring art, traditions, and history.",
+    "startTime": "2024-11-20T11:00:00Z",
+    "endTime": "2024-11-20T13:00:00Z",
+    "itineraryId": 14,
+    "eventImages": ["61"]
+  },
+  {
+    "eventId": 60,
+    "name": "Lunch at Monal Restaurant",
+    "cost": 0.00,
+    "address": "Monal Restaurant, Pir Sohawa Road, Islamabad, Pakistan",
+    "description": "Enjoy a delicious lunch at Monal Restaurant, offering breathtaking views of the city and delectable Pakistani cuisine.",
+    "startTime": "2024-11-20T13:30:00Z",
+    "endTime": "2024-11-20T15:00:00Z",
+    "itineraryId": 14,
+    "eventImages": ["62"]
+  },
+  {
+    "eventId": 61,
+    "name": "Shopping at Centaurus Mall",
+    "cost": 0.00,
+    "address": "Centaurus Mall, Jinnah Avenue, Islamabad, Pakistan",
+    "description": "Spend the afternoon shopping and exploring the vibrant atmosphere of Centaurus Mall, a premier shopping destination in Islamabad.",
+    "startTime": "2024-11-20T15:30:00Z",
+    "endTime": "2024-11-20T17:00:00Z",
+    "itineraryId": 14,
+    "eventImages": ["63"]
+  },
+  {
+    "eventId": 62,
+    "name": "Canada's Wonderland",
+    "cost": 75.00,
+    "address": "Vaughan, Ontario",
+    "description": "Spent the morning and afternoon riding all the rollor coasters at the park. Price includes entry for one adult and lunch",
+    "startTime": "2024-11-20T10:30:00Z",
+    "endTime": "2024-11-20T16:00:00Z",
+    "itineraryId": 15,
+    "eventImages": ["64"]
+  },
+  {
+    "eventId": 63,
+    "name": "Dinner at Milagro Cantina",
+    "cost": 40.00,
+    "address": "5 Mercer St, Toronto, ON",
+    "description": "Highly recommend this place, the food was delicious and cost friendly. The $40 includes an appetizer, a beer, my meal and a 20% tip.",
+    "startTime": "2024-11-20T18:30:00Z",
+    "endTime": "2024-11-20T20:00:00Z",
+    "itineraryId": 15,
+    "eventImages": ["65"]
+  },
+  {
+    "eventId": 64,
+    "name": "Walk around Downtown Toronto",
+    "cost": 0.00,
+    "address": "Downtown",
+    "description": "After dinner we walked around downtown to see the CN tower and the waterfront.",
+    "startTime": "2024-11-20T20:30:00Z",
+    "endTime": "2024-11-20T22:00:00Z",
+    "itineraryId": 15,
+    "eventImages": ["66"]
+  },
+  {
+    "eventId": 65,
+    "name": "Walk around Downtown San Diego",
+    "cost": 0.00,
+    "address": "Downtown",
+    "description": "Spend the afternoon walking around downtown San Diego",
+    "startTime": "2024-11-20T12:30:00Z",
+    "endTime": "2024-11-20T3:30:00Z",
+    "itineraryId": 16,
+    "eventImages": ["67"]
+  },
+  {
+    "eventId": 66,
+    "name": "Early dinner at La Puerta",
+    "cost": 60.00,
+    "address": "560 Fourth Ave",
+    "description": "Enjoy a meal at one of San Dieo's most popular Mexican restaurants, vegetarian friendly, price includes dinner for two",
+    "startTime": "2024-11-20T16:30:00Z",
+    "endTime": "2024-11-20T18:30:00Z",
+    "itineraryId": 16,
+    "eventImages": ["68"]
+  },
+  {
+    "eventId": 67,
+    "name": "Finish the evening with a walk around Cornado Island",
+    "cost": 0.00,
+    "address": "Cornado Island",
+    "description": "Spend the rest of the evening walking around Cornado Island and enjoy views of the whole city",
+    "startTime": "2024-11-20T19:30:00Z",
+    "endTime": "2024-11-20T21:00:00Z",
+    "itineraryId": 16,
+    "eventImages": ["69"]
+  },
+  {
+    "eventId": 68,
+    "name": "Canada's Wonderland Rides",
+    "cost": 100.00,
+    "address": "Vaughan, Ontario",
+    "description": "Enjoy thrilling rides within Canada's Wonderland.",
+    "startTime": "2024-11-22T10:30:00Z",
+    "endTime": "2024-01-22T14:30:00Z",
+    "itineraryId": 17,
+    "eventImages": ["70"]
+  },
+  {
+    "eventId": 69,
+    "name": "Food for the Family",
+    "cost": 30.00,
+    "address": "Vaughan, Ontario",
+    "description": "Dine at a local family-friendly restaurant in the park.",
+    "startTime": "2024-11-22T09:00:00Z",
+    "endTime": "2024-11-22T12:00:00Z",
+    "itineraryId": 17,
+    "eventImages": ["71"]
+  },
+  {
+    "eventId": 70,
+    "name": "Zoo Safari Adventure",
+    "cost": 150.00,
+    "address": "Ontario, Toronto",
+    "description": "Tour around the zoo park and enjoy wildlife exhibits.",
+    "startTime": "2024-11-22T09:45:00Z",
+    "endTime": "2024-11-22T14:45:00Z",
+    "itineraryId": 18,
+    "eventImages": ["72"]
+  },
+  {
+    "eventId": 71,
+    "name": "Picnic at Rouge Park",
+    "cost": 40.00,
+    "address": "Ontario, Toronto",
+    "description": "Grab food at a local restaurant and enjoy it in the park.",
+    "startTime": "2024-11-22T15:15:00Z",
+    "endTime": "2024-11-22T18:00:00Z",
+    "itineraryId": 18,
+    "eventImages": ["73"]
+  },
+  {
+    "eventId": 72,
+    "name": "Toronto Raptors Game",
+    "cost": 100.00,
+    "address": "40 Bay St., Toronto,",
+    "description": "Cheer for the Raptors in a live NBA game at the Scotiabank Arena.",
+    "startTime": "2024-11-22T18:00:00Z",
+    "endTime": "2024-11-22T21:00:00Z",
+    "itineraryId": 19,
+    "eventImages": ["74"]
+  },
+  {
+    "eventId": 73,
+    "name": "Sports Hall of Fame Tour",
+    "cost": 20.00,
+    "address": "30 Yonge St, Toronto",
+    "description": "Explore the history of Canadian sports at the Sports Hall of Fame.",
+    "startTime": "2024-01-01T21:15:00Z",
+    "endTime": "2024-01-01T22:45:00Z",
+    "itineraryId": 19,
+    "eventImages": ["75"]
+  },
+  {
+    "eventId": 74,
+    "name": "Tour of Hast Imam Complex",
+    "cost": 5.00,
+    "address": "Hast Imam Square, Tashkent, Uzbekistan",
+    "description": "Explore the historic Hast Imam Complex, home to ancient manuscripts and beautiful Islamic architecture.",
+    "startTime": "2024-11-25T10:00:00Z",
+    "endTime": "2024-11-25T12:00:00Z",
+    "itineraryId": 21,
+    "eventImages": ["76"]
+  },
+  {
+    "eventId": 75,
+    "name": "Chorsu Bazaar Visit",
+    "cost": 0.00,
+    "address": "Chorsu Bazaar, Navoi Street, Tashkent, Uzbekistan",
+    "description": "A vibrant market where you can experience local culture, sample delicious foods, and shop for unique souvenirs.",
+    "startTime": "2024-11-25T13:00:00Z",
+    "endTime": "2024-11-25T15:00:00Z",
+    "itineraryId": 21,
+    "eventImages": ["77"]
+  },
+  {
+    "eventId": 76,
+    "name": "Evening at Amir Timur Square",
+    "cost": 0.00,
+    "address": "Amir Timur Square, Tashkent, Uzbekistan",
+    "description": "Spend the evening at this iconic square, surrounded by landmarks and a relaxing atmosphere.",
+    "startTime": "2024-11-25T16:00:00Z",
+    "endTime": "2024-11-25T18:00:00Z",
+    "itineraryId": 21,
+    "eventImages": ["78"]
+  },
+  {
+    "eventId": 77,
+    "name": "Dinner at Plov Center",
+    "cost": 10.00,
+    "address": "Central Asian Plov Center, Tashkent, Uzbekistan",
+    "description": "Enjoy a traditional Uzbek meal at the renowned Plov Center, famous for its flavorful dishes.",
+    "startTime": "2024-11-25T19:00:00Z",
+    "endTime": "2024-11-25T21:00:00Z",
+    "itineraryId": 21,
+    "eventImages": ["79"]
+  },
+  {
+    "eventId": 78,
+    "name": "Royal Ontario Museum (ROM)",
+    "cost": 25.00,
+    "address": "100 Queens Park, Toronto",
+    "description": "Explored the Royal Ontario Museum, be warned there is a lot to see, it was cool to see the different era and world history section, from the greaks to modern day Canada",
+    "startTime": "2024-01-01T10:00:00Z",
+    "endTime": "2024-01-01T11:45:00Z",
+    "itineraryId": 21,
+    "eventImages": ["80"]
+  },
+  {
+    "eventId": 79,
+    "name": "Ripley’s Aquarium of Canada",
+    "cost": 50.00,
+    "address": " 288 Bremner Blvd, Toronto",
+    "description": "Visited the famous Riplys aquarium, it was cool to see the different facets of the aquatic life",
+    "startTime": "2024-01-01T12:30:00Z",
+    "endTime": "2024-01-01T13:30:00Z",
+    "itineraryId": 21,
+    "eventImages": ["81"]
+},
+
+{
+    "eventId": 80,
+    "name": "Chinatown Festival",
+    "cost": 50.00,
+    "address": "Chinatown, Toronto",
+    "description": "There was a festival happening in chinatown during my visit, the food stalls were yummy, saw a kpop dance ",
+    "startTime": "2024-01-01T16:00:00Z",
+    "endTime": "2024-01-01T18:45:00Z",
+    "itineraryId": 21,
+    "eventImages": ["82"]
+  },
+  {
+    "eventId": 81,
+    "name": "Shibuya",
+    "cost": 510.00,
+    "address": "Shibuya, Tokyo",
+    "description": "Do not visit when Sukuna is there",
+    "startTime": "2024-01-01T16:00:00Z",
+    "endTime": "2024-01-01T18:45:00Z",
+    "itineraryId": 22,
+    "eventImages": ["83"]
+  },
+  {
+    "eventId": 82,
+    "name": "Akihabara",
+    "cost": 290.00,
+    "address": " Akihabara, Tokyo",
+    "description": "Went to Akihabara, saw anime shops",
+    "startTime": "2024-01-01T12:30:00Z",
+    "endTime": "2024-01-01T13:30:00Z",
+    "itineraryId": 22,
+    "eventImages": ["84"]
+  },
+  {
+    "eventId": 83,
+    "name": "Morning at the Grippy Distillery District",
+    "cost": 20.00,
+    "address": "Toronto, ON",
+    "description": "Explore the historic Distillery District with its gripping blend of art, food, and culture.",
+    "startTime": "2024-12-01T09:00:00Z",
+    "endTime": "2024-12-01T11:00:00Z",
+    "itineraryId": 23,
+    "eventImages": ["85"]
+  },
+  {
+    "eventId": 84,
+    "name": "Evening on Toronto's Waterfront",
+    "cost": 0.00,
+    "address": "Toronto Waterfront",
+    "description": "Take a serene stroll along the Toronto waterfront to soak in stunning views of Lake Ontario.",
+    "startTime": "2024-12-01T18:00:00Z",
+    "endTime": "2024-12-01T20:00:00Z",
+    "itineraryId": 23,
+    "eventImages": ["86"]
+  },
+  {
+    "eventId": 85,
+    "name": "Sunrise at the Eiffel Tower",
+    "cost": 50.00,
+    "address": "Champ de Mars, Paris",
+    "description": "Start your day with a breathtaking sunrise view from the Eiffel Tower.",
+    "startTime": "2024-12-02T06:00:00Z",
+    "endTime": "2024-12-02T08:00:00Z",
+    "itineraryId": 24,
+    "eventImages": ["87"]
+  },
+  {
+    "eventId": 86,
+    "name": "Slay Your Night at the Moulin Rouge",
+    "cost": 200.00,
+    "address": "Paris, France",
+    "description": "Experience the glamorous and captivating show at the iconic Moulin Rouge.",
+    "startTime": "2024-12-02T20:00:00Z",
+    "endTime": "2024-12-02T23:00:00Z",
+    "itineraryId": 24,
+    "eventImages": ["88"]
+  },
+  {
+    "eventId": 87,
+    "name": "Morning Surf at Bondi Beach",
+    "cost": 100.00,
+    "address": "Bondi Beach, Sydney",
+    "description": "Catch the waves at the iconic Bondi Beach and kickstart your day with adventure.",
+    "startTime": "2024-12-03T07:00:00Z",
+    "endTime": "2024-12-03T09:00:00Z",
+    "itineraryId": 25,
+    "eventImages": ["89"]
+  },
+  {
+    "eventId": 88,
+    "name": "Stroke of Sunset at Sydney Harbour",
+    "cost": 0.00,
+    "address": "Sydney Harbour",
+    "description": "Enjoy a picturesque sunset by Sydney Harbour with views of the Opera House and Harbour Bridge.",
+    "startTime": "2024-12-03T19:00:00Z",
+    "endTime": "2024-12-03T21:00:00Z",
+    "itineraryId": 25,
+    "eventImages": ["90"]
   }
 ]

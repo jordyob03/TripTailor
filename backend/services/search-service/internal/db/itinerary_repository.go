@@ -5,64 +5,134 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/jordyob03/TripTailor/backend/services/search-service/internal/models" // Import the models package
+	"github.com/jordyob03/TripTailor/backend/services/search-service/internal/models"
+	"github.com/lib/pq" // PostgreSQL driver
 )
 
-type Itinerary struct {
-	ItineraryId int      `json:"itineraryId"`
-	City        string   `json:"city"`
-	Country     string   `json:"country"`
-	Title       string   `json:"title"`
-	Description string   `json:"description"`
-	Price       float64  `json:"price"`
-	Languages   []string `json:"languages"`
-	Tags        []string `json:"tags"`
-	Events      []string `json:"events"`
-	PostId      int      `json:"postId"`
-	Username    string   `json:"username"`
+func BuildQuery(searchString string, price float64) (string, []interface{}) {
+	// Tokenize the search string into individual words
+	tokens := strings.Fields(searchString)
+	if len(tokens) == 0 && price <= 0 {
+		return "", nil // No search terms or price provided
+	}
+
+	innerQuery := "SELECT *, (" // Start inner query with SELECT and begin total_score calculation
+	scoringConditions := []string{}
+	filterConditions := []string{} // Conditions for calculating total_score
+	args := []interface{}{}        // Holds query parameter values
+	argIndex := 1                  // Counter for argument placeholders
+
+	// Add scoring for exact matches to the title
+	scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN title ILIKE $%d THEN 5 ELSE 0 END)", argIndex))
+	args = append(args, "%"+searchString+"%")
+	argIndex++
+
+	// Add scoring for each token against multiple fields
+	for _, token := range tokens {
+		// Match token against the title
+		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN title ILIKE '%%' || $%d || '%%' THEN 2 ELSE 0 END)", argIndex))
+		args = append(args, token)
+		argIndex++
+
+		// Match token against city
+		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN city ILIKE '%%' || $%d || '%%' THEN 2 ELSE 0 END)", argIndex))
+		args = append(args, token)
+		argIndex++
+
+		// Match token against country
+		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN country ILIKE '%%' || $%d || '%%' THEN 2 ELSE 0 END)", argIndex))
+		args = append(args, token)
+		argIndex++
+
+		// Match token against username
+		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN username ILIKE '%%' || $%d || '%%' THEN 1 ELSE 0 END)", argIndex))
+		args = append(args, token)
+		argIndex++
+
+		// Match token against tags
+		scoringConditions = append(scoringConditions, fmt.Sprintf("(SELECT COUNT(*) FROM unnest(tags) AS tag WHERE tag ILIKE '%%' || $%d || '%%')", argIndex))
+		args = append(args, token)
+		argIndex++
+
+		// Match token against languages
+		scoringConditions = append(scoringConditions, fmt.Sprintf("(SELECT COUNT(*) FROM unnest(languages) AS lang WHERE lang ILIKE '%%' || $%d || '%%')", argIndex))
+		args = append(args, token)
+		argIndex++
+	}
+
+	// Combine scoring conditions
+	if len(scoringConditions) > 0 {
+		innerQuery += strings.Join(scoringConditions, " + ")
+	} else {
+		innerQuery += "0"
+	}
+	innerQuery += ") AS total_score FROM itineraries"
+
+	if price > 0 {
+		filterConditions = append(filterConditions, fmt.Sprintf("price <= $%d", argIndex))
+		args = append(args, price)
+		argIndex++
+	}
+
+	// Add filter conditions to the WHERE clause
+	if len(filterConditions) > 0 {
+		innerQuery += " WHERE " + strings.Join(filterConditions, " AND ")
+	}
+
+	// Wrap the inner query in an outer query to apply the total_score filter
+	outerQuery := `
+        SELECT * 
+        FROM (%s) AS scored_itineraries
+        WHERE total_score >= 1
+        ORDER BY total_score DESC`
+	finalQuery := fmt.Sprintf(outerQuery, innerQuery)
+
+	return finalQuery, args
 }
 
-// QueryItinerariesByLocation queries the database for itineraries based on country and city
-func QueryItinerariesByLocation(db *sql.DB, country, city string) ([]models.Itinerary, error) {
-	rows, err := db.Query(`
-		SELECT itineraryid, city, country, title, description, price, languages, tags, events, postid, username
-		FROM itineraries
-		WHERE country = $1 AND city = $2`, country, city)
+// GetScoredItinerariesFromSearchString dynamically builds a query to filter and score itineraries from a single search string.
+func GetScoredItineraries(db *sql.DB, searchString string, price float64) ([]models.ScoredItinerary, error) {
+	fmt.Printf("Parsed search string: %s\n", searchString)
+	query, args := BuildQuery(searchString, price)
+	if query == "" {
+		fmt.Println("No search terms provided.")
+		return nil, nil
+	}
+
+	fmt.Printf("Executing query: %s with args: %+v\n", query, args)
+
+	// Execute the query with parameters
+	rows, err := db.Query(query, args...)
 	if err != nil {
+		fmt.Printf("Query execution error: %v\n", err)
 		return nil, err
 	}
 	defer rows.Close()
 
-	itineraries := []models.Itinerary{}
+	// Parse results
+	itineraries := []models.ScoredItinerary{}
 	for rows.Next() {
-		var itinerary models.Itinerary
-		var languages, tags, events string
-
-		// Scan each row into the itinerary struct
-		if err := rows.Scan(
-			&itinerary.ItineraryId, &itinerary.City, &itinerary.Country,
-			&itinerary.Title, &itinerary.Description, &itinerary.Price,
-			&languages, &tags, &events, &itinerary.PostId, &itinerary.Username,
-		); err != nil {
-			// print error
-			fmt.Println(err)
+		var scored models.ScoredItinerary
+		err := rows.Scan(
+			&scored.Itinerary.ItineraryId,
+			&scored.Itinerary.City,
+			&scored.Itinerary.Country,
+			&scored.Itinerary.Title,
+			&scored.Itinerary.Description,
+			&scored.Itinerary.Price,
+			pq.Array(&scored.Itinerary.Languages),
+			pq.Array(&scored.Itinerary.Tags),
+			pq.Array(&scored.Itinerary.Events),
+			&scored.Itinerary.PostId,
+			&scored.Itinerary.Username,
+			&scored.TotalMatchCount, // Map the calculated score to TotalMatchCount
+		)
+		if err != nil {
+			fmt.Printf("Row scan error: %v\n", err)
 			return nil, err
 		}
-
-		// Convert comma-separated strings to slices
-		itinerary.Languages = splitTags(languages)
-		itinerary.Tags = splitTags(tags)
-		itinerary.Events = splitTags(events)
-
-		itineraries = append(itineraries, itinerary)
+		itineraries = append(itineraries, scored)
 	}
+
 	return itineraries, nil
-}
-
-// Helper function to split comma-separated values into a slice of strings
-func splitTags(input string) []string {
-	if input == "" {
-		return []string{}
-	}
-	return strings.Split(input, ",")
 }
