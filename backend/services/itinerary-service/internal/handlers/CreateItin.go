@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"encoding/base64"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -12,12 +13,13 @@ import (
 )
 
 type CreateEventRequest struct {
-	Name        string `json:"name"`
-	Location    string `json:"location"`
-	StartTime   string `json:"startTime"`
-	EndTime     string `json:"endTime"`
-	Description string `json:"description"`
-	Cost        string `json:"cost"`
+	Name        string   `json:"name"`
+	Location    string   `json:"location"`
+	StartTime   string   `json:"startTime"`
+	EndTime     string   `json:"endTime"`
+	Description string   `json:"description"`
+	Cost        string   `json:"cost"`
+	Images      []string `json:"images"`
 }
 
 type CreateItinRequest struct {
@@ -40,6 +42,12 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 
 		fmt.Printf("Received Itinerary: %+v\n", req)
 
+		user, err := models.GetUser(dbConn, req.Username)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to find user"})
+			return
+		}
+
 		itin := models.Itinerary{
 			Title:       req.Title,
 			City:        req.City,
@@ -47,6 +55,7 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 			Description: req.Description,
 			Tags:        req.Tags,
 			Username:    req.Username,
+			Languages:   user.Languages,
 		}
 
 		// Add itin to db without events
@@ -81,6 +90,27 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 				return
 			}
 
+			var imageIds []string
+			for _, base64Image := range event.Images {
+				imageData, err := base64.StdEncoding.DecodeString(base64Image)
+				if err != nil {
+					c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid image data format"})
+					return
+				}
+
+				image := models.Image{
+					ImageData: imageData,
+					Metadata:  []string{"Event image"},
+				}
+
+				imageId, err := models.AddImage(dbConn, image)
+				if err != nil {
+					c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to store image"})
+					return
+				}
+				imageIds = append(imageIds, strconv.Itoa(imageId))
+			}
+
 			newEvent := models.Event{
 				Name:    event.Name,
 				Address: event.Location,
@@ -90,7 +120,10 @@ func CreateItin(dbConn *sql.DB) gin.HandlerFunc {
 				Description: event.Description,
 				Cost:        eventCost,
 				ItineraryId: itinId,
+				EventImages: imageIds,
 			}
+
+			fmt.Printf("Event after parsing: Name=%s, StartTime=%v, EndTime=%v, Cost=%f\n", event.Name, startTime, endTime, eventCost)
 			eventId, err := models.AddEvent(dbConn, newEvent)
 			if err != nil {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Failed to add event %s", event.Name)})

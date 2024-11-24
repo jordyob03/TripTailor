@@ -34,5 +34,14 @@
     "username": "testuser",
     "posts": ["11"],
     "tags": []
+  },
+  {
+    "boardId": 5,
+    "name": "Abdul's International Trip",
+    "dateOfCreation": "2024-04-08T12:00:00Z",
+    "description": "Travels from Uzbekistan, Japan, and Canada",
+    "username": "abdulaziz",
+    "posts": ["20", "21"],
+    "tags": []
   }
 ]

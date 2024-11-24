@@ -28,6 +28,65 @@
     "posts": ["4", "5", "6", "12", "13", "14"],
     "profileImage": 1,
     "coverImage": 2
+  },
+  {
+    "userId": 3,
+    "username": "jordy_ob",
+    "email": "test@gmail.com",
+    "password": "$2a$10$ki0UslqH.bw0fN/98gOCuulNVlS4NDXg1gNqFHJibbMTQoxyihUrO",
+    "dateOfBirth": "2004-02-04T00:00:00Z",
+    "name": "Jordyn",
+    "country": "Canada",
+    "languages": ["English", "French"],
+    "tags": ["Young Adults", "Cities", "Vegetarian"],
+    "boards": [],
+    "posts": ["15", "16"],
+    "profileImage": 1,
+    "coverImage": 2
+  },
+  {
+    "userId": 6,
+    "username": "mitchro",
+    "email": "test@mun.ca",
+    "password": "$2a$10$CHx628f1KIs0gAjgSbzyTeuCG/yi1pOqSnrIj4vzf.VRl04RS46PC",
+    "dateOfBirth": "2003-09-23T00:00:00Z",
+    "name": "Mitch",
+    "country": "Canada",
+    "languages": ["English", "French"],
+    "tags": ["Hot Springs", "Nightlife", "Shopping"],
+    "boards": [],
+    "posts": ["17", "18", "19"],
+    "profileImage": 1,
+    "coverImage": 2
+  },
+  {
+    "userId": 5,
+    "username": "abdulaziz",
+    "email": "abdulaziz@mun.ca",
+    "password": "$2a$12$2s5fq0/DpFT37eM68hhYK.qohpvr9lZCyrTSUDs/Jv8NA4aBH21IG",
+    "dateOfBirth": "2003-09-23T00:00:00Z",
+    "name": "Abdul Aziz",
+    "country": "Canada",
+    "languages": ["English", "Uzbek", "Russian"],
+    "tags": ["City", "Young Adults", "Nightlife", "Street Food"],
+    "boards": [],
+    "posts": ["20", "21", "22"],
+    "profileImage": 1,
+    "coverImage": 2
+  },
+  {
+    "userId": 6,
+    "username": "LeonardoDaVinci",
+    "email": "leo@mun.ca",
+    "password": "$2a$12$Y3nlOBQS4iQbklMdZkdbLusCWO9HKt78N0OHXQsL6lNjIyxR9TuA6",
+    "dateOfBirth": "2003-09-23T00:00:00Z",
+    "name": "Leo Gilbert",
+    "country": "Canada",
+    "languages": ["English"],
+    "tags": ["City", "Young Adults", "Nightlife", "Street Food"],
+    "boards": [],
+    "posts": ["23", "24", "25"],
+    "profileImage": 1,
+    "coverImage": 2
   }
-  
 ]

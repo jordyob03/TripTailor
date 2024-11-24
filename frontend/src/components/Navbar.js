@@ -1,29 +1,44 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import navBarLogo from '../assets/logo-long-transparent.png';
 import '../styles/styles.css';
 import { faSearch, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useLocation } from 'react-router-dom';
 import searchAPI from '../api/searchAPI'; 
 
 function NavBar({ onSearch }) {
-  const [country, setCountry] = useState('');
-  const [city, setCity] = useState('');
-  const [countryErrorMessage, setCountryErrorMessage] = useState('');
-  const [cityErrorMessage, setCityErrorMessage] = useState('');
+  const [SearchValue, setSearchValue] = useState('');
+  const [Price, setPrice] = useState(0);
+  const [SearchValueErrorMessage, setSearchValueErrorMessage] = useState('');
+  const [PriceErrorMessage, setPriceErrorMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [typingTimeout, setTypingTimeout] = useState(null);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const noProfile = ['/', '/sign-up'];
   const noLogOut = ['/', '/sign-up'];
   const noCreateItinerary = ['/', '/sign-up'];
   const noSearchBar = ['/', '/sign-up', '/profile-creation'];
-  const location = useLocation();
 
-  const navigate = useNavigate();
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
+  const closeMenu = () => setMenuOpen(false);
+
+  useEffect(() => {
+    // Close menu on route change
+    closeMenu();
+  }, [location.pathname]);
+
+  const handlePriceChange = (e) => {
+    const value = e.target.value;
+  
+    // Allow only numbers, decimal points, and empty values
+    if (/^\d*\.?\d*$/.test(value)) {
+      setPrice(value); // Keep value as string for precise user input handling
+    }
   };
 
   const handleLogout = () => {
@@ -31,98 +46,113 @@ function NavBar({ onSearch }) {
     navigate('/');
   };
 
-  const handleSearch = async (e) => {
-    e.preventDefault(); 
-    let hasError = false;
-  
-    // Clear previous error messages
-    setCountryErrorMessage('');
-    setCityErrorMessage('');
-    setErrorMessage('');
-  
-    // Validate input fields
-    if (!country) {
-      setCountryErrorMessage('Please enter a country.');
-      hasError = true;
+  const handleSearchDebounced = (searchValue, price) => {
+    if (typingTimeout) {
+      clearTimeout(typingTimeout); // Clear any existing timeout
     }
   
-    if (!city) {
-      setCityErrorMessage('Please enter a city.');
-      hasError = true;
-    }
+    const numericPrice = parseFloat(price);
   
-    // Proceed with the search if there are no validation errors
-    if (!hasError) {
-      const searchData = {
-        country: country,
-        city: city,
-      };
+    const timeout = setTimeout(async () => {
+      let hasError = false;
   
-      try {
-        console.log("Search API sent:", searchData);
-        const response = await searchAPI.get('/search', {
-          params: searchData,
-        });
-        console.log('API response:', response);
-
-        const formattedResults = response.data.map(itinerary => ({
-          location: `${itinerary.city}, ${itinerary.country}`,
-          title: itinerary.title,
-          description: `Itinerary by ${itinerary.username}. Tags: ${itinerary.tags.map(tag => tag.replace(/[{}]/g, '')).join(', ')}`,
-          tags: itinerary.tags.map(tag => tag.replace(/[{}]/g, '')),
-          image: 'https://via.placeholder.com/300x180', 
-        }));
+      setSearchValueErrorMessage('');
+      setPriceErrorMessage('');
+      setErrorMessage('');
   
-        // Call the onSearch function passed as a prop, if available
-        if (onSearch) {
-          onSearch(formattedResults, country, city);
-        }
+      if (!searchValue) {
+        setSearchValueErrorMessage('Please enter a SearchValue.');
+        hasError = true;
+      }
   
-        navigate('/search-results');
-      } catch (error) {
-        if (error.response && error.response.data) {
-          setErrorMessage(error.response.data.error);
-        } else {
-          setErrorMessage('Search Failed');
+      if (!price || isNaN(numericPrice) || numericPrice <= 0) {
+        setPriceErrorMessage('Please enter a valid positive Price.');
+        hasError = true;
+      }
+  
+      if (!hasError) {
+        const searchData = { SearchValue: searchValue, Price: numericPrice };
+  
+        try {
+          console.log("Search API sent:", searchData);
+          const response = await searchAPI.get('/search', {
+            params: {
+              searchValue,
+              price: numericPrice,
+            },
+          });
+  
+          console.log('API response:', response);
+  
+          if (onSearch) {
+            onSearch(response.data, searchValue, price);
+          }
+  
+          // Optionally navigate to results
+          if (location.pathname !== '/search-results') {
+            navigate('/search-results');
+          }
+        } catch (error) {
+          console.error('Search API error:', error); // Log full error details
+          if (error.response && error.response.data && error.response.data.error) {
+            setErrorMessage(error.response.data.error);
+          } else {
+            setErrorMessage('An unexpected error occurred. Please try again.');
+          }
         }
       }
-    }
+    }, 100); // Delay API call by 500ms
+  
+    setTypingTimeout(timeout); // Store the timeout ID
   };
+  
+  
 
   return (
     <nav className="navBar">
-      <img src={navBarLogo} alt="Trip Tailor Logo" className="navBarLogo" />
+      <img
+        src={navBarLogo}
+        alt="Trip Tailor Logo"
+        className="navBarLogo"
+        onClick={() => navigate('/home-page')}
+        style={{ cursor: 'pointer' }}
+      />
       {!noSearchBar.includes(location.pathname) && (
         <div className="searchBarContainer">
           <div className="inputGroupNav">
             <div className="inputFieldContainer">
-              <label className="inputLabel">Country</label>
+              <label className="inputLabel">Search</label>
               <input
                 type="text"
-                placeholder="Enter Country"
-                value={country}
-                onChange={(e) => setCountry(e.target.value)}
+                placeholder="Enter keyword (e.g., 'Lahore')"
+                value={SearchValue}
+                onChange={(e) => {
+                  const newValue = e.target.value;
+                  setSearchValue(newValue);
+                  handleSearchDebounced(newValue, Price);
+                }}
                 className="inputField"
+                style={{ width: '300px' }}
               />
             </div>
             <div className="inputFieldContainer">
-              <label className="inputLabel">City</label>
+              <label className="inputLabel">Price</label>
               <input
                 type="text"
-                placeholder="Enter City"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
+                placeholder="Enter price"
+                value={Price}
+                onChange={handlePriceChange}
                 className="inputField"
+                style={{ width: '150px' }}
               />
             </div>
-            <button onClick={handleSearch} className="searchButton">
+            <button onClick={handleSearchDebounced} className="searchButton">
               <FontAwesomeIcon icon={faSearch} /> Search
             </button>
           </div>
-          {/* Error Messages Below the Input Fields */}
           <div className="errorMessagesContainer">
-            {countryErrorMessage && <div className="errorMessageSB">{countryErrorMessage}</div>}
-            {cityErrorMessage && <div className="errorMessageSB">{cityErrorMessage}</div>}
+            {SearchValueErrorMessage && <div className="errorMessageSB">{SearchValueErrorMessage}</div>}
+            {PriceErrorMessage && <div className="errorMessageSB">{PriceErrorMessage}</div>}
             {errorMessage && <div className="errorMessageSB">{errorMessage}</div>}
           </div>
         </div>
@@ -146,13 +176,12 @@ function NavBar({ onSearch }) {
         )}
       </div>
 
-      {/* Dropdown Menu */}
       {menuOpen && (
         <div className="dropdownMenu">
           <ul>
-            <li onClick={() => navigate('/account-settings')}>Account Settings</li>
-            <li onClick={() => navigate('/my-travels/itineraries')}>My Travels</li>
-            <li onClick={() => navigate('/home-page')}>Home</li>
+            <li onClick={() => { navigate('/home-page'); closeMenu(); }}>Home</li>
+            <li onClick={() => { navigate('/my-travels/itineraries'); closeMenu(); }}>My Travels</li>
+            <li onClick={() => { navigate('/account-settings'); closeMenu(); }}>Account Settings</li>
           </ul>
         </div>
       )}
