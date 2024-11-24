@@ -7,10 +7,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import searchAPI from '../api/searchAPI'; 
 
 function NavBar({ onSearch }) {
-  const [country, setCountry] = useState('');
-  const [city, setCity] = useState('');
-  const [countryErrorMessage, setCountryErrorMessage] = useState('');
-  const [cityErrorMessage, setCityErrorMessage] = useState('');
+  const [SearchValue, setSearchValue] = useState('');
+  const [Price, setPrice] = useState(0);
+  const [SearchValueErrorMessage, setSearchValueErrorMessage] = useState('');
+  const [PriceErrorMessage, setPriceErrorMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -31,6 +31,15 @@ function NavBar({ onSearch }) {
     closeMenu();
   }, [location.pathname]);
 
+  const handlePriceChange = (e) => {
+    const value = parseFloat(e.target.value);
+    if (isNaN(value)) {
+      setPrice(0); // Default to 0 if not a number
+    } else {
+      setPrice(value);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.clear();
     navigate('/');
@@ -40,39 +49,44 @@ function NavBar({ onSearch }) {
     e.preventDefault();
     let hasError = false;
 
-    setCountryErrorMessage('');
-    setCityErrorMessage('');
+    setSearchValueErrorMessage('');
+    setPriceErrorMessage('');
     setErrorMessage('');
 
-    if (!country) {
-      setCountryErrorMessage('Please enter a country.');
+    if (!SearchValue) {
+      setSearchValueErrorMessage('Please enter a SearchValue.');
       hasError = true;
     }
-    if (!city) {
-      setCityErrorMessage('Please enter a city.');
+    if (!Price || isNaN(Price) || Price <= 0) {
+      setPriceErrorMessage('Please enter a valid positive Price.');
       hasError = true;
     }
 
     if (!hasError) {
-      const searchData = { country, city };
+      const searchData = { SearchValue, Price };
 
       try {
         console.log("Search API sent:", searchData);
         const response = await searchAPI.get('/search', {
-          params: searchData,
+          params: {
+            searchValue: SearchValue,
+            price: parseFloat(Price),
+          },
         });
+        
         console.log('API response:', response);
 
         if (onSearch) {
-          onSearch(response.data, country, city);
+          onSearch(response.data, SearchValue, Price);
         }
 
         navigate('/search-results'); 
       } catch (error) {
-        if (error.response && error.response.data) {
+        console.error('Search API error:', error); // Log full error details
+        if (error.response && error.response.data && error.response.data.error) {
           setErrorMessage(error.response.data.error);
         } else {
-          setErrorMessage('Search Failed');
+          setErrorMessage('An unexpected error occurred. Please try again.');
         }
       }
     }
@@ -91,23 +105,24 @@ function NavBar({ onSearch }) {
         <div className="searchBarContainer">
           <div className="inputGroupNav">
             <div className="inputFieldContainer">
-              <label className="inputLabel">Country</label>
+              <label className="inputLabel">SearchValue</label>
               <input
                 type="text"
-                placeholder="Enter Country"
-                value={country}
-                onChange={(e) => setCountry(e.target.value)}
+                placeholder="Enter keyword (e.g., 'Lahore')"
+                value={SearchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
                 className="inputField"
               />
             </div>
             <div className="inputFieldContainer">
-              <label className="inputLabel">City</label>
+              <label className="inputLabel">Price</label>
               <input
-                type="text"
-                placeholder="Enter City"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                className="inputField"
+              type="number"
+              step="0.01"
+              placeholder="Enter Price"
+              value={Price}
+              onChange={handlePriceChange}
+              className="inputField"
               />
             </div>
             <button onClick={handleSearch} className="searchButton">
@@ -115,8 +130,8 @@ function NavBar({ onSearch }) {
             </button>
           </div>
           <div className="errorMessagesContainer">
-            {countryErrorMessage && <div className="errorMessageSB">{countryErrorMessage}</div>}
-            {cityErrorMessage && <div className="errorMessageSB">{cityErrorMessage}</div>}
+            {SearchValueErrorMessage && <div className="errorMessageSB">{SearchValueErrorMessage}</div>}
+            {PriceErrorMessage && <div className="errorMessageSB">{PriceErrorMessage}</div>}
             {errorMessage && <div className="errorMessageSB">{errorMessage}</div>}
           </div>
         </div>

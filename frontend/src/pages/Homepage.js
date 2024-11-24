@@ -23,18 +23,18 @@ function HomePage() {
   useEffect(() => {
     // Fetch itineraries
     const fetchItineraries = async () => {
-      const searchData = { country: 'France', city: 'Paris' };
-      try {
-        console.log("Search API sent:", searchData);
-        const response = await searchAPI.get('/search', {
-          params: searchData,
-        });
-        console.log('API response:', response.data.Itineraries);
-        setItineraries(response.data || []);
-        setFilteredItineraries(response.data || []);
-      } catch (error) {
-        console.error("Error fetching itineraries:", error);
-      }
+      // const searchData = { country: 'France', city: 'Paris' };
+      // try {
+      //   console.log("Search API sent:", searchData);
+      //   const response = await searchAPI.get('/search', {
+      //     params: searchData,
+      //   });
+      //   console.log('API response:', response.data.Itineraries);
+      //   setItineraries(response.data || []);
+      //   setFilteredItineraries(response.data || []);
+      // } catch (error) {
+      //   console.error("Error fetching itineraries:", error);
+      // }
     };
   
     // Fetch boards
