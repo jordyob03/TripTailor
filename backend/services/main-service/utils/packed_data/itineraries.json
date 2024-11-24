@@ -284,5 +284,44 @@
     "events": ["81", "82"],
     "postId": 22,
     "username": "abdulaziz"
+  },
+  {
+    "itineraryId": 23,
+    "city": "Toronto",
+    "country": "Canada",
+    "title": "Grippy Adventures in Toronto",
+    "description": "Explore the vibrant city of Toronto, with its gripping urban culture and stunning waterfront.",
+    "price": 0.00,
+    "languages": ["English", "French"],
+    "tags": ["adventure", "city", "culture"],
+    "events": ["83", "84"],
+    "postId": 23,
+    "username": "LeonardoDaVinci"
+  },
+  {
+    "itineraryId": 24,
+    "city": "Paris",
+    "country": "France",
+    "title": "Slay the Day in Paris",
+    "description": "Conquer the iconic sights of Paris in style, from the Eiffel Tower to the Champs-Élysées.",
+    "price": 0.00,
+    "languages": ["English", "French"],
+    "tags": ["sightseeing", "luxury", "culture"],
+    "events": ["85", "86"],
+    "postId": 24,
+    "username": "LeonardoDaVinci"
+  },
+  {
+    "itineraryId": 25,
+    "city": "Sydney",
+    "country": "Australia",
+    "title": "A Stroke of Adventure in Sydney",
+    "description": "Experience the thrilling coastal adventures and cultural highlights of Sydney.",
+    "price": 0.00,
+    "languages": ["English"],
+    "tags": ["adventure", "coast", "wildlife"],
+    "events": ["87", "88"],
+    "postId": 25,
+    "username": "LeonardoDaVinci"
   }
 ]

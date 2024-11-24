@@ -7,12 +7,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import searchAPI from '../api/searchAPI'; 
 
 function NavBar({ onSearch }) {
-  const [country, setCountry] = useState('');
-  const [city, setCity] = useState('');
-  const [countryErrorMessage, setCountryErrorMessage] = useState('');
-  const [cityErrorMessage, setCityErrorMessage] = useState('');
+  const [SearchValue, setSearchValue] = useState('');
+  const [Price, setPrice] = useState(0);
+  const [SearchValueErrorMessage, setSearchValueErrorMessage] = useState('');
+  const [PriceErrorMessage, setPriceErrorMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [typingTimeout, setTypingTimeout] = useState(null);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -31,52 +32,81 @@ function NavBar({ onSearch }) {
     closeMenu();
   }, [location.pathname]);
 
+  const handlePriceChange = (e) => {
+    const value = e.target.value;
+  
+    // Allow only numbers, decimal points, and empty values
+    if (/^\d*\.?\d*$/.test(value)) {
+      setPrice(value); // Keep value as string for precise user input handling
+    }
+  };
+
   const handleLogout = () => {
     localStorage.clear();
     navigate('/');
   };
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    let hasError = false;
-
-    setCountryErrorMessage('');
-    setCityErrorMessage('');
-    setErrorMessage('');
-
-    if (!country) {
-      setCountryErrorMessage('Please enter a country.');
-      hasError = true;
+  const handleSearchDebounced = (searchValue, price) => {
+    if (typingTimeout) {
+      clearTimeout(typingTimeout); // Clear any existing timeout
     }
-    if (!city) {
-      setCityErrorMessage('Please enter a city.');
-      hasError = true;
-    }
-
-    if (!hasError) {
-      const searchData = { country, city };
-
-      try {
-        console.log("Search API sent:", searchData);
-        const response = await searchAPI.get('/search', {
-          params: searchData,
-        });
-        console.log('API response:', response);
-
-        if (onSearch) {
-          onSearch(response.data, country, city);
-        }
-
-        navigate('/search-results'); 
-      } catch (error) {
-        if (error.response && error.response.data) {
-          setErrorMessage(error.response.data.error);
-        } else {
-          setErrorMessage('Search Failed');
+  
+    const numericPrice = parseFloat(price);
+  
+    const timeout = setTimeout(async () => {
+      let hasError = false;
+  
+      setSearchValueErrorMessage('');
+      setPriceErrorMessage('');
+      setErrorMessage('');
+  
+      if (!searchValue) {
+        setSearchValueErrorMessage('Please enter a SearchValue.');
+        hasError = true;
+      }
+  
+      if (!price || isNaN(numericPrice) || numericPrice <= 0) {
+        setPriceErrorMessage('Please enter a valid positive Price.');
+        hasError = true;
+      }
+  
+      if (!hasError) {
+        const searchData = { SearchValue: searchValue, Price: numericPrice };
+  
+        try {
+          console.log("Search API sent:", searchData);
+          const response = await searchAPI.get('/search', {
+            params: {
+              searchValue,
+              price: numericPrice,
+            },
+          });
+  
+          console.log('API response:', response);
+  
+          if (onSearch) {
+            onSearch(response.data, searchValue, price);
+          }
+  
+          // Optionally navigate to results
+          if (location.pathname !== '/search-results') {
+            navigate('/search-results');
+          }
+        } catch (error) {
+          console.error('Search API error:', error); // Log full error details
+          if (error.response && error.response.data && error.response.data.error) {
+            setErrorMessage(error.response.data.error);
+          } else {
+            setErrorMessage('An unexpected error occurred. Please try again.');
+          }
         }
       }
-    }
+    }, 100); // Delay API call by 500ms
+  
+    setTypingTimeout(timeout); // Store the timeout ID
   };
+  
+  
 
   return (
     <nav className="navBar">
@@ -91,32 +121,38 @@ function NavBar({ onSearch }) {
         <div className="searchBarContainer">
           <div className="inputGroupNav">
             <div className="inputFieldContainer">
-              <label className="inputLabel">Country</label>
+              <label className="inputLabel">Search</label>
               <input
                 type="text"
-                placeholder="Enter Country"
-                value={country}
-                onChange={(e) => setCountry(e.target.value)}
+                placeholder="Enter keyword (e.g., 'Lahore')"
+                value={SearchValue}
+                onChange={(e) => {
+                  const newValue = e.target.value;
+                  setSearchValue(newValue);
+                  handleSearchDebounced(newValue, Price);
+                }}
                 className="inputField"
+                style={{ width: '300px' }}
               />
             </div>
             <div className="inputFieldContainer">
-              <label className="inputLabel">City</label>
+              <label className="inputLabel">Price</label>
               <input
                 type="text"
-                placeholder="Enter City"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
+                placeholder="Enter price"
+                value={Price}
+                onChange={handlePriceChange}
                 className="inputField"
+                style={{ width: '150px' }}
               />
             </div>
-            <button onClick={handleSearch} className="searchButton">
+            <button onClick={handleSearchDebounced} className="searchButton">
               <FontAwesomeIcon icon={faSearch} /> Search
             </button>
           </div>
           <div className="errorMessagesContainer">
-            {countryErrorMessage && <div className="errorMessageSB">{countryErrorMessage}</div>}
-            {cityErrorMessage && <div className="errorMessageSB">{cityErrorMessage}</div>}
+            {SearchValueErrorMessage && <div className="errorMessageSB">{SearchValueErrorMessage}</div>}
+            {PriceErrorMessage && <div className="errorMessageSB">{PriceErrorMessage}</div>}
             {errorMessage && <div className="errorMessageSB">{errorMessage}</div>}
           </div>
         </div>
