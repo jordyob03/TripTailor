@@ -39,7 +39,6 @@ func CreateProfile(dbConn *sql.DB) gin.HandlerFunc {
 		}
 
 		// Parse and validate the provided tags and languages
-		parsedTags := ParseTags(strings.Join(profileReq.Tags, ","))
 		parsedLanguages := ParseLang(strings.Join(profileReq.Languages, ","))
 
 		// Update the country if provided
@@ -60,14 +59,26 @@ func CreateProfile(dbConn *sql.DB) gin.HandlerFunc {
 			}
 		}
 
-		// Update the tags if provided
-		if len(parsedTags) > 0 {
-			err = db.AddUserTag(dbConn, profileReq.Username, parsedTags)
-			if err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Error updating tags", "details": err.Error()})
-				return
+		if profileReq.Tags != nil {
+			for _, rtag := range user.Tags {
+				err = db.RemoveUserTag(dbConn, profileReq.Username, []string{rtag})
+				if err != nil {
+					c.JSON(http.StatusInternalServerError, gin.H{"error": "Error Removing updated tags"})
+					return
+				}
+				println("Removed tag: ", rtag)
+			}
+
+			for _, atag := range profileReq.Tags {
+				err = db.AddUserTag(dbConn, profileReq.Username, []string{atag})
+				if err != nil {
+					c.JSON(http.StatusInternalServerError, gin.H{"error": "Error Adding updated tags"})
+					return
+				}
+				println("Added tag: ", atag)
 			}
 		}
+
 		if profileReq.Name != "" {
 			err = db.UpdateName(dbConn, profileReq.Username, profileReq.Name)
 			if err != nil {

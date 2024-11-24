@@ -60,11 +60,22 @@ func UpdateProfile(dbConn *sql.DB) gin.HandlerFunc {
 
 		// Update tags if provided
 		if profileReq.Tags != "" {
-			user.Tags = ParseTags(profileReq.Tags)
-			err = db.AddUserTag(dbConn, username, user.Tags)
-			if err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Error updating tags"})
-				return
+			for _, rtag := range user.Tags {
+				err = db.RemoveUserTag(dbConn, username, []string{rtag})
+				if err != nil {
+					c.JSON(http.StatusInternalServerError, gin.H{"error": "Error Removing updated tags"})
+					return
+				}
+				println("Removed tag: ", rtag)
+			}
+
+			for _, atag := range strings.Split(profileReq.Tags, ",") {
+				err = db.AddUserTag(dbConn, username, []string{atag})
+				if err != nil {
+					c.JSON(http.StatusInternalServerError, gin.H{"error": "Error Adding updated tags"})
+					return
+				}
+				println("Added tag: ", atag)
 			}
 		}
 
