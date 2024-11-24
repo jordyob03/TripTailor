@@ -867,8 +867,9 @@
     "endTime": "2024-01-01T13:30:00Z",
     "itineraryId": 21,
     "eventImages": ["81"]
-  },
-  {
+},
+
+{
     "eventId": 80,
     "name": "Chinatown Festival",
     "cost": 50.00,

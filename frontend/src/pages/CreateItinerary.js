@@ -3,6 +3,7 @@ import Tags from '../config/tags.json';
 import '../styles/styles.css'; 
 import { useNavigate } from 'react-router';
 import itineraryAPI from '../api/itineraryAPI.js';
+import { convertBytesToImage, convertFileToBase64 } from '../utils/imageHandler.js';
 
 function CreateItinerary() {
   const categories = Tags.categories;
@@ -33,12 +34,33 @@ function CreateItinerary() {
     setEvents(updatedEvents);
   };
 
-  const handleEventImagesChange = (index, e) => {
+  // const handleMultipleFileChange = async (e) => {
+  //   const files = Array.from(e.target.files);
+
+  //   const convertedImages = await Promise.all(files.map(async (file) => {
+  //       const previewUrl = URL.createObjectURL(file);
+  //       const base64String = await convertFileToBase64(file); 
+  //       return { file, previewUrl, base64String };
+  //   }));
+
+  //   setItineraryImages([...itineraryImages, ...convertedImages]);
+  // };
+
+
+  const handleEventImagesChange = async (index, e) => {
     const files = Array.from(e.target.files);
+
+    const convertedImages = await Promise.all(files.map(async (file) => {
+        const base64String = await convertFileToBase64(file);
+        return base64String;
+    }));
+
     const updatedEvents = [...events];
-    updatedEvents[index].images = [...updatedEvents[index].images, ...files];
+    updatedEvents[index].images = [...updatedEvents[index].images, ...convertedImages];
     setEvents(updatedEvents);
-  };
+};
+
+
 
   const removeEventImage = (eventIndex, imageIndex) => {
     const updatedEvents = [...events];
@@ -96,8 +118,12 @@ function CreateItinerary() {
       console.log({ itineraryDetails, selectedTags, events: filteredEvents });
       return;
     }
-  
-    const hasIncompleteEvent = filteredEvents.some((event) => {
+    const eventsWithImages = filteredEvents.map((event) => ({
+      ...event,
+      images: event.images || [] 
+  }));
+    
+    const hasIncompleteEvent = eventsWithImages.some((event) => {
       const fields = [
         event.name.trim(),
         event.startTime,
@@ -129,7 +155,7 @@ function CreateItinerary() {
       Country: itineraryDetails.country,
       Description: itineraryDetails.description,
       Tags: selectedTags,
-      Events: filteredEvents,
+      Events: eventsWithImages,
     }
 
     try {
@@ -334,7 +360,7 @@ function CreateItinerary() {
                       <div className="imagePreview">
                         {event.images.map((image, imgIndex) => (
                           <div key={imgIndex} className="imageContainer">
-                            <img src={URL.createObjectURL(image)} alt={`Event ${index + 1} Preview ${imgIndex + 1}`} className="previewImage" />
+                            <img src={`data:image/jpeg;base64,${image}`} alt={`Event ${index + 1} Preview ${imgIndex + 1}`} className="previewImage" />
                             <button className="removeButton" onClick={() => removeEventImage(index, imgIndex)}>x</button>
                           </div>
                         ))}
