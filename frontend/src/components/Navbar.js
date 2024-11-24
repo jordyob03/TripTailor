@@ -13,6 +13,7 @@ function NavBar({ onSearch }) {
   const [PriceErrorMessage, setPriceErrorMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [typingTimeout, setTypingTimeout] = useState(null);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -32,11 +33,11 @@ function NavBar({ onSearch }) {
   }, [location.pathname]);
 
   const handlePriceChange = (e) => {
-    const value = parseFloat(e.target.value);
-    if (isNaN(value)) {
-      setPrice(0); // Default to 0 if not a number
-    } else {
-      setPrice(value);
+    const value = e.target.value;
+  
+    // Allow only numbers, decimal points, and empty values
+    if (/^\d*\.?\d*$/.test(value)) {
+      setPrice(value); // Keep value as string for precise user input handling
     }
   };
 
@@ -45,52 +46,67 @@ function NavBar({ onSearch }) {
     navigate('/');
   };
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    let hasError = false;
-
-    setSearchValueErrorMessage('');
-    setPriceErrorMessage('');
-    setErrorMessage('');
-
-    if (!SearchValue) {
-      setSearchValueErrorMessage('Please enter a SearchValue.');
-      hasError = true;
+  const handleSearchDebounced = (searchValue, price) => {
+    if (typingTimeout) {
+      clearTimeout(typingTimeout); // Clear any existing timeout
     }
-    if (!Price || isNaN(Price) || Price <= 0) {
-      setPriceErrorMessage('Please enter a valid positive Price.');
-      hasError = true;
-    }
-
-    if (!hasError) {
-      const searchData = { SearchValue, Price };
-
-      try {
-        console.log("Search API sent:", searchData);
-        const response = await searchAPI.get('/search', {
-          params: {
-            searchValue: SearchValue,
-            price: parseFloat(Price),
-          },
-        });
-        
-        console.log('API response:', response);
-
-        if (onSearch) {
-          onSearch(response.data, SearchValue, Price);
-        }
-
-        navigate('/search-results'); 
-      } catch (error) {
-        console.error('Search API error:', error); // Log full error details
-        if (error.response && error.response.data && error.response.data.error) {
-          setErrorMessage(error.response.data.error);
-        } else {
-          setErrorMessage('An unexpected error occurred. Please try again.');
+  
+    const numericPrice = parseFloat(price);
+  
+    const timeout = setTimeout(async () => {
+      let hasError = false;
+  
+      setSearchValueErrorMessage('');
+      setPriceErrorMessage('');
+      setErrorMessage('');
+  
+      if (!searchValue) {
+        setSearchValueErrorMessage('Please enter a SearchValue.');
+        hasError = true;
+      }
+  
+      if (!price || isNaN(numericPrice) || numericPrice <= 0) {
+        setPriceErrorMessage('Please enter a valid positive Price.');
+        hasError = true;
+      }
+  
+      if (!hasError) {
+        const searchData = { SearchValue: searchValue, Price: numericPrice };
+  
+        try {
+          console.log("Search API sent:", searchData);
+          const response = await searchAPI.get('/search', {
+            params: {
+              searchValue,
+              price: numericPrice,
+            },
+          });
+  
+          console.log('API response:', response);
+  
+          if (onSearch) {
+            onSearch(response.data, searchValue, price);
+          }
+  
+          // Optionally navigate to results
+          if (location.pathname !== '/search-results') {
+            navigate('/search-results');
+          }
+        } catch (error) {
+          console.error('Search API error:', error); // Log full error details
+          if (error.response && error.response.data && error.response.data.error) {
+            setErrorMessage(error.response.data.error);
+          } else {
+            setErrorMessage('An unexpected error occurred. Please try again.');
+          }
         }
       }
-    }
+    }, 100); // Delay API call by 500ms
+  
+    setTypingTimeout(timeout); // Store the timeout ID
   };
+  
+  
 
   return (
     <nav className="navBar">
@@ -110,7 +126,11 @@ function NavBar({ onSearch }) {
                 type="text"
                 placeholder="Enter keyword (e.g., 'Lahore')"
                 value={SearchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
+                onChange={(e) => {
+                  const newValue = e.target.value;
+                  setSearchValue(newValue);
+                  handleSearchDebounced(newValue, Price);
+                }}
                 className="inputField"
                 style={{ width: '300px' }}
               />
@@ -126,7 +146,7 @@ function NavBar({ onSearch }) {
                 style={{ width: '150px' }}
               />
             </div>
-            <button onClick={handleSearch} className="searchButton">
+            <button onClick={handleSearchDebounced} className="searchButton">
               <FontAwesomeIcon icon={faSearch} /> Search
             </button>
           </div>
