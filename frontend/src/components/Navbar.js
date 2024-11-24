@@ -105,24 +105,25 @@ function NavBar({ onSearch }) {
         <div className="searchBarContainer">
           <div className="inputGroupNav">
             <div className="inputFieldContainer">
-              <label className="inputLabel">SearchValue</label>
+              <label className="inputLabel">Search</label>
               <input
                 type="text"
                 placeholder="Enter keyword (e.g., 'Lahore')"
                 value={SearchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
                 className="inputField"
+                style={{ width: '300px' }}
               />
             </div>
             <div className="inputFieldContainer">
               <label className="inputLabel">Price</label>
               <input
-              type="number"
-              step="0.01"
-              placeholder="Enter Price"
-              value={Price}
-              onChange={handlePriceChange}
-              className="inputField"
+                type="text"
+                placeholder="Enter price"
+                value={Price}
+                onChange={handlePriceChange}
+                className="inputField"
+                style={{ width: '150px' }}
               />
             </div>
             <button onClick={handleSearch} className="searchButton">
