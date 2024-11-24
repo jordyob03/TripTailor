@@ -745,7 +745,7 @@
     "startTime": "2024-11-22T10:30:00Z",
     "endTime": "2024-01-22T14:30:00Z",
     "itineraryId": 17,
-    "eventImages": ["1"]
+    "eventImages": ["70"]
 },
 {
     "eventId": 69,
@@ -756,7 +756,7 @@
     "startTime": "2024-11-22T09:00:00Z",
     "endTime": "2024-11-22T12:00:00Z",
     "itineraryId": 17,
-    "eventImages": ["2"]
+    "eventImages": ["71"]
 },
 {
     "eventId": 70,
@@ -767,7 +767,7 @@
     "startTime": "2024-11-22T09:45:00Z",
     "endTime": "2024-11-22T14:45:00Z",
     "itineraryId": 18,
-    "eventImages": ["3"]
+    "eventImages": ["72"]
 },
 {
     "eventId": 71,
@@ -778,7 +778,7 @@
     "startTime": "2024-11-22T15:15:00Z",
     "endTime": "2024-11-22T18:00:00Z",
     "itineraryId": 18,
-    "eventImages": ["4"]
+    "eventImages": ["73"]
 },
 {
     "eventId": 72,
@@ -789,7 +789,7 @@
     "startTime": "2024-11-22T18:00:00Z",
     "endTime": "2024-11-22T21:00:00Z",
     "itineraryId": 19,
-    "eventImages": ["5"]
+    "eventImages": ["74"]
 },
 {
     "eventId": 73,
@@ -800,6 +800,106 @@
     "startTime": "2024-01-01T21:15:00Z",
     "endTime": "2024-01-01T22:45:00Z",
     "itineraryId": 19,
-    "eventImages": ["6"]
+    "eventImages": ["75"]
+},
+{
+  "eventId": 74,
+  "name": "Tour of Hast Imam Complex",
+  "cost": 5.00,
+  "address": "Hast Imam Square, Tashkent, Uzbekistan",
+  "description": "Explore the historic Hast Imam Complex, home to ancient manuscripts and beautiful Islamic architecture.",
+  "startTime": "2024-11-25T10:00:00Z",
+  "endTime": "2024-11-25T12:00:00Z",
+  "itineraryId": 21,
+  "eventImages": ["76"]
+},
+{
+  "eventId": 75,
+  "name": "Chorsu Bazaar Visit",
+  "cost": 0.00,
+  "address": "Chorsu Bazaar, Navoi Street, Tashkent, Uzbekistan",
+  "description": "A vibrant market where you can experience local culture, sample delicious foods, and shop for unique souvenirs.",
+  "startTime": "2024-11-25T13:00:00Z",
+  "endTime": "2024-11-25T15:00:00Z",
+  "itineraryId": 21,
+  "eventImages": ["77"]
+},
+{
+  "eventId": 76,
+  "name": "Evening at Amir Timur Square",
+  "cost": 0.00,
+  "address": "Amir Timur Square, Tashkent, Uzbekistan",
+  "description": "Spend the evening at this iconic square, surrounded by landmarks and a relaxing atmosphere.",
+  "startTime": "2024-11-25T16:00:00Z",
+  "endTime": "2024-11-25T18:00:00Z",
+  "itineraryId": 21,
+  "eventImages": ["78"]
+},
+{
+  "eventId": 77,
+  "name": "Dinner at Plov Center",
+  "cost": 10.00,
+  "address": "Central Asian Plov Center, Tashkent, Uzbekistan",
+  "description": "Enjoy a traditional Uzbek meal at the renowned Plov Center, famous for its flavorful dishes.",
+  "startTime": "2024-11-25T19:00:00Z",
+  "endTime": "2024-11-25T21:00:00Z",
+  "itineraryId": 21,
+  "eventImages": ["79"]
+},
+{
+  "eventId": 78,
+  "name": "Royal Ontario Museum (ROM)",
+  "cost": 25.00,
+  "address": "100 Queens Park, Toronto",
+  "description": "Explored the Royal Ontario Museum, be warned there is a lot to see, it was cool to see the different era and world history section, from the greaks to modern day Canada",
+  "startTime": "2024-01-01T10:00:00Z",
+  "endTime": "2024-01-01T11:45:00Z",
+  "itineraryId": 21,
+  "eventImages": ["80"]
+},
+{
+  "eventId": 79,
+  "name": "Ripley’s Aquarium of Canada",
+  "cost": 50.00,
+  "address": " 288 Bremner Blvd, Toronto",
+  "description": "Visited the famous Riplys aquarium, it was cool to see the different facets of the aquatic life",
+  "startTime": "2024-01-01T12:30:00Z",
+  "endTime": "2024-01-01T13:30:00Z",
+  "itineraryId": 21,
+  "eventImages": ["81"]
+},
+
+{
+  "eventId": 80,
+  "name": "Chinatown Festival",
+  "cost": 50.00,
+  "address": "Chinatown, Toronto",
+  "description": "There was a festival happening in chinatown during my visit, the food stalls were yummy, saw a kpop dance ",
+  "startTime": "2024-01-01T16:00:00Z",
+  "endTime": "2024-01-01T18:45:00Z",
+  "itineraryId": 21,
+  "eventImages": ["82"]
+},
+{
+  "eventId": 81,
+  "name": "Shibuya",
+  "cost": 510.00,
+  "address": "Shibuya, Tokyo",
+  "description": "Do not visit when Sukuna is there",
+  "startTime": "2024-01-01T16:00:00Z",
+  "endTime": "2024-01-01T18:45:00Z",
+  "itineraryId": 22,
+  "eventImages": ["83"]
+},
+{
+  "eventId": 82,
+  "name": "Akihabara",
+  "cost": 290.00,
+  "address": " Akihabara, Tokyo",
+  "description": "Went to Akihabara, saw anime shops",
+  "startTime": "2024-01-01T12:30:00Z",
+  "endTime": "2024-01-01T13:30:00Z",
+  "itineraryId": 22,
+  "eventImages": ["84"]
 }
 ]

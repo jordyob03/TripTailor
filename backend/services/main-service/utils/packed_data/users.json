@@ -58,5 +58,20 @@
     "posts": ["17", "18", "19"],
     "profileImage": 1,
     "coverImage": 2
+  },
+  {
+    "userId": 5,
+    "username": "abdulaziz",
+    "email": "abdulaziz@mun.ca",
+    "password": "$2a$12$2s5fq0/DpFT37eM68hhYK.qohpvr9lZCyrTSUDs/Jv8NA4aBH21IG",
+    "dateOfBirth": "2003-09-23T00:00:00Z",
+    "name": "Abdul Aziz",
+    "country": "Canada",
+    "languages": ["English", "Uzbek", "Russian"],
+    "tags": ["City", "Young Adults", "Nightlife", "Street Food"],
+    "boards": [],
+    "posts": ["20", "21", "22"],
+    "profileImage": 1,
+    "coverImage": 2
   }
 ]
