@@ -1,4 +1,5 @@
 import { faImage } from '@fortawesome/free-solid-svg-icons'; // Add this import at the top
+import { faImage } from '@fortawesome/free-solid-svg-icons'; // Add this import at the top
 import React, { useState, useRef, useEffect } from 'react';
 import '../styles/styles.css';
 import Tags from '../config/tags.json';
@@ -14,10 +15,14 @@ const fetchfeed = async (tags) => {
   try {
     // Convert tags array to JSON string and encode it
     const tagsParam = JSON.stringify(tags);
+    // Convert tags array to JSON string and encode it
+    const tagsParam = JSON.stringify(tags);
     console.log(tags, username);
+    const response = await feedAPI.get('/feed', { params: { tags: tagsParam } });
     const response = await feedAPI.get('/feed', { params: { tags: tagsParam } });
     if (response && response.data) {
       console.log(response.data);
+      return response.data.itineraries
       return response.data.itineraries
     } else {
       console.log("No data received in response.");
@@ -72,6 +77,7 @@ function HomePage() {
         console.error("Error fetching itineraries:", error);
       }
     };
+      
       
     // Fetch boards
     const fetchBoardsAndImages = async () => {
@@ -156,7 +162,20 @@ function HomePage() {
 
 
   const handleTagClick = async (tag) => {
+  const handleTagClick = async (tag) => {
     // Toggle the selection of the tag
+    const updatedTags = selectedTags.includes(tag)
+      ? selectedTags.filter((t) => t !== tag)
+      : [...selectedTags, tag];
+  
+    setSelectedTags(updatedTags);
+  
+    // Fetch feed with the updated tags and wait for the result
+    const data = await fetchfeed(updatedTags);
+    
+    // Ensure data is an array before setting it
+    if (Array.isArray(data)) {
+      setItineraries(data);
     const updatedTags = selectedTags.includes(tag)
       ? selectedTags.filter((t) => t !== tag)
       : [...selectedTags, tag];
@@ -171,7 +190,10 @@ function HomePage() {
       setItineraries(data);
     } else {
       setItineraries([]);
+      setItineraries([]);
     }
+  }
+  
   }
   
 

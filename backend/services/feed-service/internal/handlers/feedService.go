@@ -2,9 +2,9 @@ package handlers
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	db "github.com/jordyob03/TripTailor/backend/services/feed-service/internal/db"
@@ -14,41 +14,31 @@ import (
 func FeedService(database *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		//Extract and parse tags from query parameters
-		tagsParameters := c.Query("tags")
-		if tagsParameters == "" {
+		// Extract the "tags" query parameter
+		tagsParam := c.DefaultQuery("tags", "")
+		if tagsParam == "" {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Tags parameter is required"})
 			return
 		}
 
-		fmt.Print("Got Tags", tagsParameters)
-
-		user := c.Query("username")
-		if user == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "User is required"})
+		// Parse the tags as a JSON array
+		var tags []string
+		if err := json.Unmarshal([]byte(tagsParam), &tags); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON format for tags"})
 			return
 		}
 
-		fmt.Print("Got User")
+		// Log the tags to verify
+		fmt.Println("Got Tags:", tags)
 
-		tags := strings.Split(tagsParameters, ",")
-		if len(tags) == 0 {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "No tags specified"})
-			return
-		}
-
-		fmt.Print("Got Tags 2")
-
-		//Query the DB for itins with specified tags
-		itineraries, err := db.QueryItinerariesByTags(database, tags, user)
+		// Query the DB for itineraries with the specified tags
+		itineraries, err := db.QueryItinerariesByTags(database, tags)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
-		fmt.Print("Passed Quert")
-
-		//Return the itineraries
+		// Return the itineraries
 		c.JSON(http.StatusOK, gin.H{
 			"message":     "Itineraries retrieved successfully",
 			"itineraries": itineraries,
