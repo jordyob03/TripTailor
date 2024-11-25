@@ -181,9 +181,7 @@ function HomePage() {
       : [...selectedTags, tag];
   
     setSelectedTags(updatedTags);
-  
-    // Fetch feed with the updated tags and wait for the result
-    const data = await fetchfeed(updatedTags);
+
     
     // Ensure data is an array before setting it
     if (Array.isArray(data)) {
