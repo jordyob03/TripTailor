@@ -164,34 +164,33 @@ function HomePage() {
 
   const handleTagClick = async (tag) => {
     // Toggle the selection of the tag
-    const updatedTags = selectedTags.includes(tag)
-      ? selectedTags.filter((t) => t !== tag)
-      : [...selectedTags, tag];
-  
-    setSelectedTags(updatedTags);
-  
-    // Fetch feed with the updated tags and wait for the result
-    const data = await fetchfeed(updatedTags);
-    
-    // Ensure data is an array before setting it
-    if (Array.isArray(data)) {
-      setItineraries(data);
-    const updatedTags = selectedTags.includes(tag)
-      ? selectedTags.filter((t) => t !== tag)
-      : [...selectedTags, tag];
-  
-    setSelectedTags(updatedTags);
-
-    
-    // Ensure data is an array before setting it
-    if (Array.isArray(data)) {
-      setItineraries(data);
+    let updatedTags;
+    // Logic for handeling if user already clicked tag or not
+    if (selectedTags.includes(tag)) {
+      // If tag is already selected, keep the existing selected tags
+      updatedTags = [...selectedTags];
     } else {
-      setItineraries([]);
+      // If tag is not selected, add it to the selected tags
+      updatedTags = [...selectedTags, tag];
     }
-  }
   
-  }
+    setSelectedTags(updatedTags);
+  
+    if (updatedTags.length >= 1) {
+      // Fetch feed with the updated tags and wait for the result
+      const fetchedData = await fetchfeed(updatedTags);
+  
+      if (Array.isArray(fetchedData)) {
+        setItineraries(fetchedData); 
+      } else {
+        setItineraries([]); 
+      }
+    } else {
+      
+      setItineraries([]); 
+    }
+  };
+  
   
 
   return (
