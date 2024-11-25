@@ -1,5 +1,4 @@
 import { faImage } from '@fortawesome/free-solid-svg-icons'; // Add this import at the top
-import { faImage } from '@fortawesome/free-solid-svg-icons'; // Add this import at the top
 import React, { useState, useRef, useEffect } from 'react';
 import '../styles/styles.css';
 import Tags from '../config/tags.json';
@@ -15,14 +14,10 @@ const fetchfeed = async (tags) => {
   try {
     // Convert tags array to JSON string and encode it
     const tagsParam = JSON.stringify(tags);
-    // Convert tags array to JSON string and encode it
-    const tagsParam = JSON.stringify(tags);
     console.log(tags, username);
-    const response = await feedAPI.get('/feed', { params: { tags: tagsParam } });
     const response = await feedAPI.get('/feed', { params: { tags: tagsParam } });
     if (response && response.data) {
       console.log(response.data);
-      return response.data.itineraries
       return response.data.itineraries
     } else {
       console.log("No data received in response.");
@@ -45,19 +40,16 @@ function HomePage() {
 
   // Fetch itineraries from the backend
   useEffect(() => {
-    // Fetch itineraries
     const fetchItineraries = async () => {
       const response = [];
       const users = ["testuser", "herobrine", "jordy_ob", "mitchro"];
-
+  
       const user = await profileAPI.get("/user", { params: { username } });
       const userData = user.data;
-      
-      // Users tags 
+  
+      // Users tags
       const userTags = userData.tags;
-     
-      console.log(userTags);
-
+  
       try {
         // Loop through each user and fetch their itineraries
         for (const user of users) {
@@ -69,24 +61,35 @@ function HomePage() {
             console.error(`Itineraries for ${user} is not an array`, tempResponse.data.Itineraries);
           }
         }
-        
-        console.log('API response:', response);
-        setItineraries(response);
-        setFilteredItineraries(response);
+  
+        // Filter itineraries based on user tags
+        const filteredItineraries = response.filter((itinerary) =>
+          itinerary.tags.some((tag) => userTags.includes(tag))
+        );
+  
+        // Only set filtered itineraries here, no need to set `itineraries` unless needed
+        setFilteredItineraries(filteredItineraries);
+  
       } catch (error) {
         console.error("Error fetching itineraries:", error);
       }
     };
-      
-      
-    // Fetch boards
-    const fetchBoardsAndImages = async () => {
-      await fetchBoards();
-    };
   
     fetchItineraries();
-    fetchBoardsAndImages();
   }, []);
+  
+  // Handle tag filtering
+  useEffect(() => {
+    if (selectedTags.length > 0) {
+      const filtered = itineraries.filter((itinerary) =>
+        itinerary.tags.some((tag) => selectedTags.includes(tag))
+      );
+      setFilteredItineraries(filtered);
+    } else {
+      setFilteredItineraries(itineraries);
+    }
+  }, [selectedTags, itineraries]);
+  
 
   // Handle tag filtering
   useEffect(() => {
@@ -159,9 +162,6 @@ function HomePage() {
     }
   };
 
-
-
-  const handleTagClick = async (tag) => {
   const handleTagClick = async (tag) => {
     // Toggle the selection of the tag
     const updatedTags = selectedTags.includes(tag)
@@ -189,7 +189,6 @@ function HomePage() {
     if (Array.isArray(data)) {
       setItineraries(data);
     } else {
-      setItineraries([]);
       setItineraries([]);
     }
   }
