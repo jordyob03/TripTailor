@@ -1094,13 +1094,6 @@ transition: background-color 0.3s ease;
 min-width: 300px;
 }
 
-.itineraryHeader {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 50px;
-  padding: 20px 40px;
-}
-
 .itineraryText {
   display: flex;
   flex-direction: column;
@@ -1116,11 +1109,12 @@ min-width: 300px;
 }
 
 .itineraryMainImage {
-  flex-shrink: 0; /* Prevents shrinking of the main image */
-  width: 40%; /* Ensures the image takes half of the available space */
-  max-width: 500px;
-  height: auto;
-  border-radius: 8px;
+  flex-shrink: 0; /* Prevent shrinking */
+  width: 40%; /* Adjust width to take the desired percentage of the parent */
+  max-width: 425px; /* Remove max-width constraint */
+  height: auto; /* Maintain aspect ratio */
+  object-fit: cover; /* Ensures image fills space without distortion */
+  border-radius: 8px; /* Keep rounded corners */
 }
 
 .eventImages {
@@ -1132,8 +1126,8 @@ min-width: 300px;
 
 .eventImage {
   flex: 1;
-  max-width: calc(50% - 10px); /* Ensures images are equal width with spacing */
-  height: 150px; /* Flexible height */
+  width: 225px; /* Ensures images are equal width with spacing */
+  height: 175px; /* Flexible height */
   border-radius: 8px;
   object-fit: cover;
 }
@@ -1143,7 +1137,6 @@ min-width: 300px;
   flex-wrap: wrap;
   gap: 10px;
   padding: 0px 40px;
-  width: 1150px;
 }
 
 .itineraryTags span {
@@ -1158,15 +1151,12 @@ min-width: 300px;
   display: flex;
   flex-direction: row; /* Aligns child elements in a row */
   gap: 20px; /* Space between the elements */
-  margin-top: 20px;
-  width: 80%; /* Ensures the container fills its parent width */
-  padding: 0px 400px;
-  width: 1150px;
+  margin-top: 10px;
+  padding: 0px 40px;
 }
 
 .itineraryTable {
   padding: 20px;
-  width: 750px;
   background: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -1175,7 +1165,6 @@ min-width: 300px;
 
 .itineraryOverview {
   padding: 20px;
-  width: 400px;
   background: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -1205,3 +1194,73 @@ min-width: 300px;
   align-items: center;
   padding-left: 6px; /* Optional, if needed for spacing */
 }
+
+.ItinTitle {
+  font-size: 18px;
+  align-items: center;
+  padding: 0px 0px;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+.smallText {
+  font-size: 14px;
+  align-items: center;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+.boldText {
+  font-size: 16px;
+  align-items: center;
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+
+table {
+  width: 100%; /* Makes the table take the full width of its container */
+  border-collapse: collapse; /* Removes the space between table cells */
+  margin-top: 20px;
+}
+
+th, td {
+  padding: 10px; /* Adds spacing inside cells */
+  text-align: left; /* Aligns text to the left */
+}
+
+th {
+  font-weight: bold; /* Makes header text bold */
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 100px 20px 0; /* Push content down without margin */
+  box-sizing: border-box;
+}
+
+.itineraryHeader {
+  display: flex;
+  justify-content: space-between; /* Space out text and image */
+  align-items: flex-end; /* Align items to the bottom */
+  gap: 20px; /* Add space between elements */
+  padding: 20px; /* Adjust padding */
+  max-width: 1200px; /* Keep within the container */
+  margin: 0 auto; /* Center within the page */
+  box-sizing: border-box; /* Include padding in dimensions */
+}
+
+.itineraryDetails {
+  margin-top: 30px;
+}
+
+.itineraryTags {
+  margin-top: 20px;
+}
+
+.eventImages img {
+  width: 100%; /* Adjust images to be responsive */
+  max-width: 221px; /* Set a max width for individual event images */
+  border-radius: 8px;
+}
+
