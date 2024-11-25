@@ -22,4 +22,6 @@ func SetupRoutes(router *gin.Engine, dbConn *sql.DB) {
 
 	router.POST("/create", handlers.CreateProfile(dbConn))
 	router.PUT("/update", handlers.UpdateProfile(dbConn))
+	router.GET("/user", handlers.GetProfile(dbConn))
+
 }
