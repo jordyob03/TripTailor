@@ -83,17 +83,22 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost }) 
   useEffect(() => {
     const fetchAllEventImages = async () => {
       const imagesMap = {};
-      for (const itinerary of itineraries) {
-        const events = await fetchEvents(itinerary.itineraryId);
-        if (events.length > 0 && events[0].eventImages?.length > 0) {
-          imagesMap[itinerary.itineraryId] = `http://localhost:8080/images/${events[0].eventImages[0]}`;
+      if (Array.isArray(itineraries) && itineraries.length > 0) {
+        for (const itinerary of itineraries) {
+          const events = await fetchEvents(itinerary.itineraryId);
+          if (events.length > 0 && events[0].eventImages?.length > 0) {
+            imagesMap[itinerary.itineraryId] = `http://localhost:8080/images/${events[0].eventImages[0]}`;
+          }
         }
+        setEventImages(imagesMap);
       }
-      setEventImages(imagesMap);
     };
+  
     fetchAllEventImages();
     fetchBoardsAndImages();
   }, [itineraries]);
+  
+  
 
   const handleSave = (itinerary) => {
     console.log(itinerary);
@@ -158,66 +163,68 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost }) 
   });
 
   return (
-    <div className="resultsGrid">
+    <>
       {Array.isArray(itineraries) && itineraries.length > 0 ? (
-        columns.map((column, colIndex) => (
-          <div key={colIndex} className="resultsColumn">
-            {column.map((itinerary) => {
-              const imageUrl = eventImages[itinerary.itineraryId] || fallbackImage;
-              return (
-                <div
-                  key={itinerary.itineraryId}
-                  className="resultCard"
-                  onClick={() => handleItinClick(itinerary.itineraryId)}
-                >
-                  {showSaveButton && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSave(itinerary);
-                      }}
-                      className="saveButton"
-                    >
-                      Save
-                    </button>
-                  )}
-                  <img src={imageUrl} alt={itinerary.title} className="resultCardImage" />
-                  <div className="resultCardContent">
-                    <h4 className="cardLocation">
-                      <FontAwesomeIcon
-                        icon={faMapMarkerAlt}
-                        style={{ marginRight: '8px', color: '#00509e' }}
-                      />
-                      {`${itinerary.city}, ${itinerary.country}`}
-                    </h4>
-                    <h3 className="cardTitle">{itinerary.title}</h3>
-                    <p className="cardLocation">Price: ${itinerary.price}</p>
-                    <p className="cardDescription">{itinerary.description}</p>
-                    <div className="resultTags">
-                      {Array.isArray(itinerary.tags) &&
-                        itinerary.tags.map((tag, i) => (
-                          <span key={i} className="resultCardTag">
-                            {tag.replace(/[^a-zA-Z\s]/g, '')}
-                          </span>
-                        ))}
-                    </div>
-                    {editMode && (
+        <div className="resultsGrid">
+          {columns.map((column, colIndex) => (
+            <div key={colIndex} className="resultsColumn">
+              {column.map((itinerary) => {
+                const imageUrl = eventImages[itinerary.itineraryId] || fallbackImage;
+                return (
+                  <div
+                    key={itinerary.itineraryId}
+                    className="resultCard"
+                    onClick={() => handleItinClick(itinerary.itineraryId)}
+                  >
+                    {showSaveButton && (
                       <button
-                        className="deleteButton"
                         onClick={(e) => {
                           e.stopPropagation();
-                          onDeletePost(itinerary.postId);
+                          handleSave(itinerary);
                         }}
+                        className="saveButton"
                       >
-                        X
+                        Save
                       </button>
                     )}
+                    <img src={imageUrl} alt={itinerary.title} className="resultCardImage" />
+                    <div className="resultCardContent">
+                      <h4 className="cardLocation">
+                        <FontAwesomeIcon
+                          icon={faMapMarkerAlt}
+                          style={{ marginRight: '8px', color: '#00509e' }}
+                        />
+                        {`${itinerary.city}, ${itinerary.country}`}
+                      </h4>
+                      <h3 className="cardTitle">{itinerary.title}</h3>
+                      <p className="cardLocation">Price: ${itinerary.price}</p>
+                      <p className="cardDescription">{itinerary.description}</p>
+                      <div className="resultTags">
+                        {Array.isArray(itinerary.tags) &&
+                          itinerary.tags.map((tag, i) => (
+                            <span key={i} className="resultCardTag">
+                              {tag.replace(/[^a-zA-Z\s]/g, '')}
+                            </span>
+                          ))}
+                      </div>
+                      {editMode && (
+                        <button
+                          className="deleteButton"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onDeletePost(itinerary.postId);
+                          }}
+                        >
+                          X
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        ))
+                );
+              })}
+            </div>
+          ))}
+        </div>
       ) : (
         <div className="centeredMessageContainer">
           <div className="noItinerariesMessage">No itineraries found.</div>
@@ -313,7 +320,7 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost }) 
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
