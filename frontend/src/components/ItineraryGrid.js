@@ -8,7 +8,7 @@ import { faImage } from '@fortawesome/free-solid-svg-icons'; // Add this import 
 
 const username = localStorage.getItem('username');
 
-const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost}) => {
+const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost }) => {
   const [selectedTags, setSelectedTags] = useState([]);
   const [filteredItineraries, setFilteredItineraries] = useState([]);
   const [boards, setBoards] = useState([]);
@@ -26,14 +26,15 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost}) =
     navigate(`/itinerary/${itineraryId}`);
   };
 
-  const fallbackImage = "https://t4.ftcdn.net/jpg/08/34/00/03/360_F_834000314_tLfhX7N7wnZpMkPIy02pqbRt8JFKiUuG.jpg";
+  const fallbackImage =
+    'https://t4.ftcdn.net/jpg/08/34/00/03/360_F_834000314_tLfhX7N7wnZpMkPIy02pqbRt8JFKiUuG.jpg';
 
   const fetchEvents = async (itineraryId) => {
     try {
       const response = await boardAPI.get('/events', { params: { itineraryId } });
       return response.data.Events;
     } catch (error) {
-      console.error("Error fetching events:", error);
+      console.error('Error fetching events:', error);
       return [];
     }
   };
@@ -49,16 +50,16 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost}) =
       const response = await boardAPI.get('/boards', { params: userData });
       const boardsData = response.data.boards;
       setBoards(boardsData);
-  
+
       const imagePromises = boardsData.map(async (board) => {
         try {
           const postsResponse = await boardAPI.get('/posts', { params: { boardId: board.boardId } });
           const firstPostId = postsResponse.data.Posts?.[0]?.postId;
-  
+
           if (firstPostId) {
             const itinerary = await boardAPI.get('/itineraries', { params: { postId: firstPostId } });
             const events = await fetchEvents(itinerary.data.Itinerary?.itineraryId);
-  
+
             if (events.length > 0 && events[0].eventImages?.length > 0) {
               // Use the first image ID from the event
               const imageId = events[0].eventImages[0];
@@ -70,12 +71,12 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost}) =
         }
         return { boardId: board.boardId, image: null };
       });
-  
+
       await Promise.all(imagePromises);
       setImages(imagesMap);
     } catch (error) {
       console.error('Error fetching boards:', error);
-      setErrorMessage(error.message || "An error occurred. Please try again.");
+      setErrorMessage(error.message || 'An error occurred. Please try again.');
     }
   };
 
@@ -95,8 +96,8 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost}) =
   }, [itineraries]);
 
   const handleSave = (itinerary) => {
-    console.log(itinerary); 
-    console.log(showModal); 
+    console.log(itinerary);
+    console.log(showModal);
     setSelectedItinerary(itinerary);
     setShowModal(true);
   };
@@ -109,7 +110,8 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost}) =
   };
 
   const handleSelectBoard = (boardId, postId) => {
-    boardAPI.post('/addboardpost', {boardId, postId})
+    boardAPI
+      .post('/addboardpost', { boardId, postId })
       .then((response) => {
         console.log('Itinerary saved successfully:', response.data);
         handleCloseModal();
@@ -117,7 +119,7 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost}) =
       .catch((error) => {
         console.error('Error saving itinerary to board:', error);
       });
-    
+
     console.log(`Itinerary ${postId} saved to board ${boardId}`);
     handleCloseModal();
   };
@@ -126,16 +128,16 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost}) =
     if (newBoardName.trim()) {
       const data = {
         Username: username,
-        BoardName: newBoardName
+        BoardName: newBoardName,
       };
 
-      console.log("data: ", data)
+      console.log('data: ', data);
       const response = await boardAPI.post('/addboard', data);
-      console.log(response)
-      const board = response.data.boardId
-      handleSelectBoard(board, itinerary.itineraryId)
-      console.log("Itinerary, ", itinerary.itineraryId, " saved to board, ", board)
-      window.location.reload()
+      console.log(response);
+      const board = response.data.boardId;
+      handleSelectBoard(board, itinerary.itineraryId);
+      console.log('Itinerary, ', itinerary.itineraryId, ' saved to board, ', board);
+      window.location.reload();
       setNewBoardName(''); // Reset new board name
       setNewBoardImage(null); // Reset the image
     }
@@ -148,67 +150,74 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost}) =
     }
   };
 
+  // Distribute itineraries into 4 columns
+  const columns = [[], [], [], []];
+  itineraries?.forEach((itinerary, index) => {
+    const columnIndex = index % 4; // Determine which column to place the itinerary in
+    columns[columnIndex].push(itinerary);
+  });
+
   return (
     <div className="resultsGrid">
       {Array.isArray(itineraries) && itineraries.length > 0 ? (
-        itineraries.map((itinerary) => {
-          const imageUrl = eventImages[itinerary.itineraryId] || fallbackImage;
-          return (
-            <div
-              key={itinerary.itineraryId}
-              className="resultCard"
-              onClick={() => handleItinClick(itinerary.itineraryId)}
-              style={{ position: 'relative' }}
-            >
-              {showSaveButton && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSave(itinerary);
-                  }}
-                  className="saveButton"
+        columns.map((column, colIndex) => (
+          <div key={colIndex} className="resultsColumn">
+            {column.map((itinerary) => {
+              const imageUrl = eventImages[itinerary.itineraryId] || fallbackImage;
+              return (
+                <div
+                  key={itinerary.itineraryId}
+                  className="resultCard"
+                  onClick={() => handleItinClick(itinerary.itineraryId)}
                 >
-                  Save
-                </button>
-              )}
-              <img
-                src={imageUrl}
-                alt={itinerary.title}
-                className="resultCardImage"
-              />
-              <div className="resultCardContent">
-                <h4 className="cardLocation">
-                  <FontAwesomeIcon
-                    icon={faMapMarkerAlt}
-                    style={{ marginRight: '8px', color: '#00509e' }}
-                  />
-                  {`${itinerary.city}, ${itinerary.country}`}
-                </h4>
-                <h3 className="cardTitle">{itinerary.title}</h3>
-                <p className="cardDescription">{itinerary.description}</p>
-                <div className="resultTags">
-                  {Array.isArray(itinerary.tags) &&
-                    itinerary.tags.map((tag, i) => (
-                      <span key={i} className="resultCardTag">
-                        {tag.replace(/[^a-zA-Z\s]/g, '')}
-                      </span>
-                    ))}
+                  {showSaveButton && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSave(itinerary);
+                      }}
+                      className="saveButton"
+                    >
+                      Save
+                    </button>
+                  )}
+                  <img src={imageUrl} alt={itinerary.title} className="resultCardImage" />
+                  <div className="resultCardContent">
+                    <h4 className="cardLocation">
+                      <FontAwesomeIcon
+                        icon={faMapMarkerAlt}
+                        style={{ marginRight: '8px', color: '#00509e' }}
+                      />
+                      {`${itinerary.city}, ${itinerary.country}`}
+                    </h4>
+                    <h3 className="cardTitle">{itinerary.title}</h3>
+                    <p className="cardLocation">Price: ${itinerary.price}</p>
+                    <p className="cardDescription">{itinerary.description}</p>
+                    <div className="resultTags">
+                      {Array.isArray(itinerary.tags) &&
+                        itinerary.tags.map((tag, i) => (
+                          <span key={i} className="resultCardTag">
+                            {tag.replace(/[^a-zA-Z\s]/g, '')}
+                          </span>
+                        ))}
+                    </div>
+                    {editMode && (
+                      <button
+                        className="deleteButton"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDeletePost(itinerary.postId);
+                        }}
+                      >
+                        X
+                      </button>
+                    )}
+                  </div>
                 </div>
-                {editMode && (
-                  <button
-                    className="deleteButton"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDeletePost(itinerary.postId);
-                    }}
-                  >
-                    X
-                  </button>
-                )}
-              </div>
-            </div>
-          );
-        })
+              );
+            })}
+          </div>
+        ))
       ) : (
         <div className="centeredMessageContainer">
           <div className="noItinerariesMessage">No itineraries found.</div>
@@ -253,7 +262,7 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost}) =
                     );
                   })}
                 </div>
-  
+
                 {/* New Board Input Section */}
                 <div className="newBoardInput">
                   <div className="newBoardInputRow">
@@ -292,7 +301,10 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost}) =
                       className="newBoardInputField"
                     />
                   </div>
-                  <button className="createBoardButton" onClick={() => handleCreateNewBoard(selectedItinerary)}>
+                  <button
+                    className="createBoardButton"
+                    onClick={() => handleCreateNewBoard(selectedItinerary)}
+                  >
                     Create
                   </button>
                 </div>
@@ -303,6 +315,6 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost}) =
       )}
     </div>
   );
-}
+};
 
 export default ItineraryGrid;

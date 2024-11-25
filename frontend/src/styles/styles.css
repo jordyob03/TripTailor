@@ -2,16 +2,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1vw 1vw;
-  height: 50px;
-  width: 100vw;
+  padding: 0 1vw; /* Adjust padding for better spacing */
+  height: 100px;
+  width: 100%; /* Use percentage for responsive scaling */
   background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: fixed;
+  position: fixed; /* Keeps the navbar at the top of the viewport */
   top: 0;
   left: 0;
-  z-index: 2;
-  margin-right: 100px;
+  z-index: 2; /* Ensure it remains above other elements */
 }
 
 .navBarLogo {
@@ -467,21 +466,21 @@ align-items: center;
 gap: 10px;
 }
 
-/* Tag Filters */
 .tagFiltersContainer {
-position: fixed;
-top: 100px;
-margin-top: 20px;
-left: 50%;
-transform: translateX(-50%);
-background-color: white;
-padding: 10px 20px;
-z-index: 1;
-display: flex;
-align-items: center;
-justify-content: space-between;
-border-radius: 8px;
-max-width: 60%;
+  position: fixed;
+  top: 100px; /* Adjust based on the height of your navbar */
+  left: 0; /* Align to the left of the viewport */
+  right: 0; /* Align to the right of the viewport */
+  width: 100%; /* Make it span the full width of the screen */
+  background-color: rgba(255, 255, 255); /* Semi-transparent white background */
+  padding: 10px 10vw; /* Adjust padding for spacing */
+  z-index: 1; /* Ensure it stays above other content */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 0; /* Remove border radius for a full-width look */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for better visibility */
+  box-sizing: border-box; /* Ensures padding is included in width calculations */
 }
 
 .arrowButton {
@@ -497,13 +496,23 @@ display: flex;
 overflow-x: auto;
 white-space: nowrap;
 padding: 0 10px;
-gap: 15px;
+gap: 5px;
 scrollbar-width: none; /* Hide scrollbar for Firefox */
 }
 
 .tagItem {
 text-align: center;
 cursor: pointer;
+padding: 5px 15px; /* Increase padding for larger width */
+}
+
+.tagItem.selected {
+  background-color: #efefef; /* Highlighted color */
+  color: #fff; /* Contrast text color */
+  font-weight: bold; /* Optional for emphasis */
+  border-radius: 25px;
+  padding: 5px 15px; /* Increase padding for larger width */
+
 }
 
 .tagIcon {
@@ -641,6 +650,17 @@ width: 100vw;
 background-color: rgb(255, 255, 255);
 }
 
+.itinPageContainer {
+  padding-top: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: calc(100vh - 60px); /* Adjust for any fixed header/footer */
+  width: 80vw;
+  margin: 0 auto; /* Center horizontally */
+  background-color: rgb(255, 255, 255);
+}
+
 .tabNavigation {
 display: flex;
 justify-content: center;
@@ -698,15 +718,21 @@ cursor: pointer;
 }
 
 .resultsGrid {
-display: flex;
-gap: 2%;
-flex-wrap: wrap;
-row-gap: 20px;
-margin-top: 20px;
-margin: 20px;
-justify-content: flex-start;
-align-items: flex-start;
-width: 95%;
+  column-count: 4; /* Number of columns */
+  column-gap: 20px; /* Space between columns */
+  width: 95%;
+  margin: 20px auto;
+}
+
+.resultCard {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  position: relative;
+  display: inline-block; /* Prevent column breaking */
+  margin-bottom: 20px; /* Space between items */
+  width: 100%; /* Ensure cards fit the column width */
 }
 
 .results {
@@ -729,13 +755,6 @@ width: 95%;
 padding: 0 60px;
 }
 
-.resultCard {
-background-color: white;
-border-radius: 12px;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-overflow: hidden;
-position: relative;
-}
 
 .resultCardContent {
 padding: 15px;
@@ -1005,7 +1024,6 @@ text-align: center;
   border-radius: 20px;
   padding: 10px 20px;
   cursor: pointer;
-  z-index: 2;
   transition: background-color 0.2s ease;
   font-size: 16px;
   font-weight: bold;
@@ -1074,4 +1092,116 @@ border: 1px solid #003f7f;
 cursor: pointer;
 transition: background-color 0.3s ease;
 min-width: 300px;
+}
+
+.itineraryHeader {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 50px;
+  padding: 20px 40px;
+}
+
+.itineraryText {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Keeps the images at the bottom */
+  flex: 1;
+  min-width: 300px;
+  max-width: 600px; /* Restricts the max width */
+}
+
+.itineraryDesc {
+  flex-grow: 1;
+  margin-bottom: 20px; /* Adds spacing above the images */
+}
+
+.itineraryMainImage {
+  flex-shrink: 0; /* Prevents shrinking of the main image */
+  width: 40%; /* Ensures the image takes half of the available space */
+  max-width: 500px;
+  height: auto;
+  border-radius: 8px;
+}
+
+.eventImages {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  margin-top: 10px; /* Adds spacing from the description */
+}
+
+.eventImage {
+  flex: 1;
+  max-width: calc(50% - 10px); /* Ensures images are equal width with spacing */
+  height: 150px; /* Flexible height */
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.itineraryTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0px 40px;
+  width: 1150px;
+}
+
+.itineraryTags span {
+  background: #E1EFFF;
+  color: #003f7f;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.itineraryDetails {
+  display: flex;
+  flex-direction: row; /* Aligns child elements in a row */
+  gap: 20px; /* Space between the elements */
+  margin-top: 20px;
+  width: 80%; /* Ensures the container fills its parent width */
+  padding: 0px 400px;
+  width: 1150px;
+}
+
+.itineraryTable {
+  padding: 20px;
+  width: 750px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box; /* Includes padding and border in width calculations */
+}
+
+.itineraryOverview {
+  padding: 20px;
+  width: 400px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box; /* Includes padding and border in width calculations */
+}
+
+.postedBy .username,
+.postedBy .date {
+  color: #00509e;
+}
+
+
+.tagItem {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  background: #E1EFFF;
+  border-radius: 20px;
+  color: #00509e;
+  font-size: 14px;
+}
+
+.tagIcon1 {
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 6px; /* Optional, if needed for spacing */
 }

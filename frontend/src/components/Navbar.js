@@ -8,7 +8,7 @@ import searchAPI from '../api/searchAPI';
 
 function NavBar({ onSearch }) {
   const [SearchValue, setSearchValue] = useState('');
-  const [Price, setPrice] = useState(0);
+  const [Price, setPrice] = useState('');
   const [SearchValueErrorMessage, setSearchValueErrorMessage] = useState('');
   const [PriceErrorMessage, setPriceErrorMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -50,7 +50,10 @@ function NavBar({ onSearch }) {
     if (typingTimeout) {
       clearTimeout(typingTimeout); // Clear any existing timeout
     }
-  
+
+    if (!price || isNaN(numericPrice) || numericPrice <= 0) {
+      price = 999999;
+    }
     const numericPrice = parseFloat(price);
   
     const timeout = setTimeout(async () => {
@@ -65,10 +68,6 @@ function NavBar({ onSearch }) {
         hasError = true;
       }
   
-      if (!price || isNaN(numericPrice) || numericPrice <= 0) {
-        setPriceErrorMessage('Please enter a valid positive Price.');
-        hasError = true;
-      }
   
       if (!hasError) {
         const searchData = { SearchValue: searchValue, Price: numericPrice };
@@ -146,9 +145,6 @@ function NavBar({ onSearch }) {
                 style={{ width: '150px' }}
               />
             </div>
-            <button onClick={handleSearchDebounced} className="searchButton">
-              <FontAwesomeIcon icon={faSearch} /> Search
-            </button>
           </div>
           <div className="errorMessagesContainer">
             {SearchValueErrorMessage && <div className="errorMessageSB">{SearchValueErrorMessage}</div>}
@@ -181,7 +177,7 @@ function NavBar({ onSearch }) {
           <ul>
             <li onClick={() => { navigate('/home-page'); closeMenu(); }}>Home</li>
             <li onClick={() => { navigate('/my-travels/itineraries'); closeMenu(); }}>My Travels</li>
-            <li onClick={() => { navigate('/account-settings'); closeMenu(); }}>Account Settings</li>
+            <li onClick={() => { navigate('/personal-info'); closeMenu(); }}>Account Settings</li>
           </ul>
         </div>
       )}
