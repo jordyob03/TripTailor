@@ -38,6 +38,7 @@ function NavBar({ onSearch }) {
     // Allow only numbers, decimal points, and empty values
     if (/^\d*\.?\d*$/.test(value)) {
       setPrice(value); // Keep value as string for precise user input handling
+      handleSearchDebounced(SearchValue, value); // Call the search function with updated Price
     }
   };
 
@@ -46,28 +47,23 @@ function NavBar({ onSearch }) {
     navigate('/');
   };
 
-  const handleSearchDebounced = (searchValue, price) => {
-    const numericPrice = parseFloat(price);
+  const handleSearchDebounced = (searchFieldEntry, price) => {
 
     if (typingTimeout) {
       clearTimeout(typingTimeout); // Clear any existing timeout
     }
 
-    if (!price || isNaN(numericPrice) || numericPrice <= 0) {
-      price = 999999;
-    } 
-    
+    const priceTemp = (!price || isNaN(price) || price <= 0) ? 999999 : price;
+    const numericPrice = parseFloat(priceTemp);
+    const searchTemp = (!searchFieldEntry || searchFieldEntry <= '') ? ' ' : searchFieldEntry;
+    const searchValue = searchTemp;
+
     const timeout = setTimeout(async () => {
       let hasError = false;
   
       setSearchValueErrorMessage('');
       setPriceErrorMessage('');
       setErrorMessage('');
-  
-      if (!searchValue) {
-        setSearchValueErrorMessage('Please enter a SearchValue.');
-        hasError = true;
-      }
   
   
       if (!hasError) {
