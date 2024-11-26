@@ -33,6 +33,7 @@ function BoardPosts() {
         username: board.username,
         dateOfCreation: board.dateOfCreation,
       });
+
       setEditedDescription(board.description); // Set initial description
 
       const postsResponse = await boardAPI.get('/posts', { params: { boardId } });

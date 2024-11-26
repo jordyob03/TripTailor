@@ -84,7 +84,7 @@ function Boards() {
   return (
     <div className="results">
       {boards.length > 0 ? (
-        <div className="resultsGrid">
+        <div className="boardsGrid">
           {boards.map((board) => {
             const eventImage = `http://localhost:8080/images/${images[board.boardId] || fallbackImage}`
             return (

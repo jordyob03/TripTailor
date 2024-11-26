@@ -2,16 +2,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1vw 1vw;
-  height: 50px;
-  width: 100vw;
+  padding: 0 1vw; /* Adjust padding for better spacing */
+  height: 100px;
+  width: 100%; /* Use percentage for responsive scaling */
   background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: fixed;
+  position: fixed; /* Keeps the navbar at the top of the viewport */
   top: 0;
   left: 0;
-  z-index: 2;
-  margin-right: 100px;
+  z-index: 2; /* Ensure it remains above other elements */
 }
 
 .navBarLogo {
@@ -467,21 +466,21 @@ align-items: center;
 gap: 10px;
 }
 
-/* Tag Filters */
 .tagFiltersContainer {
-position: fixed;
-top: 100px;
-margin-top: 20px;
-left: 50%;
-transform: translateX(-50%);
-background-color: white;
-padding: 10px 20px;
-z-index: 1;
-display: flex;
-align-items: center;
-justify-content: space-between;
-border-radius: 8px;
-max-width: 60%;
+  position: fixed;
+  top: 100px; /* Adjust based on the height of your navbar */
+  left: 0; /* Align to the left of the viewport */
+  right: 0; /* Align to the right of the viewport */
+  width: 100%; /* Make it span the full width of the screen */
+  background-color: rgba(255, 255, 255); /* Semi-transparent white background */
+  padding: 10px 10vw; /* Adjust padding for spacing */
+  z-index: 1; /* Ensure it stays above other content */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 0; /* Remove border radius for a full-width look */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for better visibility */
+  box-sizing: border-box; /* Ensures padding is included in width calculations */
 }
 
 .arrowButton {
@@ -497,13 +496,23 @@ display: flex;
 overflow-x: auto;
 white-space: nowrap;
 padding: 0 10px;
-gap: 15px;
+gap: 5px;
 scrollbar-width: none; /* Hide scrollbar for Firefox */
 }
 
 .tagItem {
 text-align: center;
 cursor: pointer;
+padding: 5px 15px; /* Increase padding for larger width */
+}
+
+.tagItem.selected {
+  background-color: #efefef; /* Highlighted color */
+  color: #fff; /* Contrast text color */
+  font-weight: bold; /* Optional for emphasis */
+  border-radius: 25px;
+  padding: 5px 15px; /* Increase padding for larger width */
+
 }
 
 .tagIcon {
@@ -538,6 +547,18 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 overflow: hidden;
 position: relative;
 transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.boardsGrid {
+  display: flex;
+  gap: 2%;
+  flex-wrap: wrap;
+  row-gap: 20px;
+  margin-top: 20px;
+  margin: 20px;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 95%;
 }
 
 .resultCard:hover {
@@ -641,6 +662,17 @@ width: 100vw;
 background-color: rgb(255, 255, 255);
 }
 
+.itinPageContainer {
+  padding-top: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: calc(100vh - 60px); /* Adjust for any fixed header/footer */
+  width: 80vw;
+  margin: 0 auto; /* Center horizontally */
+  background-color: rgb(255, 255, 255);
+}
+
 .tabNavigation {
 display: flex;
 justify-content: center;
@@ -698,15 +730,21 @@ cursor: pointer;
 }
 
 .resultsGrid {
-display: flex;
-gap: 2%;
-flex-wrap: wrap;
-row-gap: 20px;
-margin-top: 20px;
-margin: 20px;
-justify-content: flex-start;
-align-items: flex-start;
-width: 95%;
+  column-count: 4; /* Number of columns */
+  column-gap: 20px; /* Space between columns */
+  width: 95%;
+  margin: 20px auto;
+}
+
+.resultCard {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  position: relative;
+  display: inline-block; /* Prevent column breaking */
+  margin-bottom: 20px; /* Space between items */
+  width: 100%; /* Ensure cards fit the column width */
 }
 
 .results {
@@ -729,13 +767,6 @@ width: 95%;
 padding: 0 60px;
 }
 
-.resultCard {
-background-color: white;
-border-radius: 12px;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-overflow: hidden;
-position: relative;
-}
 
 .resultCardContent {
 padding: 15px;
@@ -995,6 +1026,22 @@ text-align: center;
   background-color: #0056b3;
 }
 
+.saveButton1 {
+  top: 100px;
+  right: 100px;
+  background-color: #003f7f;
+  color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  margin-left: 970px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 16px;
+  font-weight: bold;
+  white-space: nowrap; /* Prevents text wrapping to a new line */
+}
+
 .saveButton {
   position: absolute;
   top: 10px;
@@ -1005,7 +1052,6 @@ text-align: center;
   border-radius: 20px;
   padding: 10px 20px;
   cursor: pointer;
-  z-index: 2;
   transition: background-color 0.2s ease;
   font-size: 16px;
   font-weight: bold;
@@ -1074,4 +1120,243 @@ border: 1px solid #003f7f;
 cursor: pointer;
 transition: background-color 0.3s ease;
 min-width: 300px;
+}
+
+.itineraryText {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Keeps the images at the bottom */
+  flex: 1;
+  min-width: 300px;
+  max-width: 600px; /* Restricts the max width */
+}
+
+.itineraryDesc {
+  flex-grow: 1;
+  margin-bottom: 20px; /* Adds spacing above the images */
+}
+
+.itineraryMainImage {
+  flex-shrink: 0; /* Prevent shrinking */
+  width: 40%; /* Adjust width to take the desired percentage of the parent */
+  max-width: 425px; /* Remove max-width constraint */
+  height: auto; /* Maintain aspect ratio */
+  object-fit: cover; /* Ensures image fills space without distortion */
+  border-radius: 8px; /* Keep rounded corners */
+  aspect-ratio: 15 / 14; /* Automatically calculates height */
+}
+
+.eventImages {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  margin-top: 10px; /* Adds spacing from the description */
+}
+
+.eventImage {
+  flex: 1;
+  width: 225px; /* Ensures images are equal width with spacing */
+  height: 175px; /* Flexible height */
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.itineraryTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0px 20px;
+}
+
+.itineraryTags span {
+  background: #E1EFFF;
+  color: #003f7f;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.itineraryDetails {
+  display: flex;
+  flex-direction: row; /* Aligns child elements in a row */
+  gap: 20px; /* Space between the elements */
+  margin-top: 10px;
+  padding: 0px 20px;
+}
+
+.itineraryTable {
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box; /* Includes padding and border in width calculations */
+}
+
+.itineraryOverview {
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box; /* Includes padding and border in width calculations */
+  width: 400px;
+}
+
+.postedBy .username,
+.postedBy .date {
+  color: #00509e;
+}
+
+
+.tagItem1 {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  background: #E1EFFF;
+  border-radius: 20px;
+  color: #00509e;
+  font-size: 14px;
+}
+
+.tagIcon1 {
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 6px; /* Optional, if needed for spacing */
+}
+
+.ItinTitle {
+  font-size: 18px;
+  align-items: center;
+  padding: 0px 0px;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+.smallText {
+  font-size: 14px;
+  align-items: center;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+.boldText {
+  font-size: 16px;
+  align-items: center;
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+
+table {
+  width: 100%; /* Makes the table take the full width of its container */
+  border-collapse: collapse; /* Removes the space between table cells */
+  margin-top: 20px;
+}
+
+th, td {
+  padding: 10px; /* Adds spacing inside cells */
+  text-align: left; /* Aligns text to the left */
+}
+
+th {
+  font-weight: bold; /* Makes header text bold */
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 100px 20px 0; /* Push content down without margin */
+  box-sizing: border-box;
+}
+
+.itineraryHeader {
+  display: flex;
+  justify-content: space-between; /* Space out text and image */
+  align-items: flex-end; /* Align items to the bottom */
+  gap: 20px; /* Add space between elements */
+  padding: 20px; /* Adjust padding */
+  max-width: 1200px; /* Keep within the container */
+  margin: 0 auto; /* Center within the page */
+  box-sizing: border-box; /* Include padding in dimensions */
+}
+
+.itineraryDetails {
+  margin-top: 30px;
+}
+
+.itineraryTags {
+  margin-top: 20px;
+}
+
+.eventImages img {
+  width: 100%; /* Adjust images to be responsive */
+  max-width: 221px; /* Set a max width for individual event images */
+  border-radius: 8px;
+}
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000; /* Ensure it's on top */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popupContent {
+  position: relative;
+  background: #fff;
+  padding: 0px;
+  border-radius: 8px;
+  max-width: 60%;
+  max-height: 60%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.popupImage {
+  width: 500px; /* Make the image take the full width of the container */
+  height: auto; /* Maintain aspect ratio */
+  max-width: 600px; /* Adjust this for the maximum width */
+  aspect-ratio: 4 / 3; /* Force the aspect ratio */
+  object-fit: cover; /* Cover the space without stretching */
+  border-radius: 8px; /* Add a slight border radius for aesthetics */
+  display: block; /* Ensure the image is treated as a block-level element */
+  margin: auto; /* Center the image horizontally */
+}
+
+.prevButton,
+.nextButton {
+  background-color: rgba(255, 255, 255, 0.5);
+  color: #000000; /* White arrow icon */
+  border: none; /* Remove borders */
+  border-radius: 50%; /* Make them circular */
+  width: 30px; /* Set width */
+  height: 30px; /* Set height */
+  font-size: 24px; /* Make the arrows larger */
+  display: flex; /* Center the arrow icon inside */
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+  cursor: pointer; /* Pointer cursor on hover */
+  position: absolute; /* Position relative to the popupContent container */
+  top: 50%; /* Vertically center on the image */
+  transform: translateY(-50%); /* Adjust for proper centering */
+  z-index: 10; /* Ensure the buttons are on top */
+}
+
+.prevButton {
+  left: 5px; /* Position on the left side of the image */
+}
+
+.nextButton {
+  right: 5px; /* Position on the right side of the image */
+}
+
+.prevButton:hover,
+.nextButton:hover {
+  background-color: rgba(255, 255, 255, 0.8); /* Darker background on hover */
 }

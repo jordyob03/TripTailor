@@ -38,18 +38,15 @@ function HomePage() {
   const [images, setImages] = useState({});
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Fetch itineraries from the backend
   useEffect(() => {
     const fetchItineraries = async () => {
       const response = [];
       const users = ["testuser", "herobrine", "jordy_ob", "mitchro"];
-  
+
       const user = await profileAPI.get("/user", { params: { username } });
       const userData = user.data;
-  
-      // Users tags
       const userTags = userData.tags;
-  
+
       try {
         // Loop through each user and fetch their itineraries
         for (const user of users) {
@@ -61,22 +58,22 @@ function HomePage() {
             console.error(`Itineraries for ${user} is not an array`, tempResponse.data.Itineraries);
           }
         }
-  
+
         // Filter itineraries based on user tags
         const filteredItineraries = response.filter((itinerary) =>
           itinerary.tags.some((tag) => userTags.includes(tag))
         );
-  
-        // Only set filtered itineraries here, no need to set `itineraries` unless needed
+
         setFilteredItineraries(filteredItineraries);
-  
+        setItineraries(filteredItineraries); 
       } catch (error) {
         console.error("Error fetching itineraries:", error);
       }
     };
-  
+
     fetchItineraries();
   }, []);
+
   
   // Handle tag filtering
   useEffect(() => {
@@ -95,7 +92,7 @@ function HomePage() {
   useEffect(() => {
     if (selectedTags.length > 0) {
       const filtered = itineraries.filter((itinerary) =>
-        itinerary.tags.some((tag) => selectedTags.includes(tag))
+        selectedTags.every((tag) => itinerary.tags.includes(tag)) // Ensure all selected tags are present
       );
       setFilteredItineraries(filtered);
     } else {
@@ -152,13 +149,13 @@ function HomePage() {
 
   const scrollTagsLeft = () => {
     if (tagContainerRef.current) {
-      tagContainerRef.current.scrollBy({ left: -150, behavior: 'smooth' });
+      tagContainerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
     }
   };
 
   const scrollTagsRight = () => {
     if (tagContainerRef.current) {
-      tagContainerRef.current.scrollBy({ left: 150, behavior: 'smooth' });
+      tagContainerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
     }
   };
 
