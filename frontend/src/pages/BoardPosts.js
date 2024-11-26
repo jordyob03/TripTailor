@@ -54,7 +54,7 @@ function BoardPosts() {
 
   const handleDeletePost = async (postId) => {
     try {
-      await boardAPI.delete('/posts', { data: { postId } });
+      await boardAPI.delete('/boards/${boardId}/posts/${postId}');
       setItineraries((prevItineraries) =>
         prevItineraries.filter((itinerary) => itinerary.postId !== postId)
       ); // Remove post from UI
