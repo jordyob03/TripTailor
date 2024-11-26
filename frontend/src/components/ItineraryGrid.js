@@ -212,7 +212,7 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost }) 
                           className="deleteButton"
                           onClick={(e) => {
                             e.stopPropagation();
-                            onDeletePost(itinerary.postId);
+                            onDeletePost(itinerary.boardId, itinerary.postId);
                           }}
                         >
                           X

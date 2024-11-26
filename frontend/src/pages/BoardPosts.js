@@ -15,6 +15,7 @@ function BoardPosts() {
   const [errorMessage, setErrorMessage] = useState('');
   const [editMode, setEditMode] = useState(false); // Tracks edit mode
   const [editedDescription, setEditedDescription] = useState(''); // For editing description
+  const [posts, setPosts] = useState([]);
 
   const fetchBoardData = async () => {
     try {
@@ -34,7 +35,7 @@ function BoardPosts() {
         dateOfCreation: board.dateOfCreation,
       });
 
-      setEditedDescription(board.description); // Set initial description
+      setEditedDescription(board.description); 
 
       const postsResponse = await boardAPI.get('/posts', { params: { boardId } });
       const postIds = postsResponse.data.Posts.map((post) => post.postId);
@@ -42,7 +43,8 @@ function BoardPosts() {
       const itinerariesData = [];
       for (const postId of postIds) {
         const itineraryResponse = await boardAPI.get('/itineraries', { params: { postId } });
-        itinerariesData.push(itineraryResponse.data.Itinerary);
+        const itinerary = itineraryResponse.data.Itinerary;
+        itinerariesData.push({ ...itinerary, postId, boardId }); 
       }
 
       setItineraries(itinerariesData);
@@ -52,17 +54,16 @@ function BoardPosts() {
     }
   };
 
-  const handleDeletePost = async (postId) => {
+  const handleDeletePost = async (boardId, postId) => {
     try {
-      await boardAPI.delete('/boards/${boardId}/posts/${postId}');
-      setItineraries((prevItineraries) =>
-        prevItineraries.filter((itinerary) => itinerary.postId !== postId)
-      ); // Remove post from UI
+      await boardAPI.delete(`/boards/${boardId}/posts/${postId}`);
+      setPosts(posts.filter(post => post.postId !== postId));
+      window.location.reload();
     } catch (error) {
-      console.error('Error deleting post:', error);
-      setErrorMessage('Failed to delete post.');
+      console.error("Error deleting post:", error);
+      setErrorMessage("Failed to delete post");
     }
-  };
+  }; 
 
   const handleSaveChanges = async () => {
     try {
