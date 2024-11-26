@@ -162,31 +162,32 @@ function HomePage() {
   const handleTagClick = async (tag) => {
     // Toggle the selection of the tag
     let updatedTags;
-    // Logic for handeling if user already clicked tag or not
+    
+    // If tag is already selected, remove it. If not, add it to the selected tags.
     if (selectedTags.includes(tag)) {
-      // If tag is already selected, keep the existing selected tags
-      updatedTags = [...selectedTags];
+      updatedTags = selectedTags.filter((t) => t !== tag); 
     } else {
-      // If tag is not selected, add it to the selected tags
       updatedTags = [...selectedTags, tag];
     }
   
+    // Update the selected tags state
     setSelectedTags(updatedTags);
   
-    if (updatedTags.length >= 1) {
-      // Fetch feed with the updated tags and wait for the result
+    // If there are no tags selected, show all itineraries again
+    if (updatedTags.length === 0) {
+      setFilteredItineraries(itineraries);
+    } else {
       const fetchedData = await fetchfeed(updatedTags);
   
       if (Array.isArray(fetchedData)) {
-        setItineraries(fetchedData); 
+        setFilteredItineraries(fetchedData);
       } else {
-        setItineraries([]); 
+        setFilteredItineraries([]);
       }
-    } else {
-      
-      setItineraries([]); 
     }
   };
+  
+  
   
   
 
