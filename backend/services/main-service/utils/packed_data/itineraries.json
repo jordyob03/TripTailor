@@ -323,5 +323,45 @@
     "events": ["87", "88"],
     "postId": 25,
     "username": "LeonardoDaVinci"
+  },
+  {
+    "itineraryId": 26,
+    "city": "Toronto",
+    "country": "Canada",
+    "title": "Trip to Liam Earle's Apartment",
+    "description": "Good eats, good vibes, good times! Trip for two",
+    "price": 0.00,
+    "languages": ["English"],
+    "tags": ["adventure", "Young Adults", "Couples", "City", "Food"],
+    "events": ["89", "90"],
+    "postId": 26,
+    "username": "LegendGaming24"
+  },
+  {
+    "itineraryId": 27,
+    "city": "Calgary",
+    "country": "Canada",
+    "title": "Rodeo Adventure",
+    "description": "Stampede, sleep repeat. Trip to Calgary with parents and brother, for the Calgary Stampede, and Calgary Zoo.",
+    "price": 0.00,
+    "languages": ["English"],
+    "tags": ["adventure", "Family Friendly", "Wildlife Watching", "City"],
+    "events": ["91", "92"],
+    "postId": 27,
+    "username": "LegendGaming24"
+  },
+
+  {
+    "itineraryId": 28,
+    "city": "Tilted Towers",
+    "country": "Battle Island",
+    "title": "Solo drop to Battle Island",
+    "description": "Solo Tilted Towers and Loot Lake Adventure, went fishing!",
+    "price": 0.00,
+    "languages": ["English"],
+    "tags": ["adventure", "Family Friendly", "Wildlife Watching", "City"],
+    "events": ["93", "94"],
+    "postId": 28,
+    "username": "LegendGaming24"
   }
 ]

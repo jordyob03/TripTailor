@@ -88,5 +88,20 @@
     "posts": ["23", "24", "25"],
     "profileImage": 1,
     "coverImage": 2
+  },
+  {
+    "userId": 7,
+    "username": "LegendGaming24",
+    "email": "noah@mun.ca",
+    "password": "$2a$10$57733FILr3PDsducmSSKz.C.ZTbrz5o02pNpoEuF9GzqYFCa/1HhS",
+    "dateOfBirth": "2002-10-29T00:00:00Z",
+    "name": "Noah Colbourne",
+    "country": "Canada",
+    "languages": ["English"],
+    "tags": ["City", "Young Adults", "Nightlife", "Street Food"],
+    "boards": [],
+    "posts": ["26", "27", "28"],
+    "profileImage": 1,
+    "coverImage": 2
   }
 ]

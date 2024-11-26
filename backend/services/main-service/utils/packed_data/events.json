@@ -967,5 +967,72 @@
     "endTime": "2024-12-03T21:00:00Z",
     "itineraryId": 25,
     "eventImages": ["90"]
+  },
+  {
+    "eventId": 89,
+    "name": "Shopping at CF Toronto Eaton Centre",
+    "cost": 180.00,
+    "address": "220 Yonge St, Toronto, ON M5B 2H1, Canada",
+    "description": "Explored over 230 retailers at Toronto's premier urban shopping destination, CF Toronto Eaton Centre.",
+    "startTime": "2024-12-03T10:00:00Z",
+    "endTime": "2024-12-03T13:00:00Z",
+    "itineraryId": 26,
+    "eventImages": ["95"]
+  },
+  {
+    "eventId": 90,
+    "name": "Dinner at Don Alfonso 1890",
+    "cost": 350.00,
+    "address": "1 Harbour Square, 38th Floor, Toronto, ON M5J 1A6, Canada",
+    "description": "Enjoyed a Michelin-starred Italian dining experience for two, with panoramic views of Toronto's skyline and Lake Ontario at Don Alfonso 1890.",
+    "startTime": "2024-12-03T19:00:00Z",
+    "endTime": "2024-12-03T21:00:00Z",
+    "itineraryId": 28,
+    "eventImages": ["96"]
+  },
+  {
+    "eventId": 91,
+    "name": "Calgary Stampede",
+    "cost": 600.00,
+    "address": "Calgary Stampede Grounds",
+    "description": "Participated in the vibrant Alagary Stampede festivities, enjoyed live rodeos, and cultural performances.",
+    "startTime": "2024-12-03T09:00:00Z",
+    "endTime": "2024-12-03T12:00:00Z",
+    "itineraryId": 27,
+    "eventImages": ["93"]
+  },
+  {
+    "eventId": 92,
+    "name": "Visit to Calgary Zoo",
+    "cost": 120.00,
+    "address": "Calgary Zoo, Calgary, AB",
+    "description": "Explored the fascinating exhibits at Calgary Zoo, featuring diverse wildlife and immersive environments.",
+    "startTime": "2024-12-03T13:00:00Z",
+    "endTime": "2024-12-03T15:00:00Z",
+    "itineraryId": 27,
+    "eventImages": ["94"]
+  },
+  
+  {
+    "eventId": 93,
+    "name": "Tilted Towers Shopping Spree",
+    "cost": 250.00,
+    "address": "Tilted Towers",
+    "description": "Went shopping in the Tilited Towers city center, bought some cool stuff",
+    "startTime": "2024-12-03T09:00:00Z",
+    "endTime": "2024-12-03T10:00:00Z",
+    "itineraryId": 28,
+    "eventImages": ["91"]
+  },
+  {
+    "eventId": 94,
+    "name": "Fishing at Loot Lake",
+    "cost": 45.00,
+    "address": "Loot Lake",
+    "description": "Enjoyed a peaceful fishing adventure, while staying at a lovely log cabin.",
+    "startTime": "2024-12-03T13:00:00Z",
+    "endTime": "2024-12-03T15:00:00Z",
+    "itineraryId": 28,
+    "eventImages": ["92"]
   }
 ]
