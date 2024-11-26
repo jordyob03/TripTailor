@@ -47,15 +47,16 @@ function NavBar({ onSearch }) {
   };
 
   const handleSearchDebounced = (searchValue, price) => {
+    const numericPrice = parseFloat(price);
+
     if (typingTimeout) {
       clearTimeout(typingTimeout); // Clear any existing timeout
     }
 
     if (!price || isNaN(numericPrice) || numericPrice <= 0) {
       price = 999999;
-    }
-    const numericPrice = parseFloat(price);
-  
+    } 
+    
     const timeout = setTimeout(async () => {
       let hasError = false;
   
