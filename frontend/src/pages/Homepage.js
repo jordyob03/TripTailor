@@ -19,22 +19,26 @@ function HomePage() {
   const [images, setImages] = useState({});
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Fetch itineraries from the backend
   useEffect(() => {
-    // Fetch itineraries
+    // Fetch all itineraries while we dont have feed service endpoint
     const fetchItineraries = async () => {
-      // const searchData = { country: 'France', city: 'Paris' };
-      // try {
-      //   console.log("Search API sent:", searchData);
-      //   const response = await searchAPI.get('/search', {
-      //     params: searchData,
-      //   });
-      //   console.log('API response:', response.data.Itineraries);
-      //   setItineraries(response.data || []);
-      //   setFilteredItineraries(response.data || []);
-      // } catch (error) {
-      //   console.error("Error fetching itineraries:", error);
-      // }
+      const searchValue = 't';
+      const numericPrice = 9999999;
+      const searchData = { SearchValue: searchValue, Price: numericPrice };
+      try {
+        console.log("Search API sent:", searchData);
+        const response = await searchAPI.get('/search', {
+          params: {
+            searchValue,
+            price: numericPrice,
+          },
+        });
+        console.log('API response:', response.data.Itineraries);
+        setItineraries(response.data || []);
+        setFilteredItineraries(response.data || []);
+      } catch (error) {
+        console.error("Error fetching itineraries:", error);
+      }
     };
   
     // Fetch boards
@@ -50,7 +54,7 @@ function HomePage() {
   useEffect(() => {
     if (selectedTags.length > 0) {
       const filtered = itineraries.filter((itinerary) =>
-        itinerary.tags.some((tag) => selectedTags.includes(tag))
+        selectedTags.every((tag) => itinerary.tags.includes(tag)) // Ensure all selected tags are present
       );
       setFilteredItineraries(filtered);
     } else {
@@ -107,13 +111,13 @@ function HomePage() {
 
   const scrollTagsLeft = () => {
     if (tagContainerRef.current) {
-      tagContainerRef.current.scrollBy({ left: -150, behavior: 'smooth' });
+      tagContainerRef.current.scrollBy({ left: -300, behavior: 'smooth' });
     }
   };
 
   const scrollTagsRight = () => {
     if (tagContainerRef.current) {
-      tagContainerRef.current.scrollBy({ left: 150, behavior: 'smooth' });
+      tagContainerRef.current.scrollBy({ left: 300, behavior: 'smooth' });
     }
   };
 
