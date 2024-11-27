@@ -7,7 +7,7 @@
     "description": "A week-long adventure through the beautiful cities of Europe.",
     "price": 0.00,
     "languages": ["English", "French"],
-    "tags": ["Sightseeing", "culture"],
+    "tags": ["Sightseeing"],
     "events": ["1", "2", "3", "4"],
     "postId": 1,
     "username": "testuser"
@@ -20,7 +20,7 @@
     "description": "An itinerary to experience the must-see attractions in Paris.",
     "price": 0.00,
     "languages": ["English", "French"],
-    "tags": ["Art", "History"],
+    "tags": ["Couples"],
     "events": ["5", "6", "7", "8", "9"],
     "postId": 2,
     "username": "testuser"
@@ -46,7 +46,7 @@
     "description": "My friends and I embarked on a thrilling journey to the End Dimension to conquer an End City. We braved the dangerous void, battled Shulkers, and gathered precious loot. We finished the expedition with a victory celebration back at our home base.",
     "price": 0.00,
     "languages": ["English", "Swedish"],
-    "tags": ["Adventure", "Exploration", "Gaming", "Looting", "Combat"],
+    "tags": ["Desert", "Mountains", "Beach"],
     "events": ["11", "12", "13", "14", "15"],
     "postId": 4,
     "username": "herobrine"
@@ -59,7 +59,7 @@
     "description": "My friends and I spent the day at Niagara Falls, taking in the scenic views and enjoying a few local attractions. We finished off the day with dinner and a walk around Clifton Hill.",
     "price": 0.00,
     "languages": ["English", "French"],
-    "tags": ["Young Adults", "City", "Nature", "Sightseeing", "Walking Tour", "Vegetarian"],
+    "tags": ["Young Adults", "City", "Sightseeing", "Walking Tour", "Vegetarian"],
     "events": ["16", "17", "18"],
     "postId": 5,
     "username": "herobrine"
@@ -72,7 +72,7 @@
     "description": "My friends and I spent an unforgettable day exploring the rich history and vibrant culture of Lahore's Old City. We wandered through bustling bazaars, admired Mughal architecture, and finished the day with a traditional dinner and a stroll around the iconic Badshahi Mosque.",
     "price": 0.00,
     "languages": ["Urdu", "Punjabi"],
-    "tags": ["Young Adults", "History", "Culture", "Architecture", "Local Cuisine", "Walking Tour"],
+    "tags": ["Young Adults", "History", "Culture", "Local Cuisine", "Walking Tour"],
     "events": ["19", "20", "21", "22"],
     "postId": 6,
     "username": "herobrine"
@@ -163,7 +163,7 @@
     "description": "My friends and I spent the day exploring the beautiful University of Limerick campus. We visited the library, the sports facilities, and the stunning riverfront. We finished the day with a picnic by the river and a walk around the campus.",
     "price": 0.00,
     "languages": ["English", "Irish"],
-    "tags": ["Young Adults", "University", "Campus Tour", "Picnic", "Riverfront", "Walking Tour"],
+    "tags": ["Young Adults"],
     "events": ["56", "57"],
     "postId": 13,
     "username": "herobrine"
@@ -176,7 +176,7 @@
     "description": "Explore the beautiful capital city of Pakistan, Islamabad.",
     "price": 0.00,
     "languages": ["Urdu", "Punjabi", "Pashto"],
-    "tags": ["City", "Sightseeing", "Culture", "History", "Local Cuisine", "Shopping"],
+    "tags": ["City", "Culture", "History", "Local Cuisine", "Shopping"],
     "events": ["58", "59", "60", "61"],
     "postId": 14,
     "username": "herobrine"
@@ -293,7 +293,7 @@
     "description": "Explore the vibrant city of Toronto, with its gripping urban culture and stunning waterfront.",
     "price": 0.00,
     "languages": ["English", "French"],
-    "tags": ["Adventure", "city", "culture"],
+    "tags": ["City", "Culture"],
     "events": ["83", "84"],
     "postId": 23,
     "username": "LeonardoDaVinci"
@@ -306,7 +306,7 @@
     "description": "Conquer the iconic sights of Paris in style, from the Eiffel Tower to the Champs-Élysées.",
     "price": 0.00,
     "languages": ["English", "French"],
-    "tags": ["Sightseeing", "luxury", "culture"],
+    "tags": ["City", "Nightlife"],
     "events": ["85", "86"],
     "postId": 24,
     "username": "LeonardoDaVinci"
@@ -319,7 +319,7 @@
     "description": "Experience the thrilling coastal adventures and cultural highlights of Sydney.",
     "price": 0.00,
     "languages": ["English"],
-    "tags": ["Adventure", "Coastal Village", "Wildlife"],
+    "tags": ["Coastal Village", "Wildlife"],
     "events": ["87", "88"],
     "postId": 25,
     "username": "LeonardoDaVinci"
@@ -423,7 +423,7 @@
     "description": "Discover the adventure capital of New Zealand with breathtaking landscapes.",
     "price": 0.00,
     "languages": ["English"],
-    "tags": ["Backpacker", "Mountains", "Adventure", "Easy Hikes"],
+    "tags": ["Backpacker", "Mountains", "Easy Hikes"],
     "events": ["117", "118", "119", "120"],
     "postId": 33,
     "username": "testuser"
@@ -462,7 +462,7 @@
     "description": "Good eats, good vibes, good times! Trip for two",
     "price": 0.00,
     "languages": ["English"],
-    "tags": ["Adventure", "Young Adults", "Couples", "City", "Street Food"],
+    "tags": ["Young Adults", "Couples", "City", "Street Food"],
     "events": ["129", "130"],
     "postId": 26,
     "username": "LegendGaming24"
@@ -475,7 +475,7 @@
     "description": "Stampede, sleep repeat. Trip to Calgary with parents and brother, for the Calgary Stampede, and Calgary Zoo.",
     "price": 0.00,
     "languages": ["English"],
-    "tags": ["Adventure", "Family Friendly", "Wildlife Watching", "City"],
+    "tags": ["Family Friendly", "Wildlife Watching", "City"],
     "events": ["131", "132"],
     "postId": 27,
     "username": "LegendGaming24"
@@ -488,7 +488,7 @@
     "description": "Solo Tilted Towers and Loot Lake Adventure, went fishing!",
     "price": 0.00,
     "languages": ["English"],
-    "tags": ["Adventure", "Family Friendly", "Wildlife Watching", "City"],
+    "tags": ["Family Friendly", "Wildlife Watching", "City"],
     "events": ["133", "134"],
     "postId": 28,
     "username": "LegendGaming24"
