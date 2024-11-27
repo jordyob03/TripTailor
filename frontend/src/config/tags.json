@@ -21,10 +21,14 @@
       "Island",
       "Theme Park",
       "Historical Sites",
+      "Campus Tour",
+      "University",
       "Warmer Climate",
       "Colder Climate",
       "Hot Springs",
-      "Coastal Village"
+      "Coastal Village",
+      "Riverfront",
+      "Architecture"
     ],
     "activity_level": [
       "Long Walks",
@@ -32,9 +36,11 @@
       "Wheelchair Accessible",
       "Difficult Hikes",
       "Easy Hikes",
-      "Leisure Activities"
+      "Leisure Activities",
+      "Walking Tour"
     ],
     "activities": [
+      "Adventure",
       "Hiking",
       "Skiing",
       "Scuba Diving",
@@ -46,7 +52,18 @@
       "Food Tours",
       "Camping",
       "Wine Tasting",
-      "Photography Tours"
+      "Photography Tours",
+      "Combat",
+      "Looting",
+      "Gaming",
+      "Exploration",
+      "Luxury",
+      "Nature",
+      "Picnic",
+      "Sightseeing",
+      "Art",
+      "Culture",
+      "History"
     ],
     "food": [
       "Healthy",
