@@ -1,12 +1,31 @@
+import { faImage } from '@fortawesome/free-solid-svg-icons'; // Add this import at the top
 import React, { useState, useRef, useEffect } from 'react';
 import '../styles/styles.css';
 import Tags from '../config/tags.json';
 import iconMap from '../config/iconMap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import feedAPI from '../api/feedAPI.js';
 import ItineraryGrid from '../components/ItineraryGrid.js';
-import searchAPI from '../api/searchAPI';
+import itineraryAPI from '../api/itineraryAPI.js';
 import boardAPI from '../api/boardAPI.js';
-import { faImage } from '@fortawesome/free-solid-svg-icons'; // Add this import at the top
+import profileAPI from '../api/profileAPI';
+
+const fetchfeed = async (tags) => {
+  try {
+    // Convert tags array to JSON string and encode it
+    const tagsParam = JSON.stringify(tags);
+    console.log(tags, username);
+    const response = await feedAPI.get('/feed', { params: { tags: tagsParam } });
+    if (response && response.data) {
+      console.log(response.data);
+      return response.data.itineraries
+    } else {
+      console.log("No data received in response.");
+    }
+  } catch (error) {
+    console.log(error.message || "An error occurred. Please try again.");
+  }
+};
 
 const username = localStorage.getItem('username');
 
@@ -20,35 +39,54 @@ function HomePage() {
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    // Fetch all itineraries while we dont have feed service endpoint
     const fetchItineraries = async () => {
-      const searchValue = 't';
-      const numericPrice = 9999999;
-      const searchData = { SearchValue: searchValue, Price: numericPrice };
+      const response = [];
+      const users = ["testuser", "herobrine", "jordy_ob", "mitchro"];
+
+      const user = await profileAPI.get("/user", { params: { username } });
+      const userData = user.data;
+      const userTags = userData.tags;
+
       try {
-        console.log("Search API sent:", searchData);
-        const response = await searchAPI.get('/search', {
-          params: {
-            searchValue,
-            price: numericPrice,
-          },
-        });
-        console.log('API response:', response.data.Itineraries);
-        setItineraries(response.data || []);
-        setFilteredItineraries(response.data || []);
+        // Loop through each user and fetch their itineraries
+        for (const user of users) {
+          const data = { Username: user };
+          const tempResponse = await itineraryAPI.post('/get-user-itins', data);
+          if (Array.isArray(tempResponse.data.itineraries)) {
+            response.push(...tempResponse.data.itineraries);
+          } else {
+            console.error(`Itineraries for ${user} is not an array`, tempResponse.data.Itineraries);
+          }
+        }
+
+        // Filter itineraries based on user tags
+        const filteredItineraries = response.filter((itinerary) =>
+          itinerary.tags.some((tag) => userTags.includes(tag))
+        );
+
+        setFilteredItineraries(filteredItineraries);
+        setItineraries(filteredItineraries); 
       } catch (error) {
         console.error("Error fetching itineraries:", error);
       }
     };
-  
-    // Fetch boards
-    const fetchBoardsAndImages = async () => {
-      await fetchBoards();
-    };
-  
+
     fetchItineraries();
-    fetchBoardsAndImages();
   }, []);
+
+  
+  // Handle tag filtering
+  useEffect(() => {
+    if (selectedTags.length > 0) {
+      const filtered = itineraries.filter((itinerary) =>
+        itinerary.tags.some((tag) => selectedTags.includes(tag))
+      );
+      setFilteredItineraries(filtered);
+    } else {
+      setFilteredItineraries(itineraries);
+    }
+  }, [selectedTags, itineraries]);
+  
 
   // Handle tag filtering
   useEffect(() => {
@@ -121,13 +159,37 @@ function HomePage() {
     }
   };
 
-  const handleTagClick = (tag) => {
-    setSelectedTags((prevSelectedTags) =>
-      prevSelectedTags.includes(tag)
-        ? prevSelectedTags.filter((t) => t !== tag)
-        : [...prevSelectedTags, tag]
-    );
+  const handleTagClick = async (tag) => {
+    // Toggle the selection of the tag
+    let updatedTags;
+    
+    // If tag is already selected, remove it. If not, add it to the selected tags.
+    if (selectedTags.includes(tag)) {
+      updatedTags = selectedTags.filter((t) => t !== tag); 
+    } else {
+      updatedTags = [...selectedTags, tag];
+    }
+  
+    // Update the selected tags state
+    setSelectedTags(updatedTags);
+  
+    // If there are no tags selected, show all itineraries again
+    if (updatedTags.length === 0) {
+      setFilteredItineraries(itineraries);
+    } else {
+      const fetchedData = await fetchfeed(updatedTags);
+  
+      if (Array.isArray(fetchedData)) {
+        setFilteredItineraries(fetchedData);
+      } else {
+        setFilteredItineraries([]);
+      }
+    }
   };
+  
+  
+  
+  
 
   return (
     <div>

@@ -29,6 +29,7 @@ function UserLogin() {
       console.log('User signed in successfully:', response.data);
 
       navigate('/home-page');
+      window.location.reload();
     } catch (error) {
       if (error.response && error.response.data) {
         setErrorMessage(error.response.data.error);  
@@ -41,6 +42,7 @@ function UserLogin() {
 
   const handleSignUpClick = () => {
     navigate('/sign-up');
+    window.location.reload();
   };
 
   return (

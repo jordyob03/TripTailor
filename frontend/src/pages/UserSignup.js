@@ -97,6 +97,7 @@ function UserSignup() {
       console.log('User signed up successfully:', response.data);
 
       navigate('/profile-creation');
+      window.location.reload();
     } catch (error) {
       if (error.response && error.response.data) {
         setErrorMessage(error.response.data.error); 

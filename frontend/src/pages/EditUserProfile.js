@@ -89,6 +89,7 @@ function EditUserProfile() {
       try {
         await profileAPI.post(`/create`, profileData, { params: { username } });
         navigate('/home-page');
+        window.location.reload();
       } catch (error) {
         console.error("Failed to save profile:", error);
         setErrorMessage("Failed to save profile changes");

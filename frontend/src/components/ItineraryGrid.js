@@ -24,6 +24,7 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost }) 
 
   const handleItinClick = (itineraryId) => {
     navigate(`/itinerary/${itineraryId}`);
+    window.location.reload();
   };
 
   const fallbackImage =
@@ -212,7 +213,7 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost }) 
                           className="deleteButton"
                           onClick={(e) => {
                             e.stopPropagation();
-                            onDeletePost(itinerary.postId);
+                            onDeletePost(itinerary.boardId, itinerary.postId);
                           }}
                         >
                           X

@@ -76,6 +76,7 @@ function InitialUserProfile() {
         console.log('Profile saved', response.data);
   
         navigate('/home-page');
+        window.location.reload();
   
       } catch (error) {
         if (error.response && error.response.data) {

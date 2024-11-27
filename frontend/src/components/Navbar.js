@@ -45,6 +45,7 @@ function NavBar({ onSearch }) {
   const handleLogout = () => {
     localStorage.clear();
     navigate('/');
+    window.location.reload();
   };
 
   const handleSearchDebounced = (searchFieldEntry, price) => {
@@ -87,6 +88,7 @@ function NavBar({ onSearch }) {
           // Optionally navigate to results
           if (location.pathname !== '/search-results') {
             navigate('/search-results');
+            window.location.reload();
           }
         } catch (error) {
           console.error('Search API error:', error); // Log full error details
@@ -110,7 +112,7 @@ function NavBar({ onSearch }) {
         src={navBarLogo}
         alt="Trip Tailor Logo"
         className="navBarLogo"
-        onClick={() => navigate('/home-page')}
+        onClick={() => {navigate('/home-page'); window.location.reload();}}
         style={{ cursor: 'pointer' }}
       />
       {!noSearchBar.includes(location.pathname) && (
@@ -152,7 +154,7 @@ function NavBar({ onSearch }) {
       )}
       <div className="buttonsContainer">
         {!noCreateItinerary.includes(location.pathname) && (
-          <button className="createItineraryButton" onClick={() => navigate('/create-itinerary')}>
+          <button className="createItineraryButton" onClick={() => {navigate('/create-itinerary'); window.location.reload();}}>
             Create Itinerary
           </button>
         )}
@@ -172,9 +174,9 @@ function NavBar({ onSearch }) {
       {menuOpen && (
         <div className="dropdownMenu">
           <ul>
-            <li onClick={() => { navigate('/home-page'); closeMenu(); }}>Home</li>
-            <li onClick={() => { navigate('/my-travels/itineraries'); closeMenu(); }}>My Travels</li>
-            <li onClick={() => { navigate('/personal-info'); closeMenu(); }}>Account Settings</li>
+            <li onClick={() => { navigate('/home-page'); window.location.reload(); closeMenu(); }}>Home</li>
+            <li onClick={() => { navigate('/my-travels/itineraries'); window.location.reload(); closeMenu(); }}>My Travels</li>
+            <li onClick={() => { navigate('/personal-info'); window.location.reload(); closeMenu(); }}>Account Settings</li>
           </ul>
         </div>
       )}

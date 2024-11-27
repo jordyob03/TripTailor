@@ -73,6 +73,7 @@ function Boards() {
   
   const handleBoardClick = (id) => {
     navigate(`/my-travels/boards/${id}`);
+    window.location.reload();
   };
 
   useEffect(() => {
