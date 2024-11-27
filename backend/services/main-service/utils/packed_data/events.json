@@ -1307,7 +1307,7 @@
     "startTime": "2024-12-11T13:00:00Z",
     "endTime": "2024-12-11T14:30:00Z",
     "itineraryId": 33,
-    "eventImages": ["129"]
+    "eventImages": ["121"]
   },
   {
     "eventId": 120,
@@ -1318,7 +1318,7 @@
     "startTime": "2024-12-11T15:00:00Z",
     "endTime": "2024-12-11T16:30:00Z",
     "itineraryId": 33,
-    "eventImages": ["130"]
+    "eventImages": ["122"]
   },
   {
     "eventId": 121,
@@ -1329,7 +1329,7 @@
     "startTime": "2024-12-12T09:00:00Z",
     "endTime": "2024-12-12T11:00:00Z",
     "itineraryId": 34,
-    "eventImages": ["121"]
+    "eventImages": ["123"]
   },
   {
     "eventId": 122,
@@ -1340,7 +1340,7 @@
     "startTime": "2024-12-12T12:00:00Z",
     "endTime": "2024-12-12T14:00:00Z",
     "itineraryId": 34,
-    "eventImages": ["122"]
+    "eventImages": ["124"]
   },
   {
     "eventId": 123,
@@ -1351,7 +1351,7 @@
     "startTime": "2024-12-12T15:00:00Z",
     "endTime": "2024-12-12T17:00:00Z",
     "itineraryId": 34,
-    "eventImages": ["123"]
+    "eventImages": ["125"]
   },
   {
     "eventId": 124,
@@ -1362,7 +1362,7 @@
     "startTime": "2024-12-12T19:00:00Z",
     "endTime": "2024-12-12T21:00:00Z",
     "itineraryId": 34,
-    "eventImages": ["124"]
+    "eventImages": ["126"]
   },
   {
     "eventId": 125,
@@ -1373,7 +1373,7 @@
     "startTime": "2024-12-13T09:00:00Z",
     "endTime": "2024-12-13T11:00:00Z",
     "itineraryId": 35,
-    "eventImages": ["125"]
+    "eventImages": ["127"]
   },
   {
     "eventId": 126,
@@ -1384,7 +1384,7 @@
     "startTime": "2024-12-13T12:00:00Z",
     "endTime": "2024-12-13T14:00:00Z",
     "itineraryId": 35,
-    "eventImages": ["126"]
+    "eventImages": ["128"]
   },
   {
     "eventId": 127,
@@ -1395,7 +1395,7 @@
     "startTime": "2024-12-13T15:00:00Z",
     "endTime": "2024-12-13T16:30:00Z",
     "itineraryId": 35,
-    "eventImages": ["127"]
+    "eventImages": ["129"]
   },
   {
     "eventId": 128,
@@ -1406,6 +1406,73 @@
     "startTime": "2024-12-13T18:00:00Z",
     "endTime": "2024-12-13T20:00:00Z",
     "itineraryId": 35,
-    "eventImages": ["128"]
+    "eventImages": ["130"]
+  },
+  {
+    "eventId": 129,
+    "name": "Shopping at CF Toronto Eaton Centre",
+    "cost": 180.00,
+    "address": "220 Yonge St, Toronto, ON M5B 2H1, Canada",
+    "description": "Explored over 230 retailers at Toronto's premier urban shopping destination, CF Toronto Eaton Centre.",
+    "startTime": "2024-12-03T10:00:00Z",
+    "endTime": "2024-12-03T13:00:00Z",
+    "itineraryId": 36,
+    "eventImages": ["131"]
+  },
+  {
+    "eventId": 130,
+    "name": "Dinner at Don Alfonso 1890",
+    "cost": 350.00,
+    "address": "1 Harbour Square, 38th Floor, Toronto, ON M5J 1A6, Canada",
+    "description": "Enjoyed a Michelin-starred Italian dining experience for two, with panoramic views of Toronto's skyline and Lake Ontario at Don Alfonso 1890.",
+    "startTime": "2024-12-03T19:00:00Z",
+    "endTime": "2024-12-03T21:00:00Z",
+    "itineraryId": 36,
+    "eventImages": ["132"]
+  },
+  {
+    "eventId": 131,
+    "name": "Calgary Stampede",
+    "cost": 600.00,
+    "address": "Calgary Stampede Grounds",
+    "description": "Participated in the vibrant Alagary Stampede festivities, enjoyed live rodeos, and cultural performances.",
+    "startTime": "2024-12-03T09:00:00Z",
+    "endTime": "2024-12-03T12:00:00Z",
+    "itineraryId": 37,
+    "eventImages": ["133"]
+  },
+  {
+    "eventId": 132,
+    "name": "Visit to Calgary Zoo",
+    "cost": 120.00,
+    "address": "Calgary Zoo, Calgary, AB",
+    "description": "Explored the fascinating exhibits at Calgary Zoo, featuring diverse wildlife and immersive environments.",
+    "startTime": "2024-12-03T13:00:00Z",
+    "endTime": "2024-12-03T15:00:00Z",
+    "itineraryId": 37,
+    "eventImages": ["134"]
+  },
+  
+  {
+    "eventId": 133,
+    "name": "Tilted Towers Shopping Spree",
+    "cost": 250.00,
+    "address": "Tilted Towers",
+    "description": "Went shopping in the Tilited Towers city center, bought some cool stuff",
+    "startTime": "2024-12-03T09:00:00Z",
+    "endTime": "2024-12-03T10:00:00Z",
+    "itineraryId": 38,
+    "eventImages": ["135"]
+  },
+  {
+    "eventId": 134,
+    "name": "Fishing at Loot Lake",
+    "cost": 45.00,
+    "address": "Loot Lake",
+    "description": "Enjoyed a peaceful fishing adventure, while staying at a lovely log cabin.",
+    "startTime": "2024-12-03T13:00:00Z",
+    "endTime": "2024-12-03T15:00:00Z",
+    "itineraryId": 38,
+    "eventImages": ["136"]
   }
 ]

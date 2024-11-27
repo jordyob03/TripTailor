@@ -43,5 +43,14 @@
     "username": "abdulaziz",
     "posts": ["20", "21"],
     "tags": []
+  },
+  {
+    "boardId": 6,
+    "name": "LegendGaming24's Trips",
+    "dateOfCreation": "2024-04-08T12:00:00Z",
+    "description": "Travels to various locations a gamer like me loves",
+    "username": "LegendGaming24",
+    "posts": ["36", "37", "38"],
+    "tags": []
   }
 ]
