@@ -83,7 +83,7 @@ func BuildQuery(searchString string, price float64) (string, []interface{}) {
 	outerQuery := `
         SELECT * 
         FROM (%s) AS scored_itineraries
-        WHERE total_score >= 1
+        WHERE total_score >= 2
         ORDER BY total_score DESC`
 	finalQuery := fmt.Sprintf(outerQuery, innerQuery)
 
