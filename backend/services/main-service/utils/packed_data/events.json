@@ -1307,7 +1307,7 @@
     "startTime": "2024-12-11T13:00:00Z",
     "endTime": "2024-12-11T14:30:00Z",
     "itineraryId": 33,
-    "eventImages": ["129"]
+    "eventImages": ["121"]
   },
   {
     "eventId": 120,
@@ -1318,7 +1318,7 @@
     "startTime": "2024-12-11T15:00:00Z",
     "endTime": "2024-12-11T16:30:00Z",
     "itineraryId": 33,
-    "eventImages": ["130"]
+    "eventImages": ["122"]
   },
   {
     "eventId": 121,
@@ -1329,7 +1329,7 @@
     "startTime": "2024-12-12T09:00:00Z",
     "endTime": "2024-12-12T11:00:00Z",
     "itineraryId": 34,
-    "eventImages": ["121"]
+    "eventImages": ["123"]
   },
   {
     "eventId": 122,
@@ -1340,7 +1340,7 @@
     "startTime": "2024-12-12T12:00:00Z",
     "endTime": "2024-12-12T14:00:00Z",
     "itineraryId": 34,
-    "eventImages": ["122"]
+    "eventImages": ["124"]
   },
   {
     "eventId": 123,
@@ -1351,7 +1351,7 @@
     "startTime": "2024-12-12T15:00:00Z",
     "endTime": "2024-12-12T17:00:00Z",
     "itineraryId": 34,
-    "eventImages": ["123"]
+    "eventImages": ["125"]
   },
   {
     "eventId": 124,
@@ -1362,7 +1362,7 @@
     "startTime": "2024-12-12T19:00:00Z",
     "endTime": "2024-12-12T21:00:00Z",
     "itineraryId": 34,
-    "eventImages": ["124"]
+    "eventImages": ["126"]
   },
   {
     "eventId": 125,
@@ -1373,7 +1373,7 @@
     "startTime": "2024-12-13T09:00:00Z",
     "endTime": "2024-12-13T11:00:00Z",
     "itineraryId": 35,
-    "eventImages": ["125"]
+    "eventImages": ["127"]
   },
   {
     "eventId": 126,
@@ -1384,7 +1384,7 @@
     "startTime": "2024-12-13T12:00:00Z",
     "endTime": "2024-12-13T14:00:00Z",
     "itineraryId": 35,
-    "eventImages": ["126"]
+    "eventImages": ["128"]
   },
   {
     "eventId": 127,
@@ -1395,7 +1395,7 @@
     "startTime": "2024-12-13T15:00:00Z",
     "endTime": "2024-12-13T16:30:00Z",
     "itineraryId": 35,
-    "eventImages": ["127"]
+    "eventImages": ["129"]
   },
   {
     "eventId": 128,
@@ -1406,7 +1406,7 @@
     "startTime": "2024-12-13T18:00:00Z",
     "endTime": "2024-12-13T20:00:00Z",
     "itineraryId": 35,
-    "eventImages": ["128"]
+    "eventImages": ["130"]
   },
   {
     "eventId": 129,
