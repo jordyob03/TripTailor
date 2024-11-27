@@ -101,7 +101,7 @@ function BoardPosts() {
     <div className="pageContainer">
       <button
         className="backButton"
-        onClick={() => navigate('/my-travels/boards')}
+        onClick={() => {navigate('/my-travels/boards'); window.location.reload();}}
       >
         {"< Back to My Travels"}
       </button>

@@ -24,7 +24,7 @@ function AccountSettings() {
             <div
               key={section.title}
               className="card"
-              onClick={() => navigate(section.path)} // Navigate to the path
+              onClick={() => {navigate(section.path); window.location.reload();}} // Navigate to the path
               style={{ cursor: 'pointer' }} // Add a pointer cursor for better UX
             >
               <div className="cardContent">

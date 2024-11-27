@@ -24,6 +24,7 @@ const ItineraryGrid = ({ itineraries, showSaveButton, editMode, onDeletePost }) 
 
   const handleItinClick = (itineraryId) => {
     navigate(`/itinerary/${itineraryId}`);
+    window.location.reload();
   };
 
   const fallbackImage =
