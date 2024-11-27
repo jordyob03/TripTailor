@@ -23,7 +23,7 @@ func BuildQuery(searchString string, price float64) (string, []interface{}) {
 	argIndex := 1                  // Counter for argument placeholders
 
 	// Add scoring for exact matches to the title
-	scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN title ILIKE $%d THEN 5 ELSE 0 END)", argIndex))
+	scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN title ILIKE $%d THEN 10 ELSE 0 END)", argIndex))
 	args = append(args, "%"+searchString+"%")
 	argIndex++
 
@@ -35,12 +35,12 @@ func BuildQuery(searchString string, price float64) (string, []interface{}) {
 		argIndex++
 
 		// Match token against city
-		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN city ILIKE '%%' || $%d || '%%' THEN 2 ELSE 0 END)", argIndex))
+		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN city ILIKE '%%' || $%d || '%%' THEN 5 ELSE 0 END)", argIndex))
 		args = append(args, token)
 		argIndex++
 
 		// Match token against country
-		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN country ILIKE '%%' || $%d || '%%' THEN 2 ELSE 0 END)", argIndex))
+		scoringConditions = append(scoringConditions, fmt.Sprintf("(CASE WHEN country ILIKE '%%' || $%d || '%%' THEN 5 ELSE 0 END)", argIndex))
 		args = append(args, token)
 		argIndex++
 
