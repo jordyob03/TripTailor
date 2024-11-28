@@ -31,7 +31,7 @@
 ## Services Architecture
 
 ### Microservices
-- **Main Service**: Central service for database management and API exposure.
+- **Main Service**: Central service for database management and backend maintenance.
 - **Authentication Service**: Secure user signup, login, and JWT-based authorization.
 - **Profile Service**: Handles user profile creation and updates.
 - **Itinerary Service**: Manages creation, storage, and retrieval of travel itineraries.
